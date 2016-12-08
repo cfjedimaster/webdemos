@@ -4,6 +4,7 @@ https://twitter.com/Paul_Kinlan/status/806620449685827584
 
 $(document).ready(function() {
 	appReady();
+
 	if (navigator.storage && navigator.storage.persist) {
 		//First, see if we already have it
 		navigator.storage.persisted().then(persistent => {
@@ -22,8 +23,13 @@ $(document).ready(function() {
 		});
 	}
 
-
-
+	//what the heck
+	if(navigator.storage && navigator.storage.estimate) {
+		navigator.storage.estimate().then(result => {
+			console.log(result);
+			console.log('Percent used '+result.usage/result.quota).toFixed(2);
+		});
+	}
 });
 
 function appReady() {
