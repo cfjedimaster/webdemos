@@ -23,7 +23,7 @@ function motion(e) {
 		if(!lastX) {
 			lastX = acc.x;
 			lastY = acc.y;
-			lastY = acc.z;
+			lastZ = acc.z;
 			return;
 		}
 
