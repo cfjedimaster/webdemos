@@ -218,7 +218,7 @@ const Detail = Vue.component('Detail', {
 			this.detail = res.result;
 
 			// add a google maps url
-			this.detail.mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${this.detail.geometry.location.lat},${this.detail.geometry.location.lng}&zoom=14&markers=color:blue%7C${this.detail.geometry.location.lat},${this.detail.geometry.location.lng}&size=310x310&sensor=true`;
+			this.detail.mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${this.detail.geometry.location.lat},${this.detail.geometry.location.lng}&zoom=14&markers=color:blue%7C${this.detail.geometry.location.lat},${this.detail.geometry.location.lng}&size=310x310&sensor=true&key=AIzaSyBw5Mjzbn8oCwKEnwI2gtClM17VMCaNBUY`;
 			this.loading = false;
 		});
 
