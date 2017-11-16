@@ -12,7 +12,11 @@ const ServiceList = Vue.component('ServiceList', {
 	Looking up your location...
 	</div>
 
-	<div v-if="!loading">
+	<div v-if="error">
+	I'm sorry, but I had a problem getitng your location. Check the console for details.
+	</div>
+
+	<div v-if="!loading && !error">
 	<ul>
 	<li v-for="service in serviceTypes" :key="service.id">
 		<router-link :to="{name:'typeList', params:{type:service.id, name:service.label, lat:lat, lng:lng} }">{{service.label}}</router-link>
@@ -24,6 +28,7 @@ const ServiceList = Vue.component('ServiceList', {
 	`,
 	data:function() { 
 		return {
+			error:false,
 			loading:true,
 			lat:0,
 			lng:0,
@@ -87,6 +92,8 @@ const ServiceList = Vue.component('ServiceList', {
 			that.loading = false;
 		}, function(err) {
 			console.error(err);
+			that.loading = false;
+			that.error = true;
 		});
 	}
 
@@ -143,7 +150,7 @@ const Detail = Vue.component('Detail', {
 	template:`
 <div>
 	<div v-if="loading">
-	Looking up your location...
+	Looking up data...
 	</div>
 
 	<div v-if="!loading">
@@ -158,7 +165,9 @@ const Detail = Vue.component('Detail', {
 
 			<p>
 				This business is currently 
-				<span v-if="detail.opening_hours.open_now">open.</span><span v-else>closed.</span>
+				<span v-if="detail.opening_hours">
+					<span v-if="detail.opening_hours.open_now">open.</span><span v-else>closed.</span>
+				</span>
 				<br/>
 				Phone: {{detail.formatted_phone_number}}<br/>
 				Website: <a :href="detail.website" target="_new">{{detail.website}}</a><br/>
