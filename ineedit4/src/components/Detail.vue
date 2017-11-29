@@ -6,11 +6,7 @@
 
         <div v-if="!loading">
 
-            <b-card :title="detail.name" :sub-title="detail.formatted_address"
-                    :img-src="detail.toppicture"
-                    img-alt="Place image"
-                    img-top
-            >
+            <b-card :title="detail.name" :sub-title="detail.formatted_address">
 
                 <p class="card-text">
                     This business is currently 
@@ -27,6 +23,16 @@
                 <img :src="detail.mapUrl" width="310" height="310" class="full-image" />
                 </p>
 
+                <b-carousel id="carousel1"
+                controls
+                indicators
+                :interval="0"
+                >
+                      <b-carousel-slide 
+                        v-for="img in detail.photos" :key="img.url" style="height:300px">
+                            <img slot="img" :src="img.url" class="d-block img-fluid w-100" style="overflow:hidden">
+                      </b-carousel-slide>
+                </b-carousel>
             </b-card>
 
             <b-button block variant="primary" @click.prevent="goBack">Go Back</b-button>
@@ -36,6 +42,8 @@
 
 <script>
 const DETAIL_API = 'https://openwhisk.ng.bluemix.net/api/v1/web/rcamden%40us.ibm.com_My%20Space/googleplaces/detail.json';
+// used for static maps + google places photos
+const KEY = 'tbd';
 
 export default {
     name:'Detail',
@@ -69,14 +77,15 @@ export default {
             }
 
             if (res.result.photos) {
-                res.result.toppicture = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&&maxheight=100&photoreference=${encodeURIComponent(res.result.photos[0].photo_reference)}&key=AIzaSyBw5Mjzbn8oCwKEnwI2gtClM17VMCaNBUY`;
-            } else {
-                res.result.toppicture = res.result.icon;
+                res.result.photos.forEach((p) => {
+                    p.url = `https://maps.googleapis.com/maps/api/place/photo?maxheight=400&maxwidth=400&photoreference=${encodeURIComponent(p.photo_reference)}&key=${KEY}`;
+                });
             }
-			this.detail = res.result;
 
+			this.detail = res.result;
+            console.log(this.detail.photos[0].url);
 			// add a google maps url
-			this.detail.mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${this.detail.geometry.location.lat},${this.detail.geometry.location.lng}&zoom=14&markers=color:blue%7C${this.detail.geometry.location.lat},${this.detail.geometry.location.lng}&size=310x310&sensor=true&key=AIzaSyBw5Mjzbn8oCwKEnwI2gtClM17VMCaNBUY`;
+			this.detail.mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${this.detail.geometry.location.lat},${this.detail.geometry.location.lng}&zoom=14&markers=color:blue%7C${this.detail.geometry.location.lat},${this.detail.geometry.location.lng}&size=310x310&key=${KEY}`;
 			this.loading = false;
 		});
 	},
