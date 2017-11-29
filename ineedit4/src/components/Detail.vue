@@ -35,7 +35,7 @@
                 </b-carousel>
             </b-card>
 
-            <b-button block variant="primary" @click.prevent="goBack">Go Back</b-button>
+            <b-button block variant="primary" @click.prevent="goBack" style="margin-top:10px">Go Back</b-button>
         </div>
     </div>
 </template>
@@ -43,7 +43,7 @@
 <script>
 const DETAIL_API = 'https://openwhisk.ng.bluemix.net/api/v1/web/rcamden%40us.ibm.com_My%20Space/googleplaces/detail.json';
 // used for static maps + google places photos
-const KEY = 'tbd';
+const KEY = 'sorrymakethisreal';
 
 export default {
     name:'Detail',
@@ -83,7 +83,6 @@ export default {
             }
 
 			this.detail = res.result;
-            console.log(this.detail.photos[0].url);
 			// add a google maps url
 			this.detail.mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${this.detail.geometry.location.lat},${this.detail.geometry.location.lng}&zoom=14&markers=color:blue%7C${this.detail.geometry.location.lat},${this.detail.geometry.location.lng}&size=310x310&key=${KEY}`;
 			this.loading = false;

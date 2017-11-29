@@ -19,7 +19,7 @@
             </p>
 
             <p>
-            <router-link to="/">Back</router-link>
+            <b-button block variant="primary" to="/" style="margin-top:10px">Go Back</b-button>
             </p>
         </div>
 

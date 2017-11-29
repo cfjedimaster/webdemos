@@ -1,7 +1,7 @@
 <template>
     <div>
 
-    <h1>Service List</h1>
+        <h1>Service List</h1>
         <div v-if="loading">
         Looking up your location...
         </div>
