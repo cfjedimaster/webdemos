@@ -1,0 +1,23 @@
+body {
+	font-family: 'Banger', cursive;
+	background-color: #ffeb3b;
+}
+
+a {
+	color: black;	
+}
+
+img.heroImage {
+	float: right;
+	max-width: 500px;
+	margin-right:50px;
+}
+
+[v-cloak] {
+	display: none
+}
+
+a.loadMore {
+	text-decoration: underline;
+	cursor: pointer;
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vue.js Random Comic Book</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Bangers" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="app.css" />
+
+</head>
+<body>
+
+	<div id="app" v-cloak>
+		<div v-if="loading"><i>Loading Random Character...</i></div>
+		<div v-else>
+			<h1>{{char.name}}</h1>
+
+			<p>
+				<span v-if="char.publisher && char.publisher.name">
+					<strong>Publisher:</strong> {{char.publisher.name}}<br/>
+				</span>
+				<strong>First Issue:</strong> <a :href="char.first_issue.site_detail_url" target="_new">
+					{{char.first_issue.volume.name}} {{char.first_issue.issue_number}} ({{char.first_issue.cover_date}})</a><br/>
+			</p>
+
+			<a :href="char.site_detail_url" target="_new"><img class="heroImage" :src="char.image"></a>
+			<p v-html="char.description"></p>
+
+			<div v-if="char.creators.length">
+			<h2>Creators</h2>
+			<ul>
+				<li v-for="creator in char.creators">
+					<a :href="creator.site_detail_url" target="_new">{{creator.name}}</a>
+				</li>
+			</ul>
+			</div>
+
+			<div v-if="char.powers.length">
+				<h2>Powers</h2>
+				<ul>
+					<li v-for="power in char.powers">{{power.name}}</li>
+				</ul>
+			</div>
+
+			<div v-if="char.teams.length">
+				<h2>Teams</h2>
+				<ul>
+					<li v-for="team in char.teams"><a :href="team.site_detail_url" target="_new">{{team.name}}</a></li>
+				</ul>
+			</div>
+
+			<div v-if="char.character_friends.length">
+				<h2>Friends</h2>
+				<ul>
+					<li v-for="friend in char.character_friends"><a :href="friend.site_detail_url" target="_new">{{friend.name}}</a></li>
+				</ul>
+			</div>
+
+			<div v-if="char.character_enemies.length">
+				<h2>Enemies</h2>
+				<ul>
+					<li v-for="enemy in char.character_enemies"><a :href="enemy.site_detail_url" target="_new">{{enemy.name}}</a></li>
+				</ul>
+			</div>
+
+			<p>
+					All data from <a href="https://comicvine.gamespot.com" target="_new">ComicVine</a>. 
+					<a @click="getCharacter" class="loadMore">Show me another!</a>
+			</p>
+
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="app.js"></script>
+</body>
+</html>
