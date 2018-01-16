@@ -1,0 +1,23 @@
+[v-cloak] {display: none}
+
+h1 {
+	text-align:center;
+	font-size:400%;
+	font-family:'Princess Sofia',cursive;
+}
+
+button {
+	margin-top:20px;
+	padding: 10px;
+}
+
+#bwrapper {
+	display:flex;
+	justify-content: center;
+}
+
+footer {
+	margin-top: 50px;
+	font-style: italic;
+	text-align: center;
+}

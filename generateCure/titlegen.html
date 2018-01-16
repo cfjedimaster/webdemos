@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+		<link href="https://fonts.googleapis.com/css?family=Princess+Sofia" rel="stylesheet"> 
+		<link rel="stylesheet" href="app.css">
+	</head>
+	<body>
+
+		<div id="app" v-cloak>
+			<h1>{{title}}</h1>
+
+			<div id="bwrapper"><button @click="newTitle">More Cure</button></div>
+
+
+			<footer>
+				Uses the excellent <a href="https://www.npmjs.com/package/titlegen">titlegen</a> library.
+			</footer>
+
+		</div>
+
+		
+		<script src="https://unpkg.com/vue"></script>
+		<script src="titlegen.js"></script>
+		<script src="cure.js"></script>
+
+	</body>
+</html>
