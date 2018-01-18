@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+		<style>
+			input { width: 250px; }
+		</style>
+	</head>
+	<body>
+
+		<div id="app">
+			<cat v-for="cat in cats" :cat="cat"></cat>
+		</div>
+
+	<script src="https://unpkg.com/vue"></script>
+	<script>
+
+	Vue.component('cat', {
+		template:'<p @click="alertCat(cat)"><strong>{{ cat.name }} is {{ cat.age }} years old.</strong></p>',
+		props:['cat'],
+		methods:{
+			alertCat:function(c) {
+				alert(c.age);
+				// this is what triggers it
+				this.$emit('catevent', c);
+			}
+		}
+	});
+
+	const app = new Vue({
+		el:'#app',
+		data() {
+			return {
+				cats:[
+					{name:'Simba',age:11},
+					{name:'Robin',age:5},
+					{name:'Luna',age:9},
+					{name:'Cracker',age:6},
+					{name:'Pig',age:3}
+					]
+			}
+		}
+	});
+	</script>
+
+	</body>
+</html>

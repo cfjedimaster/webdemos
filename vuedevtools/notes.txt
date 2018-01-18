@@ -1,0 +1,25 @@
+
+1) link to the site
+be SURE to mention firefox support
+
+2) 
+make note of output in Console
+
+simple demo showing one simple value and one simple array
+show editing 
+show error on invalid json
+point out how you can see data not visible on age
+
+show index2, computed
+
+2a) show SWAPI
+
+3) show components
+
+3a - events
+make note of it not clearing
+
+
+3) vuex support
+
+4) events?

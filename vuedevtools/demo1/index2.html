@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+		<style>
+			input { width: 250px; }
+		</style>
+	</head>
+	<body>
+
+		<div id="app">
+			<input type="text" v-model="name">
+			<ul>
+				<li v-for="cat in oldcats">{{cat.name}}</li>
+			</ul>
+		</div>
+
+	<script src="https://unpkg.com/vue"></script>
+	<script>
+	const app = new Vue({
+		el:'#app',
+		data() {
+			return {
+				name:'Luna the Destroyer of Dogs',
+				cats:[
+					{name:'Simba',age:11},
+					{name:'Robin',age:5},
+					{name:'Luna',age:9},
+					{name:'Cracker',age:6},
+					{name:'Pig',age:3}
+					]
+			}
+		},
+		computed:{
+			oldcats() {
+				return this.cats.filter(c => {
+					return c.age > 10;
+				});
+			}
+		}
+
+	});
+	</script>
+
+	</body>
+</html>

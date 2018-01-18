@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+		<style>
+			input { width: 250px; }
+		</style>
+	</head>
+	<body>
+
+		<div id="app">
+			<ul>
+				<li v-for="film in films">{{film.title}}</li>
+			</ul>
+		</div>
+
+	<script src="https://unpkg.com/vue"></script>
+	<script>
+	const app = new Vue({
+		el:'#app',
+		data() {
+			return {
+				films:[]
+			}
+		},
+		created() {
+			fetch('https://swapi.co/api/films/')
+			.then(res => res.json())
+			.then(res => {
+				this.films = res.results;
+			});
+		}
+
+	});
+	</script>
+
+	</body>
+</html>
