@@ -1,0 +1,23 @@
+[v-cloak] {display: none}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#yourimage {
+	width:100%;	
+}
+
+#swatches {
+	display: grid;
+	grid-template-columns: 20% 20% 20% 20% 20%;
+	height: 50px;	
+}
+
+.swatch {
+	height: 50px;
+	border-style:solid;
+	border-width:thin;	
+	float: left;
+	margin-right: 3px;	
+}
