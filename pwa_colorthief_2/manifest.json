@@ -16,7 +16,7 @@
 		}
 	],
 	"orientation":"portrait",
-	"start_url":"/pwa_colorthief_2/index.html",
+	"start_url":"./index.html",
 	"background_color":"#fff",
 	"theme_color":"#fff"
 }
