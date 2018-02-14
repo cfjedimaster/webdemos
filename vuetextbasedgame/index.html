@@ -11,20 +11,25 @@
 
 		<div id="app" v-cloak>
 			<h1>Game</h1>
-			<div id="roomDesc" v-if="room">
-				<p>
-				{{roomDesc}}
-				</p>
+			<div v-if="loading">
+				Please stand by - loading your adventure...
+			</div><div v-else>
+				<div id="roomDesc" v-if="room">
+					<p>
+					{{roomDesc}}
+					</p>
 
-				<p v-if="room.exits.length > 1">
-					You see exits to the {{ room.exits | exitDesc}}.
-				</p><p v-else>
-					You see an exit to the {{ room.exits | exitDesc }}.
-				</p>
+					<p v-if="room.exits.length > 1">
+						You see exits to the {{ room.exits | exitDesc}}.
+					</p><p v-else>
+						You see an exit to the {{ room.exits | exitDesc }}.
+					</p>
+				</div>
+				<div id="cli">
+					<input v-model="input" @keydown.enter="cli" ref="input">
+				</div>
 			</div>
-			<div id="cli">
-				<input v-model="input" @keydown.enter="cli">
-			</div>
+
 		</div>
 
 		<script src="https://unpkg.com/vue"></script>

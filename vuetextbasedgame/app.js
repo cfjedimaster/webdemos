@@ -27,6 +27,7 @@ const app = new Vue({
 	el:'#app',
 	data() {
 		return {
+			loading:true,
 			room:null,
 			roomDesc:'',
 			exitDesc:'',
@@ -35,7 +36,7 @@ const app = new Vue({
 			initialRoom:'initial'
 		}
 	},
-	created() {
+	mounted() {
 		console.log('Loading room data...');
 		fetch('rooms.json')
 		.then(res => res.json())
@@ -44,13 +45,11 @@ const app = new Vue({
 			this.rooms = res;
 			this.room = this.rooms[this.initialRoom];
 			this.roomDesc = this.room.description;
-
-			//Some massaging to make a nice exit string
-			if(this.room.exits.length > 1) {
-
-			} else {
-
-			}
+			this.loading = false;
+			//nextTick required because line above changes the DOM
+			this.$nextTick(() => {
+				this.$refs.input.focus();
+			});
 		});
 	},
 	methods: {
