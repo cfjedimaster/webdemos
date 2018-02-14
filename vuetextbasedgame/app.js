@@ -30,7 +30,6 @@ const app = new Vue({
 			loading:true,
 			room:null,
 			roomDesc:'',
-			exitDesc:'',
 			input:'',
 			rooms:null,
 			initialRoom:'initial'
