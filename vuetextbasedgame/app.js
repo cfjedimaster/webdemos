@@ -73,7 +73,7 @@ const app = new Vue({
 			let action = 'movement';
 			// arg would be the argument for the action, so like "go west", arg=west. 
 			// for now, it's just the cli
-			let arg = this.input;
+			let arg = input;
 
 			switch(action) {
 				case 'movement':{
