@@ -29,21 +29,23 @@ const app = new Vue({
 		return {
 			loading:true,
 			room:null,
-			roomDesc:'',
 			input:'',
 			rooms:null,
-			initialRoom:'initial'
+			initialRoom:'initial',
+			aliases:null,
+			commands:null
 		}
 	},
 	mounted() {
 		console.log('Loading room data...');
-		fetch('rooms.json')
+		fetch('data.json')
 		.then(res => res.json())
 		.then(res => {
 			console.log('Loaded.');
-			this.rooms = res;
+			this.aliases = this.prepareAliases(res.aliases);
+			this.commands = res.commands;
+			this.rooms = res.rooms;
 			this.room = this.rooms[this.initialRoom];
-			this.roomDesc = this.room.description;
 			this.loading = false;
 			//nextTick required because line above changes the DOM
 			this.$nextTick(() => {
@@ -55,8 +57,12 @@ const app = new Vue({
 		cli() {
 			console.log('Running cli on '+this.input);
 
+			//first, map input to aliases
+			// initially i set it back into this.input, but it was jarring
+			let input = this.mapAlias(this.input);
+
 			// first see if valid input, for now, it must be a dir
-			if(!this.validInput(this.input)) {
+			if(!this.validInput(input)) {
 				alert('Sorry, but I don\'t recognize: '+this.input);
 				this.input = '';
 				return;
@@ -95,10 +101,53 @@ const app = new Vue({
 			// if we get here, boo
 			alert(dirMapping[d] + ' is not a valid direction!');
 		},
+		prepareAliases(s) {
+			/*
+			To make it easier for the author, I allow for X|Y, which I'll expand out at X:alias and Y:alias
+			*/
+			let aliases = {};
+			for(let key in s) {
+				if(key.indexOf('|') === -1) {
+					aliases[key] = s[key];
+				} else {
+					let parts = key.split('|');
+					parts.forEach(p => {
+						aliases[p] = s[key];
+					});
+				}
+			}
+			return aliases;
+		},
+		mapAlias(s) {
+			/*
+			Given an input of X, I see if this is an alias for something else.
+			*/
+			//pad single word clis with a space, cuz it makes sense
+			if(s.indexOf(' ') === -1) s += ' ';
+
+			console.log('aliases are '+JSON.stringify(this.aliases));
+			console.log('input was '+s);
+			let looking = true;
+			while(looking) {
+				let foundOne = false;
+				for(let key in this.aliases) {
+					console.log('key is '+key);
+					if(s.indexOf(key+' ') === 0) {
+						s = s.replace(key, this.aliases[key]);
+						foundOne = true;
+					}
+				}
+				if(!foundOne) looking = false;
+			}
+			// trim any extra space
+			s = s.trim();
+			console.log('output is '+s);
+			return s;
+		},
 		validInput(i) {
 			// v1 is stupid dumb
-			let valid = ['w','e','s','n','west','east','south','north'];
-			return valid.includes(i.toLowerCase());
+			console.log('validInput('+i+')');
+			return this.commands.includes(i.toLowerCase());
 		}
 	}
 });
