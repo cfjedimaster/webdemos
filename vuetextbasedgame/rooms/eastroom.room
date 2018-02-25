@@ -1,0 +1,7 @@
+<description>
+You've entered Ray's office. You are surrounded by a mess of Star Wars toys and other distractions. No wonder Ray never seems to get anything done.
+</description>
+
+<exits>
+w|initial
+</exits>

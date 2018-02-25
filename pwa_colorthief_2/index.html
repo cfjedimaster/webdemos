@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	<meta name="viewport" content="width=device-width, user-scalable=no" />
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>ColorThief Demo</title>
+	<link rel="stylesheet" href="app.css">
+	<link rel="manifest" href="manifest.json">
+	<meta name="theme-color" content="#ffffff">
+	</head>
+
+	<body>
+
+		<div id="app" v-cloak>
+
+			<input type="file" capture="camera" accept="image/*" @change="gotPic">
+			<div v-if="imageSrc">
+			<img id="yourimage" :src="imageSrc" @load="getSwatches" ref="theImage">
+			</div><div v-else>
+				<h2>Welcome to Color Thief</h2>
+				<p>
+					Select an image using the button above and Color Thief will find the 5 most prominent colors.
+				</p>
+				<p>
+					Awesome <a href="http://lokeshdhakar.com/projects/color-thief/">Color Thief</a> library by <a href="http://lokeshdhakar.com/">Kokesh Dhakar</a>.
+				</p>
+			</div>
+			<div id="swatches">
+				<div v-for="swatch in swatches" class="swatch" :style="swatch.style"></div>
+			</div>
+		
+		</div>
+
+		<script src="js/color-thief.js"></script>
+		<script src="js/vue.min.js"></script>
+		<script src="js/app.js"></script>
+
+	</body>
+
+</html>

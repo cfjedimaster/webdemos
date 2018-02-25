@@ -1,0 +1,22 @@
+{
+	"short_name":"Color Thief",
+	"name":"Color Thief",
+	"description":"Lets you get prominent colors from a picture taken with your camera.",
+	"display":"fullscreen",
+	"icons":[
+		{
+			"src": "img/icon192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "img/icon512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	],
+	"orientation":"portrait",
+	"start_url":"./index.html",
+	"background_color":"#fff",
+	"theme_color":"#fff"
+}

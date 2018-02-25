@@ -1,0 +1,8 @@
+
+Things to do:
+
+* use Vuex to hold game data
+* node script to let me convert a folder of rooms files to a JSON file. Allows for better editing experience
+* modify CLI to support l/look
+* build a CLI alias table (west=>west, look=>l)
+* support Items() (list of items you can "l" at)

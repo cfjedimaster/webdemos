@@ -1,0 +1,33 @@
+{
+	"initial":{
+		"description":"This is a rather boring room, but despite that, you feel the pull of a new adventure!",
+		"exits":[
+			{
+				"dir":"w",
+				"room":"westroom"
+			},
+			{
+				"dir":"e",
+				"room":"eastroom"
+			}
+		]
+	},
+	"westroom":{
+		"description":"This is a rather dramatic room, almost presidential you would say.",
+		"exits":[
+			{
+				"dir":"e",
+				"room":"initial"
+			}
+		]
+	},
+	"eastroom":{
+		"description":"You've entered Ray's office. You are surrounded by a mess of Star Wars toys and other distractions. No wonder Ray never seems to get anything done.",
+		"exits":[
+			{
+				"dir":"w",
+				"room":"initial"
+			}
+		]
+	}
+}
