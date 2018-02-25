@@ -1,0 +1,32 @@
+
+[v-cloak] {display: none}
+
+.fade-enter-active, .fade-leave-active {
+	transition: opacity 1s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+	opacity: 0;
+}
+
+body {
+	background-color: #10c873;
+	color: white;
+	font-weight: bold;
+	font-size: 3em;
+	text-align: center;
+	margin-left: 20px;
+	margin-right: 20px;
+	font-family: 'Happy Monkey', cursive;
+}
+
+#footer {
+	position:absolute;
+	bottom:0;
+	width:100%;
+	height:60px;
+	font-size:15px;
+ }
+
+ #footer a {
+	 color: white;
+ }
