@@ -1,10 +1,15 @@
 <description>
 You are in a rather simple room. Plain white walls surround you and nothing really
 stands out of the ordinary. Despite that, you feel the pull of a new adventure and
-steel yourself for what waits ahead!
+steel yourself for what waits ahead! Oh, but you also notice a rather fat cat sleeping next to a dog.
 </description>
 
 <exits>
 w|westroom
 e|eastroom
 </exits>
+
+<lookables>
+cat|fat cat@The cat is quite fat!
+dog@The dog has fleas.
+</lookables>

@@ -33,7 +33,8 @@ const app = new Vue({
 			rooms:null,
 			initialRoom:'initial',
 			aliases:null,
-			commands:null
+			commands:null,
+			status:''
 		}
 	},
 	mounted() {
@@ -47,6 +48,7 @@ const app = new Vue({
 			this.rooms = res.rooms;
 			this.room = this.rooms[this.initialRoom];
 			this.loading = false;
+
 			//nextTick required because line above changes the DOM
 			this.$nextTick(() => {
 				this.$refs.input.focus();
@@ -62,22 +64,25 @@ const app = new Vue({
 			let input = this.mapAlias(this.input);
 
 			// first see if valid input, for now, it must be a dir
-			if(!this.validInput(input)) {
+			let result = this.parseInput(input);
+			if(!result) {
 				alert('Sorry, but I don\'t recognize: '+this.input);
 				this.input = '';
 				return;
 			}
-			// Ok, currently this is just handles moving, nothng else
-			// so this is where I'd add a parser, imagine it is there
-			// and after running, it determines our action is "movement"
-			let action = 'movement';
-			// arg would be the argument for the action, so like "go west", arg=west. 
-			// for now, it's just the cli
-			let arg = input;
+
+			let action = result.cmd;
+			let arg = result.arg;
 
 			switch(action) {
 				case 'movement':{
 					this.doMovement(arg);
+					break;
+				}
+				case 'look': {
+					console.log('look at '+arg);
+					this.doLook(arg);
+					break;
 				}
 			}
 
@@ -85,6 +90,7 @@ const app = new Vue({
 		},
 		doMovement(d) {
 			console.log('Move '+d);
+			this.status = '';
 			// first, change North to n
 			let mappedDir = '';
 			for(let dir in dirMapping) {
@@ -100,6 +106,19 @@ const app = new Vue({
 			}		
 			// if we get here, boo
 			alert(dirMapping[d] + ' is not a valid direction!');
+		},
+		doLook(t) {
+			if(!this.room.lookables) this.room.lookables = [];
+			for(let i=0;i<this.room.lookables.length;i++) {
+				let l = this.room.lookables[i];
+				for(let x=0; x<l.aliases.length; x++) {
+					if(t.toLowerCase() === l.aliases[x].toLowerCase()) {
+						this.status = l.desc;
+						return true;
+					}
+				}
+			}
+			alert(`You don't see ${t} here.`);
 		},
 		prepareAliases(s) {
 			/*
@@ -125,13 +144,10 @@ const app = new Vue({
 			//pad single word clis with a space, cuz it makes sense
 			if(s.indexOf(' ') === -1) s += ' ';
 
-			console.log('aliases are '+JSON.stringify(this.aliases));
-			console.log('input was '+s);
 			let looking = true;
 			while(looking) {
 				let foundOne = false;
 				for(let key in this.aliases) {
-					console.log('key is '+key);
 					if(s.indexOf(key+' ') === 0) {
 						s = s.replace(key, this.aliases[key]);
 						foundOne = true;
@@ -141,13 +157,44 @@ const app = new Vue({
 			}
 			// trim any extra space
 			s = s.trim();
-			console.log('output is '+s);
 			return s;
 		},
-		validInput(i) {
+		parseInput(i) {
+
+			if(i === 'w' || i === 'e' || i === 's' || i === 'n') {
+				return {
+					cmd:'movement',
+					arg:i
+				};
+			}
+
+			if(i.indexOf('look ') === 0) {
+				let parts = i.split(' ');
+				parts.shift();
+				let target = parts.join(' ');
+				return {
+					cmd:'look',
+					arg:target
+				}
+			}
+			/*
 			// v1 is stupid dumb
 			console.log('validInput('+i+')');
-			return this.commands.includes(i.toLowerCase());
+			for(let x=0;x<this.commands.length;x++) {
+				let c = this.commands[x];
+				if(i.toLowerCase() === c.toLowerCase()) return {cmd:i.toLowerCase()};
+				// support command: foo *
+				if(c.indexOf(' *') > -1 && i.indexOf(' ') > 0) {
+					let baseCommand = c.split(' ')[0].trim();
+					let inputBase = i.split(' ')[0].trim();
+					console.log('check baseCommand -'+baseCommand+ '- to -'+inputBase+'-');
+					console.log(inputBase.toLowerCase() === baseCommand.toLowerCase());
+					if(inputBase.toLowerCase() === baseCommand.toLowerCase()) return true;
+				}
+			};
+			return null;
+			*/
+
 		}
 	}
 });

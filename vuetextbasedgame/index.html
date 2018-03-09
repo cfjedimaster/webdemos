@@ -24,6 +24,8 @@
 					</p><p v-else>
 						You see an exit to the {{ room.exits | exitDesc }}.
 					</p>
+
+					<p>{{status}}</p>
 				</div>
 				<div id="cli">
 					<input v-model="input" @keydown.enter="cli" ref="input">

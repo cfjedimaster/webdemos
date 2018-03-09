@@ -20,6 +20,7 @@ now parse everything in rooms
 let rooms = fs.readdirSync('./rooms');
 let descRe = /<description>([\s\S]+)<\/description>/m;
 let exitRe = /<exits>([\s\S]+)<\/exits>/m;
+let lookRe = /<lookables>([\s\S]+)<\/lookables>/m;
 
 rooms.forEach(room => {
 	let r = {};
@@ -27,6 +28,7 @@ rooms.forEach(room => {
 	let desc = roomContent.match(descRe);
 	r.description = desc[1].trim();
 
+	// do exits
 	let exitStr = (roomContent.match(exitRe))[1].trim();
 	let exitArr = exitStr.split(/\r\n/);
 
@@ -35,6 +37,19 @@ rooms.forEach(room => {
 		let [dir,loc] = e.split('|');
 		r.exits.push({"dir":dir, "room":loc});
 	});
+
+	// do lookables
+	r.lookables = [];
+	if(roomContent.indexOf('<lookables>') >= 0) {
+		let lookStr = (roomContent.match(lookRe))[1].trim();
+		let lookArr = lookStr.split(/\r\n/);
+
+		lookArr.forEach(e => {
+			let [aliases,desc] = e.split('@');
+			aliases = aliases.split('|');
+			r.lookables.push({"aliases":aliases, "desc":desc});
+		});
+	}
 
 	let name = room.split('.')[0];
 	data.rooms[name] = r;
