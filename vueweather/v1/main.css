@@ -1,0 +1,31 @@
+
+.darken {
+	background-image:linear-gradient(
+		rgba(0,0,0,0.5),
+		rgba(0,0,0,0.5)
+	), url(rainkids.jpg);
+}
+
+body {
+	background-size:contain;
+	background:url(rainkids.jpg);
+}
+
+#content {
+	width: 100%;
+	text-align: center;
+	font-weight: bold;
+	text-shadow: 1px 1px 2px black; 
+	font-size: 2em;
+}
+
+.temp {
+	font-size: 3em;
+}
+
+body {
+	color: white;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+[v-cloak] {display: none};

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Weather Demo 1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+</head>
+<body class="darken">
+
+	<div id="app" v-cloak>
+		<div v-if="loading">
+			<h1>Loading...</h1>
+		</div>
+		<div id="content" v-else>
+			<h1>{{location}}</h1>
+			<p>
+				<span class="temp">{{temp}}&deg;</span><br/>
+				Low: {{temp_low}}&deg; High: {{temp_high}}&deg;<br/>
+				{{desc}}
+			</p>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="main.js"></script>
+</body>
+</html>
