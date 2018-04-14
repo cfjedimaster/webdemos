@@ -27,7 +27,7 @@ $(document).ready(function() {
 	if(navigator.storage && navigator.storage.estimate) {
 		navigator.storage.estimate().then(result => {
 			console.log(result);
-			console.log('Percent used '+result.usage/result.quota).toFixed(2);
+			console.log('Percent used '(+result.usage/result.quota).toFixed(2));
 		});
 	}
 });
