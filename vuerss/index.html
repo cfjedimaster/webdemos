@@ -13,7 +13,7 @@
 
 			<v-navigation-drawer clipped fixed v-model="drawer" app>
 				<v-list dense>
-					<v-list-tile @click="">
+					<v-list-tile @click="allFeeds">
 						<v-list-tile-action>
 							<v-icon>dashboard</v-icon>
 						</v-list-tile-action>
@@ -21,7 +21,7 @@
 							<v-list-tile-title>All Feeds</v-list-tile-title>
 						</v-list-tile-content>
 					</v-list-tile>
-					<v-list-tile @click="" v-for="feed in feeds">
+					<v-list-tile @click="filterFeed(feed)" v-for="feed in feeds" :value="feed == selectedFeed">
 						<v-list-tile-action>
 							<v-icon :color="feed.color">bookmark</v-icon>
 						</v-list-tile-action>

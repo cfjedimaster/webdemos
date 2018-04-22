@@ -27,14 +27,27 @@ let app = new Vue({
 			urlError:false,
 			urlRules:[],
 			feeds:[],
-			allItems:[]
+			allItems:[],
+			selectedFeed:null
 		}
 	},
 	computed: {
 		items:function() {
 			console.log('calling computed items');
 			if(this.allItems.length === 0) return [];
-			let items = this.allItems.sort((a, b) => {
+			// filter
+			let items = [];
+			console.log('total is '+this.allItems.length);
+			if(this.selectedFeed) {
+				console.log('filtered');
+				items = this.allItems.filter(item => {
+					return item.feedPk == this.selectedFeed.rsslink;
+				});
+				console.log('items is '+items.length);
+			} else {
+				items = this.allItems;
+			}
+			items = items.sort((a, b) => {
 				return new Date(b.isoDate) - new Date(a.isoDate);
 			});
 
@@ -49,6 +62,9 @@ let app = new Vue({
 		addFeed() {
 			console.log('Add Feed');
 			this.addFeedDialog = true;
+		},
+		allFeeds() {
+			this.selectedFeed = null;
 		},
 		addFeedAction() {
 			console.log('this.addURL', this.addURL);
@@ -89,6 +105,9 @@ let app = new Vue({
 				});
 			}
 
+		},
+		filterFeed(feed) {
+			this.selectedFeed = feed;
 		},
 		loadFeed(feed) {
 			fetch(rssAPI+encodeURIComponent(feed.rsslink))
