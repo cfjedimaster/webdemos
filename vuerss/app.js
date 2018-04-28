@@ -33,17 +33,14 @@ let app = new Vue({
 	},
 	computed: {
 		items:function() {
-			console.log('calling computed items');
 			if(this.allItems.length === 0) return [];
 			// filter
 			let items = [];
-			console.log('total is '+this.allItems.length);
 			if(this.selectedFeed) {
 				console.log('filtered');
 				items = this.allItems.filter(item => {
 					return item.feedPk == this.selectedFeed.rsslink;
 				});
-				console.log('items is '+items.length);
 			} else {
 				items = this.allItems;
 			}
@@ -67,7 +64,6 @@ let app = new Vue({
 			this.selectedFeed = null;
 		},
 		addFeedAction() {
-			console.log('this.addURL', this.addURL);
 			this.urlError = false;
 			this.urlRules = [];
 			//first, see if new
@@ -81,22 +77,26 @@ let app = new Vue({
 				.then(res => {
 					console.log(JSON.stringify(res.feed));
 					// ok for now, assume no error, cuz awesome
+
+					//assign a color first
+					res.feed.color = colors[this.feeds.length % (colors.length-1)];
+
 					// ok, add the items (but we append the url as a fk so we can filter later)
-					//this.allItems = this.allItems.concat(res.feed.items);
 					res.feed.items.forEach(item => {
 						item.feedPk = this.addURL;
+						item.feedColor = res.feed.color;
 						this.allItems.push(item);
 					});
 
 					// delete items
 					delete res.feed.items;
+
 					// add the original rss link
 					res.feed.rsslink = this.addURL;
-					res.feed.color = colors[this.feeds.length % (colors.length-1)];
 
 					this.feeds.push(res.feed);
-
 					this.addFeedDialog = false;
+
 					//always hide intro
 					this.showIntro = false;
 
@@ -128,7 +128,6 @@ let app = new Vue({
 				this.feeds = JSON.parse(feeds);
 				this.feeds.forEach((feed,idx) => {
 					feed.color = colors[idx % (colors.length-1)];
-					console.log(feed.color);
 					this.loadFeed(feed);
 				});
 			}
