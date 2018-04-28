@@ -67,7 +67,9 @@ let app = new Vue({
 			this.urlError = false;
 			this.urlRules = [];
 			//first, see if new
-			if(this.feeds.indexOf(this.addUrl) >= 0) {
+			if(this.feeds.findIndex((feed) => {
+				return (feed.rsslink === this.addURL);
+			}) >= 0) {
 				this.urlError = true;
 				this.urlRules = ["URL already exists."];
 				return;
