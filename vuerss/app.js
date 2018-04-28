@@ -7,7 +7,7 @@ const rssAPI = 'https://wt-c2bde7d7dfc8623f121b0eb5a7102930-0.sandbox.auth0-exte
 const colors = ["red","pink","purple","deep-purple","indigo","blue","light-blue","cyan","teal","green","light-green","lime","yellow","amber","orange","deep-orange","brown","blue-grey","grey"];
 */
 // nicer, I think, list
-const colors = ["indigo","blue","light-blue","cyan","teal","light-green","blue-grey"];
+const colors = ["indigo","blue","cyan","light-blue","teal","light-green","blue-grey"];
 
 Vue.filter('maxText', function(text) {
 	//remove html
@@ -75,8 +75,8 @@ let app = new Vue({
 				fetch(rssAPI+encodeURIComponent(this.addURL))
 				.then(res => res.json())
 				.then(res => {
-					console.log(JSON.stringify(res.feed));
 					// ok for now, assume no error, cuz awesome
+					this.addURL = '';
 
 					//assign a color first
 					res.feed.color = colors[this.feeds.length % (colors.length-1)];
