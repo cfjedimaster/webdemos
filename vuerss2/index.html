@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+	<link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+	<style>[v-cloak] {display: none}</style>
+</head>
+<body>
+
+	<div id="app" v-cloak>
+		<v-app dark>
+
+			<v-navigation-drawer clipped fixed v-model="drawer" app>
+				<v-list dense>
+					<v-list-tile @click="allFeeds">
+						<v-list-tile-action>
+							<v-icon>dashboard</v-icon>
+						</v-list-tile-action>
+						<v-list-tile-content>
+							<v-list-tile-title>All Feeds</v-list-tile-title>
+						</v-list-tile-content>
+					</v-list-tile>
+					<v-list-tile v-for="feed in feeds" :key="feed.rsslink" :value="feed == selectedFeed">
+						<v-list-tile-action @click="deleteFeed(feed)" >
+							<v-icon :color="feed.color">delete</v-icon>
+						</v-list-tile-action>
+						<v-list-tile-content @click="filterFeed(feed)" >
+							<v-list-tile-title>{{ feed.title }}</v-list-tile-title>
+						</v-list-tile-content>
+					</v-list-tile>
+					<v-list-tile @click="addFeed">
+						<v-list-tile-action>
+							<v-icon>add</v-icon>
+						</v-list-tile-action>
+						<v-list-tile-content>
+							<v-list-tile-title>Add Feed</v-list-tile-title>
+						</v-list-tile-content>
+					</v-list-tile>
+				</v-list>
+			</v-navigation-drawer>
+
+			<v-toolbar app fixed clipped-left>
+				<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+				<v-toolbar-title>RSS Reader</v-toolbar-title>
+			</v-toolbar>
+
+			<v-content>
+				<v-container>
+
+					<div v-if="showIntro">
+						<p>
+						Welcome to the RSS Reader, a simple way to manage RSS feeds and read content. 
+						To begin using the RSS Reader, add your first feed by clicking the button below.
+						</p>
+						<p>
+							<v-btn color="primary" large @click="addFeed"><v-icon>add</v-icon>Add Feed</v-btn>
+						</p>
+					</div><div v-else>
+						<v-container fluid grid-list-lg>
+							<v-layout row wrap>
+								<v-flex xs12 v-for="item in items" :key="item.link">
+									<feed-item :title="item.title" :content="item.content" :link="item.link" :feedtitle="item.feedTitle" :color="item.feedColor" :posted="item.pubDate"></feed-item>
+								</v-flex>
+							</v-layout>
+						</v-container>
+					</div>
+
+					<v-dialog v-model="addFeedDialog" max-width="500px">
+						<v-card>
+							<v-card-title>Add Feed</v-card-title>
+							<v-card-text>
+								<span class="grey-text">the date</span><br/>
+								Add the RSS URL for a feed below, or the URL for the site and I'll try to 
+								auto-discover the RSS feed.
+								<v-text-field v-model="addURL" label="URL" :error="urlError"
+								:rules="urlRules"></v-text-field>
+							</v-card-text>
+							<v-card-actions>
+								<v-btn color="primary" @click.stop="addFeedAction">Add</v-btn>
+								<v-btn color="primary" flat @click.stop="addFeedDialog=false">Close</v-btn>
+							</v-card-actions>
+						</v-card>
+					</v-dialog>
+
+				</v-container>
+			</v-content>
+
+			<v-footer app fixed>
+				<span>Another toy made by <a href="https://www.raymondcamden.com" target="_new">Raymond Camden</a></span>
+			</v-footer>
+
+		</v-app>
+	</div>
+
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/vuex"></script>
+	<script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
+	
+	<script src="./app.js"></script>
+
+</body>
+</html>
