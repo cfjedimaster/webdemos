@@ -51,6 +51,7 @@ const feedStore = new Vuex.Store({
 						// ok, add the items (but we append the url as a fk so we can filter later)
 						res.feed.items.forEach(item => {
 							item.feedPk = data.url;
+							item.feedTitle = res.title;
 							item.feedColor = res.feed.color;
 							context.state.allItems.push(item);
 						});
