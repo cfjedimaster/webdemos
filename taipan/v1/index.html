@@ -3,13 +3,40 @@
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Page Title</title>
+	<title>Taipan</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+	<style>
+	[v-cloak] {display: none}
+	</style>
 </head>
 <body>
 
-	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<div id="app" v-cloak>
+
+		<div v-if="intro">
+			Welcome to Taipan. To begin, enter your company's name:
+			<input v-model="companyName"> 
+			<button @click="startGame" :disabled="companyName === ''">Start</button>
+		</div>
+
+		<div v-if="gameOn">
+			<h1>Company: {{ companyName }} - Date: {{ gameDate }} - Port: {{ port }}</h1>
+			<h2>Funds: {{ funds }}</h2>
+			hold: {{ hold }}<br/>
+
+			<p>
+				<b>to build next</b><br/>
+				prices in current port<br/>
+				action to travel to port<br/>
+				action to buy / sell<br/>
+			</p>
+
+		</div>
+
+	</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>	
 	<script src="https://unpkg.com/vuex"></script>
 	<script src="app.js"></script>	
 </body>
