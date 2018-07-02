@@ -13,16 +13,20 @@ const gameStore = new Vuex.Store({
 		],
 		goods: [
 			{ 
-				name:"General"
+				name:"General",
+				range: { min: 2, max: 10 }
 			},
 			{
-				name:"Arms"
+				name:"Arms", 
+				range: { min: 15, max: 40 }
 			},
 			{
 				name:"Drones",
+				range: { min: 500, max: 1200 }
 			},
 			{
 				name:"AI",
+				range: { min: 2000, max: 20000 }
 			}
 		],
 		hold: [
@@ -31,6 +35,7 @@ const gameStore = new Vuex.Store({
 		initialFunds: 1000,
 		currentFunds: 0,
 		currentPort:'',
+		currentCostOfGoods:[],
 		gameDate:0, // a simple counter,
 		gameYear:2091 // initial year of the game - also - THE FUTURE!
 	},
@@ -52,6 +57,17 @@ const gameStore = new Vuex.Store({
 		}
 	},
 	getters:{
+		costOfGoods(state) {
+			/*
+			So eventually I will have logic such that a port has a modifier on goods meaning it is higher/lower than average.
+			*/
+			let goods = [];
+			state.goods.forEach((g,i) => {
+				goods[i] = { name:g.name, cost:Math.floor(Math.random() * (g.range.max - g.range.min + 1)) + g.range.min };
+			});
+			// um store it
+			return goods;
+		},
 		hold(state) {
 			// may be complex later
 			return state.hold;
@@ -86,6 +102,9 @@ const app = new Vue({
 		}
 	},
 	computed:{
+		costOfGoods() {
+			return this.$store.getters.costOfGoods;
+		},
 		gameDate() {
 			return this.$store.getters.gameDate;
 		},
