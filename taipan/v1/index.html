@@ -37,16 +37,20 @@
 			</select>.
 			<br/>
 			<button @click="doSale">Sell</button> 
-			<input v-demo="sellAmt" type="number"> units of 
-			<select v-model.number="sellGood">
+			<input v-model.number="sellAmt" type="number"> units of 
+			<select v-model="sellGood">
 				<option v-for="good in goods">{{good}}</option>
 			</select>.
+			</p>
+
+			<p v-if="statusMsg">
+				<strong>{{statusMsg}}</strong>
 			</p>
 
 			<p>
 				<b>to build next</b><br/>
 				action to travel to port<br/>
-				action to buy / sell<br/>
+				action to <strike>buy</strike> / sell<br/>
 			</p>
 
 		</div>

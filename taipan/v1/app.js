@@ -40,6 +40,16 @@ const gameStore = new Vuex.Store({
 		gameYear:2091 // initial year of the game - also - THE FUTURE!
 	},
 	mutations:{
+		addFunds(state, amount) {
+			state.currentFunds += amount;
+		},
+		addGoods(state, order) {
+			state.hold.forEach(h => {
+				if(h.name === order.good) {
+					h.amount += order.amount;
+				}
+			});
+		},
 		initCompany(state, name) {
 			console.log('initCompany',name);
 			state.companyName = name;
@@ -47,7 +57,7 @@ const gameStore = new Vuex.Store({
 
 			// I'm an array defined by the order of state.goods
 			state.goods.forEach((g,i) => {
-				state.hold[i] = { name:g.name, quantity:0 };
+				state.hold[i] = { name:g.name, amount:0 };
 			});
 
 			state.currentPort = state.ports[0].name;
@@ -55,17 +65,63 @@ const gameStore = new Vuex.Store({
 		incrementTime(state) {
 			state.gameDate++;
 		},
-		purchase(state, order) {
-			console.log('purchase order', order);
-			console.log('current prices', JSON.stringify(state.currentCostOfGoods));
-			let totalCost;
-			state.currentCostOfGoods.forEach(g => {
-				if(g.name === order.good) {
-					totalCost = order.amount * g.cost;
+		takeFunds(state, amount) {
+			state.currentFunds -= amount;
+		},
+		takeGoods(state, order) {
+			state.hold.forEach(h => {
+				if(h.name === order.good) {
+					h.amount -= order.amount;
 				}
 			});
-			console.log('totalCost', totalCost);
 		}
+	},
+	actions:{
+		purchase(context, order) {
+			return new Promise((resolve, reject) => {
+				console.log('purchase order', order);
+				let totalCost;
+				context.state.currentCostOfGoods.forEach(g => {
+					if(g.name === order.good) {
+						totalCost = order.amount * g.cost;
+					}
+				});
+				console.log('totalCost', totalCost);
+				if(totalCost > context.state.currentFunds) {
+					reject('NotEnoughFunds');					
+				} else {
+					//add goods
+					context.commit('addGoods', { good: order.good, amount:order.amount });
+					// take $$
+					context.commit('takeFunds', totalCost);
+					resolve();
+				}
+			});
+		},
+		sell(context, order) {
+			return new Promise((resolve, reject) => {
+				console.log('sell order', order);
+				context.state.hold.forEach(h => {
+					if(h.name === order.good) {
+						if(h.amount >= order.amount) {
+							// figure out current cost - this MUST be done better
+							let totalGained = 0;
+							context.state.currentCostOfGoods.forEach(g => {
+								if(g.name === order.good) totalGained = g.cost * order.amount;
+							});
+							//add goods
+							context.commit('takeGoods', { good: order.good, amount:order.amount });
+							// take $$
+							context.commit('addFunds', totalGained);
+							resolve();
+						} else {
+							reject('NotEnoughGoods');
+						}
+					}						
+				});
+			});
+		}
+
 	},
 	getters:{
 		costOfGoods(state) {
@@ -109,16 +165,38 @@ const app = new Vue({
 		purchaseAmt: 0,
 		purchaseGood:'',
 		sellAmt: 0,
-		sellGood:''
+		sellGood:'',
+		statusMsg:''
 	},
 	methods: {
 		doPurchase() {
+			this.statusMsg = '';
 			if(this.purchaseAmt <= 0 || this.purchaseGood === '') return;
 			console.log('issue a purchase commit');
-			this.$store.commit('purchase', { amount: this.purchaseAmt, good: this.purchaseGood });
-
+			this.$store.dispatch('purchase', { amount: this.purchaseAmt, good: this.purchaseGood })
+			.then(r => {
+				console.log('good purchase');
+				this.statusMsg = 'Purchase completed!';
+			})
+			.catch(e => {
+				console.error('bad purchase', e);
+				this.statusMsg = 'You do not have enough funds.';
+			});
 		},
 		doSale() {
+			console.log('doSale', this.sellAmt, this.sellGood);
+			this.statusMsg = '';
+			if(this.sellAmt <= 0 || this.sellGood === '') return;
+			console.log('issue a sell commit');
+			this.$store.dispatch('sell', { amount: this.sellAmt, good: this.sellGood })
+			.then(r => {
+				console.log('good sale');
+				this.statusMsg = 'Sale completed!';
+			})
+			.catch(e => {
+				console.error('bad sale', e);
+				this.statusMsg = 'You do not have those goods to sell.';
+			});
 		},
 		startGame() {
 			//even though we check for companyName in the UI, check again
