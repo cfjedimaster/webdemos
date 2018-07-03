@@ -35,7 +35,7 @@ const gameStore = new Vuex.Store({
 		initialFunds: 1000,
 		currentFunds: 0,
 		currentPort:'',
-		currentCostOfGoods:[],
+		currentCostOfGoods:null,
 		gameDate:0, // a simple counter,
 		gameYear:2091 // initial year of the game - also - THE FUTURE!
 	},
@@ -54,18 +54,33 @@ const gameStore = new Vuex.Store({
 		},
 		incrementTime(state) {
 			state.gameDate++;
+		},
+		purchase(state, order) {
+			console.log('purchase order', order);
+			console.log('current prices', JSON.stringify(state.currentCostOfGoods));
+			let totalCost;
+			state.currentCostOfGoods.forEach(g => {
+				if(g.name === order.good) {
+					totalCost = order.amount * g.cost;
+				}
+			});
+			console.log('totalCost', totalCost);
 		}
 	},
 	getters:{
 		costOfGoods(state) {
 			/*
 			So eventually I will have logic such that a port has a modifier on goods meaning it is higher/lower than average.
+
+			this is wrong - i know it.
 			*/
+			if(state.currentCostOfGoods) return state.currentCostOfGoods;
 			let goods = [];
 			state.goods.forEach((g,i) => {
 				goods[i] = { name:g.name, cost:Math.floor(Math.random() * (g.range.max - g.range.min + 1)) + g.range.min };
 			});
 			// um store it
+			state.currentCostOfGoods = goods;
 			return goods;
 		},
 		hold(state) {
@@ -90,9 +105,21 @@ const app = new Vue({
 	data:{
 		intro:true,
 		gameOn:false,
-		companyName:'moo' // set a value so i dont have to type
+		companyName:'moo', // set a value so i dont have to type
+		purchaseAmt: 0,
+		purchaseGood:'',
+		sellAmt: 0,
+		sellGood:''
 	},
-	methods:{
+	methods: {
+		doPurchase() {
+			if(this.purchaseAmt <= 0 || this.purchaseGood === '') return;
+			console.log('issue a purchase commit');
+			this.$store.commit('purchase', { amount: this.purchaseAmt, good: this.purchaseGood });
+
+		},
+		doSale() {
+		},
 		startGame() {
 			//even though we check for companyName in the UI, check again
 			if(this.companyName.trim() === '') return;
@@ -110,6 +137,13 @@ const app = new Vue({
 		},
 		funds() {
 			return this.$store.state.currentFunds;
+		},
+		goods() {
+			let g = [];
+			this.costOfGoods.forEach(good => {
+				g.push(good.name);
+			});
+			return g;
 		},
 		hold() {
 			return this.$store.getters.hold;
