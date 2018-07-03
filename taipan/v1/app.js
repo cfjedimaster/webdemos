@@ -52,19 +52,14 @@ const gameStore = new Vuex.Store({
 			});
 		},
 		generateCostOfGoods(state) {
-			console.log('entered mutation for generating cost of goods');
 			/*
 			So eventually I will have logic such that a port has a modifier on goods meaning it is higher/lower than average.
-
-			this is wrong - i know it.
 			*/
 			let goods = [];
 			state.goods.forEach((g,i) => {
 				goods[i] = { name:g.name, cost:Math.floor(Math.random() * (g.range.max - g.range.min + 1)) + g.range.min };
 			});
-			// um store it
 			state.currentCostOfGoods = goods;
-			console.log('i generated a cost of goods report', state.currentCostOfGoods[0].cost);
 		},
 		incrementTime(state) {
 			state.gameDate++;
@@ -108,7 +103,6 @@ const gameStore = new Vuex.Store({
 						totalCost = order.amount * g.cost;
 					}
 				});
-				console.log('totalCost', totalCost);
 				if(totalCost > context.state.currentFunds) {
 					reject('NotEnoughFunds');					
 				} else {
@@ -150,14 +144,10 @@ const gameStore = new Vuex.Store({
 					context.commit('setPort', port);
 					context.commit('incrementTime');
 					context.commit('generateCostOfGoods');
-					console.log('travel done and did commit');
 					resolve();
-				}, context.state.travelTime);
-				
-
+				}, context.state.travelTime);				
 			});
 		}
-
 	},
 	getters:{
 		costOfGoods(state) {
@@ -199,7 +189,6 @@ const app = new Vue({
 			console.log('issue a purchase commit');
 			this.$store.dispatch('purchase', { amount: this.purchaseAmt, good: this.purchaseGood })
 			.then(r => {
-				console.log('good purchase');
 				this.statusMsg = 'Purchase completed!';
 				this.purchaseAmt = 0;
 			})
@@ -215,7 +204,6 @@ const app = new Vue({
 			console.log('issue a sell commit');
 			this.$store.dispatch('sell', { amount: this.sellAmt, good: this.sellGood })
 			.then(r => {
-				console.log('good sale');
 				this.statusMsg = 'Sale completed!';
 				this.sellAmt = 0;
 			})
