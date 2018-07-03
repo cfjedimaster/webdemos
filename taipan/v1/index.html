@@ -21,7 +21,7 @@
 		</div>
 
 		<div v-if="gameOn">
-			<h1>Company: {{ companyName }} - Date: {{ gameDate }} - Port: {{ port }}</h1>
+			<h1>Company: {{ companyName }} - Date: {{ gameDate }} - Port: {{ port.name }}</h1>
 			<h2>Funds: {{ funds }}</h2>
 			hold: {{ hold }}<br/>
 
@@ -43,13 +43,12 @@
 			</select>.
 			</p>
 
-			<p v-if="statusMsg">
-				<strong>{{statusMsg}}</strong>
+			<p>
+				<button v-for="port in ports" @click="travel(port)">Travel to {{port.name}}</button>
 			</p>
 
-			<p>
-				<b>to build next</b><br/>
-				action to travel to port<br/>
+			<p v-if="statusMsg">
+				<strong>{{statusMsg}}</strong>
 			</p>
 
 		</div>

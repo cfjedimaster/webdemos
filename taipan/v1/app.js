@@ -37,7 +37,8 @@ const gameStore = new Vuex.Store({
 		currentPort:'',
 		currentCostOfGoods:null,
 		gameDate:0, // a simple counter,
-		gameYear:2091 // initial year of the game - also - THE FUTURE!
+		gameYear:2091, // initial year of the game - also - THE FUTURE!
+		travelTime:2000 // ms for travel duration
 	},
 	mutations:{
 		addFunds(state, amount) {
@@ -50,20 +51,26 @@ const gameStore = new Vuex.Store({
 				}
 			});
 		},
-		initCompany(state, name) {
-			console.log('initCompany',name);
-			state.companyName = name;
-			state.currentFunds = state.initialFunds;
+		generateCostOfGoods(state) {
+			console.log('entered mutation for generating cost of goods');
+			/*
+			So eventually I will have logic such that a port has a modifier on goods meaning it is higher/lower than average.
 
-			// I'm an array defined by the order of state.goods
+			this is wrong - i know it.
+			*/
+			let goods = [];
 			state.goods.forEach((g,i) => {
-				state.hold[i] = { name:g.name, amount:0 };
+				goods[i] = { name:g.name, cost:Math.floor(Math.random() * (g.range.max - g.range.min + 1)) + g.range.min };
 			});
-
-			state.currentPort = state.ports[0].name;
+			// um store it
+			state.currentCostOfGoods = goods;
+			console.log('i generated a cost of goods report', state.currentCostOfGoods[0].cost);
 		},
 		incrementTime(state) {
 			state.gameDate++;
+		},
+		setPort(state, port) {
+			state.currentPort = port;
 		},
 		takeFunds(state, amount) {
 			state.currentFunds -= amount;
@@ -77,6 +84,21 @@ const gameStore = new Vuex.Store({
 		}
 	},
 	actions:{
+		initCompany(context, name) {
+			console.log('initCompany',name);
+
+			context.state.companyName = name;
+			context.state.currentFunds = context.state.initialFunds;
+
+			// I'm an array defined by the order of state.goods
+			context.state.goods.forEach((g,i) => {
+				context.state.hold[i] = { name:g.name, amount:0 };
+			});
+
+			context.state.currentPort = context.state.ports[0];
+			context.commit('generateCostOfGoods');
+		},
+
 		purchase(context, order) {
 			return new Promise((resolve, reject) => {
 				console.log('purchase order', order);
@@ -120,24 +142,26 @@ const gameStore = new Vuex.Store({
 					}						
 				});
 			});
+		},
+		travel(context, port) {
+			console.log('going to '+port.name);
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					context.commit('setPort', port);
+					context.commit('incrementTime');
+					context.commit('generateCostOfGoods');
+					console.log('travel done and did commit');
+					resolve();
+				}, context.state.travelTime);
+				
+
+			});
 		}
 
 	},
 	getters:{
 		costOfGoods(state) {
-			/*
-			So eventually I will have logic such that a port has a modifier on goods meaning it is higher/lower than average.
-
-			this is wrong - i know it.
-			*/
-			if(state.currentCostOfGoods) return state.currentCostOfGoods;
-			let goods = [];
-			state.goods.forEach((g,i) => {
-				goods[i] = { name:g.name, cost:Math.floor(Math.random() * (g.range.max - g.range.min + 1)) + g.range.min };
-			});
-			// um store it
-			state.currentCostOfGoods = goods;
-			return goods;
+			return state.currentCostOfGoods;
 		},
 		hold(state) {
 			// may be complex later
@@ -177,6 +201,7 @@ const app = new Vue({
 			.then(r => {
 				console.log('good purchase');
 				this.statusMsg = 'Purchase completed!';
+				this.purchaseAmt = 0;
 			})
 			.catch(e => {
 				console.error('bad purchase', e);
@@ -192,6 +217,7 @@ const app = new Vue({
 			.then(r => {
 				console.log('good sale');
 				this.statusMsg = 'Sale completed!';
+				this.sellAmt = 0;
 			})
 			.catch(e => {
 				console.error('bad sale', e);
@@ -201,9 +227,19 @@ const app = new Vue({
 		startGame() {
 			//even though we check for companyName in the UI, check again
 			if(this.companyName.trim() === '') return;
-			this.$store.commit('initCompany', this.companyName);
+			this.$store.dispatch('initCompany', this.companyName);
 			this.intro = false;
 			this.gameOn = true;
+		},
+		travel(p) {
+			if(p.name === this.port.name) return;
+			console.log('travel to '+p.name);
+			this.statusMsg = 'Travelling...';
+			this.$store.dispatch('travel', p)
+			.then(r => {
+				console.log(this.currentPort);
+				this.statusMsg = 'Arrived at ' + p.name;
+			});
 		}
 	},
 	computed:{
@@ -228,6 +264,9 @@ const app = new Vue({
 		},
 		port() {
 			return this.$store.state.currentPort;
+		},
+		ports() {
+			return this.$store.state.ports;
 		}
 	}
 });
