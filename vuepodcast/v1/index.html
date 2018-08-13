@@ -22,7 +22,7 @@
 							<v-list-tile-title>All Podcasts</v-list-tile-title>
 						</v-list-tile-content>
 					</v-list-tile>
-					<v-list-tile v-for="podcast in podcasts" :key="feed.rsslink" :value="podcast == selectedPodcast">
+					<v-list-tile v-for="podcast in podcasts" :key="podcast.rsslink" :value="podcast == selectedPodcast">
 						<v-list-tile-action @click="deletePodcast(podcast)" >
 							<v-icon :color="podcast.color">delete</v-icon>
 						</v-list-tile-action>
@@ -61,7 +61,7 @@
 						<v-container fluid grid-list-lg>
 							<v-layout row wrap>
 								<v-flex xs12 v-for="item in items" :key="item.link">
-									<feed-item :title="item.title" :content="item.content" :link="item.link" :feedtitle="item.feedTitle" :color="item.feedColor" :posted="item.pubDate"></feed-item>
+									<podcast-item :title="item.title" :content="item.content" :link="item.link" :podcasttitle="item.podcastTitle" :color="item.podcastColor" :posted="item.pubDate"></podcast-item>
 								</v-flex>
 							</v-layout>
 						</v-container>

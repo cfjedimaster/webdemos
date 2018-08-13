@@ -15,10 +15,10 @@ const podStore = new Vuex.Store({
 
 			// filter
 			let items = [];
-			if(state.selectedFeed) {
+			if(state.selectedPodcast) {
 				console.log('filtered');
 				items = state.allItems.filter(item => {
-					return item.feedPk == state.selectedFeed.rsslink;
+					return item.podcastPk == state.selectedPodcast.rsslink;
 				});
 			} else {
 				items = state.allItems;
@@ -33,38 +33,40 @@ const podStore = new Vuex.Store({
 	mutations:{
 	},
 	actions:{
-		addFeed(context, data) {
-			console.log('addFeed', data.url);
+		addPodcast(context, data) {
+			console.log('addPodcast', data.url);
 			return new Promise((resolve, reject) => {
-				if(context.state.feeds.findIndex((feed) => {
-					return (feed.rsslink === data.url);
+				if(context.state.podcasts.findIndex((podcast) => {
+					return (podcast.rsslink === data.url);
 				}) >= 0) {
 					reject('URL already exists');
 				} else {			
 					fetch(rssAPI+encodeURIComponent(data.url))
 					.then(res => res.json())
 					.then(res => {
+						// service returns res.feed, let's rename it because
+						res.podcast = res.feed;
 
 						//assign a color first
-						res.feed.color = colors[context.state.feeds.length % (colors.length-1)];
+						res.podcast.color = colors[context.state.podcasts.length % (colors.length-1)];
 
 						// ok, add the items (but we append the url as a fk so we can filter later)
-						res.feed.items.forEach(item => {
-							item.feedPk = data.url;
-							item.feedTitle = res.title;
-							item.feedColor = res.feed.color;
+						res.podcast.items.forEach(item => {
+							item.podcastPk = data.url;
+							item.podcastTitle = res.title;
+							item.podcastColor = res.podcast.color;
 							context.state.allItems.push(item);
 						});
 
 						// delete items
-						delete res.feed.items;
+						delete res.podcast.items;
 
 						// add the original rss link
-						res.feed.rsslink = data.url;
+						res.podcast.rsslink = data.url;
 
-						context.state.feeds.push(res.feed);
+						context.state.podcasts.push(res.podcast);
 
-						context.dispatch('storeFeeds');
+						context.dispatch('storePodcasts');
 
 						resolve();
 					});
@@ -73,28 +75,33 @@ const podStore = new Vuex.Store({
 				
 			});
 		},
-		deleteFeed(context, feed) {
-			let pos = context.state.feeds.findIndex(f => {
-				return f.rsslink == feed.rsslink;
+		deletePodcast(context, podcast) {
+			let pos = context.state.podcasts.findIndex(p => {
+				return p.rsslink == podcast.rsslink;
 			});
-			context.state.feeds.splice(pos,1);
-			context.state.allItems = context.state.allItems.filter(f => {
-				return f.feedPk != feed.rsslink;
+			context.state.podcasts.splice(pos,1);
+			context.state.allItems = context.state.allItems.filter(p => {
+				return p.podcastPk != podcast.rsslink;
 			});
-			context.dispatch('storeFeeds');
+			context.dispatch('storePodcasts');
 		},
-		filterFeed(context, feed) {
-			context.state.selectedFeed = feed;
+		filterPodcast(context, podcast) {
+			context.state.selectedPodcast = podcast;
 		},
-		loadFeed(context, feed) {
-			fetch(rssAPI+encodeURIComponent(feed.rsslink))
+		loadPodcast(context, podcast) {
+			console.log('load Podcast', podcast);
+			fetch(rssAPI+encodeURIComponent(podcast.rsslink))
 			.then(res => res.json())
 			.then(res => {
+				console.log('in the then');
+				console.log(res);
 				// ok for now, assume no error, cuz awesome
-				res.feed.items.forEach(item => {
-					item.feedPk = feed.rsslink;
-					item.feedTitle = feed.title;
-					item.feedColor = feed.color;
+				res.podcast = res.feed;
+
+				res.podcast.items.forEach(item => {
+					item.podcastPk = podcast.rsslink;
+					item.podcastTitle = podcast.title;
+					item.podcastColor = podcast.color;
 					context.state.allItems.push(item);
 				});
 			});			
@@ -105,11 +112,11 @@ const podStore = new Vuex.Store({
 				try {
 				let podcasts = JSON.parse(podsRaw);
 				context.state.podcasts = podcasts;
-				/*
-				context.state.feeds.forEach(f => {
-					context.dispatch('loadFeed', f);
+				
+				context.state.podcasts.forEach(p => {
+					context.dispatch('loadPodcast', p);
 				});
-				*/
+				
 				} catch(e) {
 					console.error('Error restoring podcast json'+e);
 					// bad json or other issue, nuke it
@@ -117,9 +124,9 @@ const podStore = new Vuex.Store({
 				}
 			}
 		},
-		storeFeeds(context) {
-			console.log('persist feeds');
-			localStorage.setItem('feeds', JSON.stringify(context.state.feeds));
+		storePodcasts(context) {
+			console.log('persist podcasts');
+			localStorage.setItem('podcasts', JSON.stringify(context.state.podcasts));
 		}
 	}
 });
@@ -143,9 +150,9 @@ Vue.filter('dtFormat', function(s) {
 	return new Intl.DateTimeFormat().format(s);
 });
 
-Vue.component('feed-item', {
+Vue.component('podcast-item', {
 	props:[
-		'color','title','content','link','feedtitle', 'posted'
+		'color','title','content','link','podcasttitle', 'posted'
 	],
 	template:`
 	<v-card :color="color">
@@ -156,7 +163,7 @@ Vue.component('feed-item', {
 			{{content | maxText }}
 		</v-card-text>
 		<v-card-actions>
-			<v-btn flat target="_new" :href="link">Read on {{feedtitle}}</v-btn>
+			<v-btn flat target="_new" :href="link">Read on {{podcasttitle}}</v-btn>
 		</v-card-actions>
 	</v-card>	
 	`
@@ -196,14 +203,14 @@ let app = new Vue({
 		allPodcasts() {
 			podStore.dispatch('filterPodcasts', null);
 		},
-		addPodcastction() {
+		addPodcastAction() {
 			this.urlError = false;
 			this.urlRules = [];
 
-			feedStore.dispatch('addFeed', {url:this.addURL})
+			podStore.dispatch('addPodcast', {url:this.addURL})
 			.then(res => {
 				this.addURL = '';
-				this.addFeedDialog = false;
+				this.addPodcastDialog = false;
 			})
 			.catch(e =>{
 				console.log('err to add', e);
