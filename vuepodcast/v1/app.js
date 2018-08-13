@@ -55,6 +55,16 @@ const podStore = new Vuex.Store({
 							item.podcastPk = data.url;
 							item.podcastTitle = res.title;
 							item.podcastColor = res.podcast.color;
+							/* attempt to add audio */
+							if(item.enclosure && item.enclosure.type && item.enclosure.type.indexOf("audio") === 0) {
+								item.audio = {
+									url:item.enclosure.url
+								}
+								//optionally add duration
+								if(item.itunes.duration && item.itunes.duration !== 0) {
+									item.audio.duration = item.itunes.duration;
+								}
+							}
 							context.state.allItems.push(item);
 						});
 
@@ -102,6 +112,18 @@ const podStore = new Vuex.Store({
 					item.podcastPk = podcast.rsslink;
 					item.podcastTitle = podcast.title;
 					item.podcastColor = podcast.color;
+					/* attempt to add audio */
+					if(item.enclosure && item.enclosure.type && item.enclosure.type.indexOf("audio") === 0) {
+						console.log('in here');
+						item.audio = {
+							url:item.enclosure.url
+						}
+						//optionally add duration
+						if(item.itunes.duration && item.itunes.duration !== 0) {
+							item.audio.duration = item.itunes.duration;
+						}
+					}
+					delete item.feed;
 					context.state.allItems.push(item);
 				});
 			});			
@@ -152,7 +174,7 @@ Vue.filter('dtFormat', function(s) {
 
 Vue.component('podcast-item', {
 	props:[
-		'color','title','content','link','podcasttitle', 'posted'
+		'color','title','content','link','podcasttitle', 'posted','audiosrc'
 	],
 	template:`
 	<v-card :color="color">
@@ -161,12 +183,19 @@ Vue.component('podcast-item', {
 		</v-card-title>
 		<v-card-text>
 			{{content | maxText }}
+			<p/>
+			<v-btn flat @click="play(audiosrc)">Play Audio</v-btn>
 		</v-card-text>
 		<v-card-actions>
 			<v-btn flat target="_new" :href="link">Read on {{podcasttitle}}</v-btn>
 		</v-card-actions>
 	</v-card>	
-	`
+	`,
+	methods:{
+		play(u) {
+			this.$emit('audiostart', u);
+		}
+	}
 });
 
 let app = new Vue({ 
@@ -179,7 +208,8 @@ let app = new Vue({
 			addURL:'',
 			urlError:false,
 			urlRules:[],
-			selectedPodcast:null
+			selectedPodcast:null,
+			audio:null
 		}
 	},
 	computed: {
@@ -223,6 +253,15 @@ let app = new Vue({
 		},
 		filterPodcast(podcast) {
 			podStore.dispatch('filterPodcast', podcast);
+		},
+		doAudio(u) {
+			console.log('doAudio '+JSON.stringify(u));
+			if(this.audio) {
+				this.audio.pause();
+				this.audio.currentTime = 0;
+			}
+			this.audio = new Audio(u.url);
+			this.audio.play();
 		}
 	}
 })

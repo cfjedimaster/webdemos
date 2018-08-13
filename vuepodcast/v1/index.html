@@ -61,7 +61,7 @@
 						<v-container fluid grid-list-lg>
 							<v-layout row wrap>
 								<v-flex xs12 v-for="item in items" :key="item.link">
-									<podcast-item :title="item.title" :content="item.content" :link="item.link" :podcasttitle="item.podcastTitle" :color="item.podcastColor" :posted="item.pubDate"></podcast-item>
+									<podcast-item :title="item.title" :content="item.content" :link="item.link" :podcasttitle="item.podcastTitle" :color="item.podcastColor" :posted="item.pubDate" :audiosrc="item.audio" v-on:audiostart="doAudio"></podcast-item>
 								</v-flex>
 							</v-layout>
 						</v-container>
