@@ -4,7 +4,12 @@
 	<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
 	<link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-	<style>[v-cloak] {display: none}</style>
+	<style>
+		[v-cloak] {display: none}
+		.pointer {
+			cursor: pointer
+		};
+	</style>
 	<title>Podcast Player</title>
 </head>
 <body>
@@ -24,7 +29,7 @@
 					</v-list-tile>
 					<v-list-tile v-for="podcast in podcasts" :key="podcast.rsslink" :value="podcast == selectedPodcast">
 						<v-list-tile-action @click="deletePodcast(podcast)" >
-							<v-icon :color="podcast.color">delete</v-icon>
+							<v-icon :color="podcast.color" class="pointer">delete</v-icon>
 						</v-list-tile-action>
 						<v-list-tile-content @click="filterPodcast(podcast)" >
 							<v-list-tile-title>{{ podcast.title }}</v-list-tile-title>
