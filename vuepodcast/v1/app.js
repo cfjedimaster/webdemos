@@ -1,3 +1,12 @@
+/*
+Notes for later:
+I hate that I duplicate code in addPodcast and loadPodCast in terms of 'translating' RSS items. 
+But how do I add a private method to my store?
+I could make addPodcast just verify the result but then loadPodcast would do another HTTP call to fetch data - 
+but maybe I make loadPodcast take an optional arg of feed items to NOT need to load it?
+Thoughts?
+*/
+
 const rssAPI = 'https://wt-c2bde7d7dfc8623f121b0eb5a7102930-0.sandbox.auth0-extend.com/getRss?url=';
 
 // list of colors to iterate through
@@ -52,6 +61,7 @@ const podStore = new Vuex.Store({
 
 						// ok, add the items (but we append the url as a fk so we can filter later)
 						res.podcast.items.forEach(item => {
+							item.playing = false;
 							item.podcastPk = data.url;
 							item.podcastTitle = res.title;
 							item.podcastColor = res.podcast.color;
@@ -98,6 +108,22 @@ const podStore = new Vuex.Store({
 		filterPodcast(context, podcast) {
 			context.state.selectedPodcast = podcast;
 		},
+		itemPlaying(context, item) {
+			context.state.allItems.forEach(i => {
+				if(i.guid === item.guid) {
+					i.playing = true;
+				} else {
+					i.playing = false;
+				}
+			});
+		},
+		itemStopPlaying(context, item) {
+			context.state.allItems.forEach(i => {
+				if(i.guid === item.guid) {
+					i.playing = false;
+				}
+			});
+		},
 		loadPodcast(context, podcast) {
 			console.log('load Podcast', podcast);
 			fetch(rssAPI+encodeURIComponent(podcast.rsslink))
@@ -109,6 +135,7 @@ const podStore = new Vuex.Store({
 				res.podcast = res.feed;
 
 				res.podcast.items.forEach(item => {
+					item.playing = false;
 					item.podcastPk = podcast.rsslink;
 					item.podcastTitle = podcast.title;
 					item.podcastColor = podcast.color;
@@ -174,7 +201,7 @@ Vue.filter('dtFormat', function(s) {
 
 Vue.component('podcast-item', {
 	props:[
-		'color','title','content','link','podcasttitle', 'posted','audiosrc'
+		'color','title','content','link','podcasttitle', 'posted','audiosrc','playing'
 	],
 	template:`
 	<v-card :color="color">
@@ -184,7 +211,8 @@ Vue.component('podcast-item', {
 		<v-card-text>
 			{{content | maxText }}
 			<p/>
-			<v-btn flat @click="play(audiosrc)">Play Audio</v-btn>
+			<v-btn flat @click="play()" v-if="!playing">Play Audio</v-btn>
+			<v-btn flat @click="stop()" v-if="playing" class="red">Stop Audio</v-btn>
 		</v-card-text>
 		<v-card-actions>
 			<v-btn flat target="_new" :href="link">Read on {{podcasttitle}}</v-btn>
@@ -192,8 +220,11 @@ Vue.component('podcast-item', {
 	</v-card>	
 	`,
 	methods:{
-		play(u) {
-			this.$emit('audiostart', u);
+		play() {
+			this.$emit('audiostart');
+		},
+		stop() {
+			this.$emit('audiostop');
 		}
 	}
 });
@@ -254,14 +285,19 @@ let app = new Vue({
 		filterPodcast(podcast) {
 			podStore.dispatch('filterPodcast', podcast);
 		},
-		doAudio(u) {
-			console.log('doAudio '+JSON.stringify(u));
+		doAudio(item) {
+			podStore.dispatch('itemPlaying', item);
 			if(this.audio) {
 				this.audio.pause();
 				this.audio.currentTime = 0;
 			}
-			this.audio = new Audio(u.url);
+			this.audio = new Audio(item.audio.url);
 			this.audio.play();
+		},
+		stopAudio(item) {
+			podStore.dispatch('itemStopPlaying', item);
+			this.audio.pause();
+			this.audio.currentTime = 0;
 		}
 	}
 })
