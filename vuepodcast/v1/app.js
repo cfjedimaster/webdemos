@@ -105,7 +105,7 @@ const podStore = new Vuex.Store({
 			});
 			context.dispatch('storePodcasts');
 		},
-		filterPodcast(context, podcast) {
+		filterPodcasts(context, podcast) {
 			context.state.selectedPodcast = podcast;
 		},
 		itemPlaying(context, item) {
@@ -283,7 +283,8 @@ let app = new Vue({
 			podStore.dispatch('deletePodcast', podcast);
 		},
 		filterPodcast(podcast) {
-			podStore.dispatch('filterPodcast', podcast);
+			this.selectedPodcast = podcast;
+			podStore.dispatch('filterPodcasts', podcast);
 		},
 		doAudio(item) {
 			podStore.dispatch('itemPlaying', item);

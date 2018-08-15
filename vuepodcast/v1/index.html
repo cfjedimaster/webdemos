@@ -27,12 +27,12 @@
 							<v-list-tile-title>All Podcasts</v-list-tile-title>
 						</v-list-tile-content>
 					</v-list-tile>
-					<v-list-tile v-for="podcast in podcasts" :key="podcast.rsslink" :value="podcast == selectedPodcast">
+					<v-list-tile v-for="podcast in podcasts" :key="podcast.rsslink">
 						<v-list-tile-action @click="deletePodcast(podcast)" >
 							<v-icon :color="podcast.color" class="pointer">delete</v-icon>
 						</v-list-tile-action>
-						<v-list-tile-content @click="filterPodcast(podcast)" >
-							<v-list-tile-title>{{ podcast.title }}</v-list-tile-title>
+						<v-list-tile-content @click="filterPodcast(podcast)" class="pointer">
+							<v-list-tile-title >{{ podcast.title }} <span v-if="podcast==selectedPodcast" class="caption">(selected)</span></v-list-tile-title>
 						</v-list-tile-content>
 					</v-list-tile>
 					<v-list-tile @click="addPodcast">
