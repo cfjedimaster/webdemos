@@ -12,6 +12,9 @@ const rssAPI = 'https://wt-c2bde7d7dfc8623f121b0eb5a7102930-0.sandbox.auth0-exte
 // list of colors to iterate through
 const colors = ["indigo","blue","cyan","light-blue","teal","light-green","blue-grey"];
 
+// some feeds had a crap ton of entries, this is a sanity check
+const MAX_ITEMS_PER_FEED = 25;
+
 const podStore = new Vuex.Store({
 	state:{
 		allItems:[],
@@ -58,6 +61,9 @@ const podStore = new Vuex.Store({
 
 						//assign a color first
 						res.podcast.color = colors[context.state.podcasts.length % (colors.length-1)];
+
+						//filter to maxsize
+						res.podcast.items = res.podcast.items.slice(0,MAX_ITEMS_PER_FEED);
 
 						// ok, add the items (but we append the url as a fk so we can filter later)
 						res.podcast.items.forEach(item => {
@@ -133,6 +139,9 @@ const podStore = new Vuex.Store({
 				console.log(res);
 				// ok for now, assume no error, cuz awesome
 				res.podcast = res.feed;
+
+				//filter to maxsize
+				res.podcast.items = res.podcast.items.slice(0,MAX_ITEMS_PER_FEED);
 
 				res.podcast.items.forEach(item => {
 					item.playing = false;
