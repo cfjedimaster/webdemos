@@ -32,7 +32,7 @@
 							<v-icon :color="podcast.color" class="pointer">delete</v-icon>
 						</v-list-tile-action>
 						<v-list-tile-content @click="filterPodcast(podcast)" class="pointer">
-							<v-list-tile-title >{{ podcast.title }} <span v-if="podcast==selectedPodcast" class="caption">(selected)</span></v-list-tile-title>
+							<v-list-tile-title >{{ podcast.title }} <span v-if="podcast==selectedPodcast" class="caption">&nbsp;&nbsp;&#9898;</span></v-list-tile-title>
 						</v-list-tile-content>
 					</v-list-tile>
 					<v-list-tile @click="addPodcast">
@@ -65,6 +65,8 @@
 					</div><div v-else>
 						<v-container fluid grid-list-lg>
 							<v-layout row wrap>
+								<v-alert :value="true" type="info" v-if="loading">Loading... </v-alert>
+
 								<v-flex xs12 v-for="item in items" :key="item.link">
 									<podcast-item :title="item.title" :content="item.content" :link="item.link" :podcasttitle="item.podcastTitle" :color="item.podcastColor" :posted="item.pubDate" :audiosrc="item.audio" :playing="item.playing" v-on:audiostart="doAudio(item)" v-on:audiostop="stopAudio(item)"></podcast-item>
 								</v-flex>

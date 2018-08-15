@@ -252,6 +252,9 @@ let app = new Vue({
 		},
 		items() {
 			return podStore.getters.items;
+		},
+		loading() {
+			return this.items.length == 0;
 		}
 	},
 	created() {
