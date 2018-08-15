@@ -40,6 +40,15 @@ const podStore = new Vuex.Store({
 			});
 
 			return items;
+		},
+		podcasts(state) {
+			// quick alpha sort
+			state.podcasts.sort((a,b) => {
+				if(a.title < b.title) return -1;
+				if(a.title > b.title) return 1;
+				return 0;
+			});
+			return state.podcasts;
 		}
 	},
 	mutations:{
@@ -169,6 +178,7 @@ const podStore = new Vuex.Store({
 			if(podsRaw) {
 				try {
 				let podcasts = JSON.parse(podsRaw);
+
 				context.state.podcasts = podcasts;
 				
 				context.state.podcasts.forEach(p => {
@@ -257,7 +267,7 @@ let app = new Vue({
 			return this.podcasts.length == 0;
 		},
 		podcasts() {
-			return podStore.state.podcasts;
+			return podStore.getters.podcasts;
 		},
 		items() {
 			return podStore.getters.items;
