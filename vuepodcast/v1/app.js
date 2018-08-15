@@ -266,6 +266,7 @@ let app = new Vue({
 		},
 		allPodcasts() {
 			podStore.dispatch('filterPodcasts', null);
+			this.selectedPodcast=null;
 		},
 		addPodcastAction() {
 			this.urlError = false;
