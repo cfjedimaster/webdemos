@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+	<style>[v-cloak] {display: none}</style>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <v-app dark>
+      <v-content>
+        <v-container>
+
+			<div v-if="errorState">
+				<p>
+					Hi, in order to use this cool tool, add ?account=Something to the URL where the value for "Something"
+					is a Twitter account, like <a href="?account=raymondcamden">raymondcamden</a>.
+				</p>
+			</div><div v-else>
+			<v-layout>
+				<div v-if="loading">
+					<p>
+						Loading media for {{ account }}.
+					</p>
+				</div><div v-else-if="noresults">
+					<p>
+						Sorry, I couldn't find media for {{ account }}.
+					</p>
+				</div><div v-else>
+					<v-flex >
+						<v-card>
+						<v-container grid-list-sm fluid>
+							<v-layout row wrap>
+
+								<v-flex v-for="img in images" :key="img" xs4 d-flex>
+
+									<v-card flat tile class="d-flex">
+										<v-img
+											:src="img"
+											aspect-ratio="1" width="300" height="300"
+										>
+											<v-layout
+												slot="placeholder"
+												fill-height
+												align-center
+												justify-center
+												ma-0
+												>
+												<v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+											</v-layout>
+										</v-img>
+									</v-card>
+								</v-flex>
+
+							</v-layout>
+						</v-container>
+						</v-card>
+					</v-flex>
+				</div>
+			</v-layout>
+			</div>
+		</v-container>
+      </v-content>
+    </v-app>
+  </div>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
