@@ -68,7 +68,8 @@
 								<v-alert :value="true" type="info" v-if="loading">Loading... </v-alert>
 
 								<v-flex xs12 v-for="item in items" :key="item.link">
-									<podcast-item :title="item.title" :content="item.content" :link="item.link" :podcasttitle="item.podcastTitle" :color="item.podcastColor" :posted="item.pubDate" :audiosrc="item.audio" :playing="item.playing" v-on:audiostart="doAudio(item)" v-on:audiostop="stopAudio(item)"></podcast-item>
+									<podcast-item :title="item.title" :content="item.content" :link="item.link" :podcasttitle="item.podcastTitle" :color="item.podcastColor" :posted="item.pubDate" :audiosrc="item.audio" :playing="item.playing" v-on:audiostart="doAudio(item)" v-on:audiostop="stopAudio(item)"
+									v-on:storeoffline="storeOffline(item)"></podcast-item>
 								</v-flex>
 							</v-layout>
 						</v-container>
@@ -99,11 +100,11 @@
 		</v-app>
 	</div>
 
+	<script src="js/localforage.min.js"></script>
 	<script src="https://unpkg.com/vue/dist/vue.js"></script>
 	<script src="https://unpkg.com/vuex"></script>
 	<script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
-	
-	<script src="./app.js"></script>
+	<script src="js/app.js"></script>	
 
 </body>
 </html>

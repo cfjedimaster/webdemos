@@ -174,6 +174,8 @@ const podStore = new Vuex.Store({
 			});			
 		},
 		restorePodcasts(context) {
+
+			// restore list of subscribed podcasts
 			let podsRaw = window.localStorage.getItem('podcasts');
 			if(podsRaw) {
 				try {
@@ -191,6 +193,16 @@ const podStore = new Vuex.Store({
 					window.localStorage.removeItem('podcasts');
 				}
 			}
+
+			//configure store for offline
+			localforage.config({
+				name:'podcast offline support',
+				driver:localforage.INDEXEDDB
+			});
+
+		},
+		storeOffline(context,podcast) {
+			console.log('i was asked to download and store '+JSON.stringify(podcast));
 		},
 		storePodcasts(context) {
 			console.log('persist podcasts');
@@ -235,6 +247,7 @@ Vue.component('podcast-item', {
 		</v-card-text>
 		<v-card-actions>
 			<v-btn flat target="_new" :href="link">Read on {{podcasttitle}}</v-btn>
+			<v-btn flat target="_new" @click="storeOffline">Store Offline</v-btn>
 		</v-card-actions>
 	</v-card>	
 	`,
@@ -244,6 +257,9 @@ Vue.component('podcast-item', {
 		},
 		stop() {
 			this.$emit('audiostop');
+		},
+		storeOffline() {
+			this.$emit('storeoffline');
 		}
 	}
 });
@@ -322,6 +338,9 @@ let app = new Vue({
 			podStore.dispatch('itemStopPlaying', item);
 			this.audio.pause();
 			this.audio.currentTime = 0;
+		},
+		storeOffline(item) {
+			podStore.dispatch('storeOffline', item);
 		}
 	}
 })
