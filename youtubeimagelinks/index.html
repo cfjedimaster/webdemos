@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>YouTube Image Links</title>
+<link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+
+<div id="app" v-cloak>
+  YouTube URL: 
+  <input type="url" v-model="ytlink"> 
+  <button @click="getURLs">Get URLs</button>
+  
+  <div v-if="results">
+    <p v-for="result in results">
+      <span v-if="canCopy" @click="copy(result)" title="Click to copy">{{ result }}</span>
+      <span v-else>{{ result }}</span> <br/>
+      <img :src="result" />
+    </p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
