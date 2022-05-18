@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<style>
+img {
+	width: 250px;
+	height: 250px;
+}
+</style>
+<body>
+
+<button id="makeCat">Make Cat</button>
+
+<script src="cat2.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	document.querySelector('#makeCat').addEventListener('click', () => {
+
+		let cat = document.createElement('place-cat');
+		cat.setAttribute('width', 200);
+		cat.setAttribute('height', 400);
+
+		document.querySelector('body').appendChild(cat);
+
+	}, false);
+}, false);
+</script>
+</body>
+</html>
