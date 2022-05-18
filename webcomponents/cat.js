@@ -26,5 +26,4 @@ class PlaceCat extends HTMLElement {
 
 }
 
-// Define the new element
 customElements.define('place-cat', PlaceCat);
