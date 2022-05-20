@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<!-- credit: http://jsfiddle.net/SteveSchrab/Th8Cs/ -->
+	<style>
+	hr {
+		margin: 50px 0;   
+	}
+
+	hr.style-rainbow {
+		border: 0;
+		height: 4px;
+		background: #ff0000;
+		background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#ff0000), color-stop(25%,#ffff00), color-stop(50%,#00ff00), color-stop(75%,#00ffff), color-stop(100%,#0000ff));
+		background: -webkit-linear-gradient(-45deg, #ff0000 0%,#ffff00 25%,#00ff00 50%,#00ffff 75%,#0000ff 100%);
+		background: -moz-linear-gradient(-45deg, #ff0000 0%, #ffff00 25%, #00ff00 50%, #00ffff 75%, #0000ff 100%);
+		background: -o-linear-gradient(-45deg, #ff0000 0%,#ffff00 25%,#00ff00 50%,#00ffff 75%,#0000ff 100%);
+		background: -ms-linear-gradient(-45deg, #ff0000 0%,#ffff00 25%,#00ff00 50%,#00ffff 75%,#0000ff 100%);
+		background: linear-gradient(-45deg, #ff0000 0%,#ffff00 25%,#00ff00 50%,#00ffff 75%,#0000ff 100%);
+	}
+	</style>
+</head>
+<body>
+
+<p>
+Demo of just hitting the end point, no additional args:
+<data-table src="https://www.raymondcamden.com/.netlify/functions/get-cats"></data-table>
+</p>
+
+<hr class="style-rainbow"/>
+
+<p>
+Specify "name,age" for columns.
+<data-table src="https://www.raymondcamden.com/.netlify/functions/get-cats" cols="name,age"></data-table>
+</p>
+
+
+<script src="datatable.js"></script>
+</body>
+</html>
