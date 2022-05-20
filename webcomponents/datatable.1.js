@@ -8,32 +8,20 @@ class DataTable extends HTMLElement {
 		// If no source, do nothing
 		if(!this.src) return;
 
-		// attributes to do, datakey 
+		// attributes to do, datakey + cols
 		if(this.hasAttribute('cols')) this.cols = this.getAttribute('cols').split(',');
 
-		this.pageSize = 5;
-		if(this.hasAttribute('pagesize')) this.pageSize = this.getAttribute('pagesize');
-
-		// helper values for sorting and paging
 		this.sortAsc = false;
-		this.curPage = 1;
+
         const shadow = this.attachShadow({
             mode: 'open'
         });
 		
-        const table = document.createElement('table');
+        const wrapper = document.createElement('table');
 		const thead = document.createElement('thead');
 		const tbody = document.createElement('tbody');
-		table.append(thead, tbody);
-
-		const nav = document.createElement('div');
-		const prevButton = document.createElement('button');
-		prevButton.innerHTML = 'Previous';
-		const nextButton = document.createElement('button');
-		nextButton.innerHTML = 'Next';
-		nav.append(prevButton, nextButton);
-
-        shadow.append(table,nav);
+		wrapper.append(thead, tbody);
+        shadow.appendChild(wrapper);
 
         const style = document.createElement('style');
         style.textContent = `
@@ -49,25 +37,13 @@ td, th {
 th {
 	cursor: pointer;
 }
-
-div {
-	padding-top: 10px;
-}
     `;
-        
-		// Attach the created elements to the shadow dom
+        // Attach the created elements to the shadow dom
         shadow.appendChild(style);
 
 		// https://www.freecodecamp.org/news/this-is-why-we-need-to-bind-event-handlers-in-class-components-in-react-f7ea1a6f93eb/
 		this.sort = this.sort.bind(this);
 
-		this.nextPage = this.nextPage.bind(this);
-		this.previousPage = this.previousPage.bind(this);
-
-		nextButton.addEventListener('click', this.nextPage, false);
-		prevButton.addEventListener('click', this.previousPage, false);
-
-	
 
 	}
 
@@ -77,16 +53,6 @@ div {
 		let result = await fetch(this.src);
 		this.data = await result.json();
 		this.render();
-	}
-
-	nextPage() {
-		if((this.curPage * this.pageSize) < this.data.length) this.curPage++;
-		this.renderBody();
-	}
-
-	previousPage() {
-		if(this.curPage > 1) this.curPage--;
-		this.renderBody();
 	}
 
 	render() {
@@ -100,11 +66,7 @@ div {
 	renderBody() {
 
 		let result = '';
-		this.data.filter((row, index) => {
-			let start = (this.curPage-1)*this.pageSize;
-			let end =this.curPage*this.pageSize;
-			if(index >= start && index < end) return true;
-		}).forEach(c => {
+		this.data.forEach(c => {
 			let r = '<tr>';
 			this.cols.forEach(col => {
 				r += `<td>${c[col]}</td>`;
