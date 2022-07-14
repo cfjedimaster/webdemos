@@ -25,9 +25,8 @@ async function search() {
 	$status.innerText = `Finding images for the account, ${account}.`;
 	let resp = await fetch(endpoint + `?account=${encodeURIComponent(account)}`);
 	let data = await resp.json();
-
+	let html = '';
 	if(data.length > 0) {
-		let html = '';
 
 		data.forEach(i => {
 			html += `
