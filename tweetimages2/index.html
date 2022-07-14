@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Twitter Image Viewer</title>
+	<link href="parvus.min.css" rel="stylesheet">
+	<link href="app.css" rel="stylesheet">
+</head>
+<body>
+
+	<h2>Twitter Image Suck</h2>
+
+	<p>
+		This tool provides an "image only" view of a Twitter account. Simply enter the username of an account 
+		and you'll see the most recent pictures they've embedded into their Tweets. You can click an individual
+		image for a close up view.
+	</p>
+
+	<div id="statusArea"></div>
+
+	<div id="searchForm" style="display:none">
+		<p>
+			<input type="text" id="twitterAccount" placeholder="Twitter Account" value="oneperfectshot">
+			<button id="searchButton">Get Images</button>
+		</p>
+	</div>
+
+	<div id="results" style="display:none"></div>
+
+	<script src="parvus.min.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>

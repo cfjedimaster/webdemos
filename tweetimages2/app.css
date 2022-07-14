@@ -1,0 +1,16 @@
+#results img {
+	max-width:300px;
+	max-height:300px;
+	padding: 10px;
+}
+
+body {
+	background-color: black;
+	color: white;
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 20px;
+}
+
+a {
+	color:white;
+}
