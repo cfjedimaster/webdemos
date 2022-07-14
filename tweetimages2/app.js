@@ -25,13 +25,16 @@ async function search() {
 	$status.innerText = `Finding images for the account, ${account}.`;
 	let resp = await fetch(endpoint + `?account=${encodeURIComponent(account)}`);
 	let data = await resp.json();
-	let html = '';
 
-	data.forEach(i => {
-		html += `
-<div><a href="${i}" class="lightbox" data-group="twitterImageResults"><img src="${i}"></a></div>
-		`;
-	});
+	if(data.length > 0) {
+		let html = '';
+
+		data.forEach(i => {
+			html += `
+	<div><a href="${i}" class="lightbox" data-group="twitterImageResults"><img src="${i}"></a></div>
+			`;
+		});
+	} else html = '<div>Sorry, but no results were found. Twitter Search API results are data limited.</div>';
 
 	$status.style.display = 'none';
 	$results.innerHTML = html;
