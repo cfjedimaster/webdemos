@@ -34,7 +34,7 @@ async function search() {
 	<div><a href="${i}" class="lightbox" data-group="twitterImageResults"><img src="${i}"></a></div>
 			`;
 		});
-	} else html = '<div>Sorry, but no results were found. Twitter Search API results are data limited.</div>';
+	} else html = '<div>Sorry, but no results were found. Twitter Search API results are date limited.</div>';
 
 	$status.style.display = 'none';
 	$results.innerHTML = html;
