@@ -1,3 +1,10 @@
+#results {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
 #results img {
 	max-width:300px;
 	max-height:300px;
@@ -13,4 +20,8 @@ body {
 
 a {
 	color:white;
+}
+
+.parvus {
+  --parvus-overlay-color: hsl(0, 0%, 0%);
 }

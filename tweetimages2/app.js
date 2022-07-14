@@ -29,7 +29,7 @@ async function search() {
 
 	data.forEach(i => {
 		html += `
-<a href="${i}" class="lightbox"><img src="${i}"></a>
+<div><a href="${i}" class="lightbox" data-group="twitterImageResults"><img src="${i}"></a></div>
 		`;
 	});
 
