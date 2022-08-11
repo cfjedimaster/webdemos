@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" href="style/app.css" />
+</head>
+<body>
+
+<div class="col">
+	<div>
+	<h2>Demo</h2>
+	<p>
+	<button id="scanQR">Scan QR Code</button>
+	</p>
+	<p>
+	<label>Result: <span id="resultData"></span> <button id="saveContact" disabled>Save Contact</button>
+	</p>
+	</div>
+	<div>
+	<video id="cam" style="width:300px; height:300px;"></video>
+	</div>
+</div>
+
+<div class="rainbow-box"></div>
+
+<h2>Contacts</h2>
+
+<table id="contactsTable">
+	<thead>
+	<tr>
+		<th>Name</th>
+		<th>Created</th>
+	</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+
+<p>
+<button id="downloadContacts">Download</button>
+</p>
+
+<script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+<script src="js/qr-scanner.umd.min.js"></script>
+<script src="js/jszip.min.js"></script>
+<script src="js/FileSaver.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
