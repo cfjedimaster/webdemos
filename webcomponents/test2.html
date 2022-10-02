@@ -4,16 +4,18 @@
 	<meta charset="utf-8">
 	<title></title>
 </head>
-<style>
-#temp {
-	width: 500px;
-	height: 500px;
-}
-</style>
 <body>
 
-<div is="pdf-embed" url="https://documentcloud.adobe.com/view-sdk-demo/PDFs/Bodea Brochure.pdf" key="9861538238544ff39d37c6841344b78d" id="temp"></div>
 
-<script src="pdfembed.js"></script>
+<h2>Embed</h2>
+<pdf-embed url="https://documentcloud.adobe.com/view-sdk-demo/PDFs/Bodea Brochure.pdf" key="9861538238544ff39d37c6841344b78d"></pdf-embed>
+
+<hr/>
+
+<pdf-embed url="./adobe-developer-terms.pdf" key="9861538238544ff39d37c6841344b78d" width="90%" height="500"
+embedMode="SIZED_CONTAINER"
+></pdf-embed>
+
+<script src="pdfembed.js" type="module"></script>
 </body>
 </html>
