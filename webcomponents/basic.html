@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+
+<h2>BASIC</h2>
+
+<applesoft-basic>
+10 x = 10
+20 y = 2
+
+40 print "X+Y="
+50 print x+y
+</applesoft-basic>
+
+<hr>
+
+<applesoft-basic>
+10 x = 10
+20 y = 2
+
+30 gosub 1000
+40 print "X+Y="
+50 print x+y
+
+100 end
+
+1000 print "in routine"
+1020 return
+</applesoft-basic>
+
+
+<script src="basic.js" type="module"></script>
+</body>
+</html>
