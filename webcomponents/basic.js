@@ -23,9 +23,7 @@ class ApplesoftBasic extends HTMLElement {
 		let interval = setInterval(() => {
 			if(window.basic) {
 				clearInterval(interval);
-				console.log('ready');
 				let result = this.compile(this.textContent);
-				console.log('result', result);
 				let mydiv = this.shadowRoot.querySelector('div');
 				mydiv.innerHTML = result;
 			} 

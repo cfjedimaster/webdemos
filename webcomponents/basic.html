@@ -19,17 +19,12 @@
 <hr>
 
 <applesoft-basic>
-10 x = 10
-20 y = 2
+10 x = 0
+20 for i = 1 to 10
+30 x = x + i
+40 next
 
-30 gosub 1000
-40 print "X+Y="
-50 print x+y
-
-100 end
-
-1000 print "in routine"
-1020 return
+50 print x
 </applesoft-basic>
 
 
