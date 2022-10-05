@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+
+<script>
+document.addEventListener('DOMContentLoaded', init, false);
+
+function reportload() {
+	console.log('reportload fired');
+	console.log('window.slow', window.slow);
+}
+
+function init() {
+	const script = document.createElement('script');
+	script.type = 'text/javascript';
+	script.onload=reportload;
+	script.src='./slow.js';
+	document.head.appendChild(script);
+}
+</script>
+</body>
+</html>
