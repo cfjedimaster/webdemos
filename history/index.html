@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+
+<div id="app">
+	<h2>Items</h2>
+
+	<p>
+	<input type="search" placeholder="Filter by name" id="nameFilter"> 
+	<input type="checkbox" value="person" id="personType" name="typeFilter"> 
+	<label for="personType">Only People</label>
+	
+	<input type="checkbox" value="cat" id="catType" name="typeFilter"> 
+	<label for="catType">Only Cats</label>
+
+	<input type="checkbox" value="dog" id="dogType" name="typeFilter"> 
+	<label for="dogType">Only Dogs</label>
+	</p>
+
+	<ul id="results">
+		
+	</ul>
+</div>
+
+<script>
+// hard coded for simplicity...
+const ITEMS = [
+	{ name: "Ray", type: "person" },
+	{ name: "Lindy", type: "person" },
+	{ name: "Jacob", type: "person" },
+	{ name: "Lynn", type: "person" },
+	{ name: "Noah", type: "person" },
+	{ name: "Jane", type: "person" },
+	{ name: "Maisie", type: "person" },
+	{ name: "Carol", type: "person" },
+	{ name: "Ashton", type: "person" },
+	{ name: "Weston", type: "person" },
+	{ name: "Sammy", type: "cat" },
+	{ name: "Aleese", type: "cat" },
+	{ name: "Luna", type: "cat" },
+	{ name: "Pig", type: "cat" },
+	{ name: "Cayenne", type: "dog" }
+]
+
+let filteredItems = Array.from(ITEMS);
+let $results, $nameFilter, $typeFilter, $peopleFilter, $catFilter, $dogFilter;
+
+document.addEventListener('DOMContentLoaded', init, false);
+function init() {
+	$results = document.querySelector('#results');
+	$nameFilter = document.querySelector('#nameFilter');
+	$typeFilter = document.querySelectorAll('input[name="typeFilter"]');
+
+	$peopleFilter = document.querySelector('#personType');
+	$catFilter = document.querySelector('#catType');
+	$dogFilter = document.querySelector('#dogType');
+	
+	$nameFilter.addEventListener('input', updateFilter, false);
+	$typeFilter.forEach(f => f.addEventListener('change', updateFilter, false));
+
+	let qp = new URLSearchParams(window.location.search);
+	if(qp.get('filter')) $nameFilter.value = qp.get('filter');
+	let tf = qp.get('typeFilter');
+	if(tf) {
+		tf.split(',').forEach(t => {
+			if(t === 'people') $peopleFilter.checked = true;
+			if(t === 'cat') $catFilter.checked = true;
+			if(t === 'dog') $dogFilter.checked = true;
+		});
+	}
+
+	updateFilter();
+	renderItems();
+}
+
+function renderItems() {
+	let res = '';
+	filteredItems.forEach(i => res +=`<li>${i.name}</li>`);
+	$results.innerHTML = res;
+}
+
+function updateFilter() {
+	let selectedTypes = Array.from($typeFilter).reduce((res, cur) => {
+		if(cur.checked) res.push(cur.value);
+		return res;
+	}, []);
+	
+	filteredItems = ITEMS.filter(i => {
+		if($nameFilter.value !== '' && i.name.toLowerCase().indexOf($nameFilter.value.toLowerCase()) === -1) return false;
+		if(selectedTypes.length && !selectedTypes.includes(i.type)) return false;
+		return true;
+	});
+	
+	renderItems();
+	updateURL();
+}
+
+function updateURL() {
+	let qp = new URLSearchParams();
+	if($nameFilter.value !== '') qp.set('filter', $nameFilter.value);
+
+	let selectedTypes = Array.from($typeFilter).reduce((res, cur) => {
+		if(cur.checked) res.push(cur.value);
+		return res;
+	}, []);
+	if(selectedTypes.length) qp.set('typeFilter', selectedTypes);
+	history.replaceState(null, null, "?"+qp.toString());
+}
+</script>
+</body>
+</html>
