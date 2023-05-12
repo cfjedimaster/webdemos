@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+
+<div x-data="myApp">
+	<h2>Items</h2>
+
+	<p>
+	<input type="search" placeholder="Filter by name" x-model="nameFilter"> 
+	<input type="checkbox" value="person" id="personType" x-model="typeFilter"> 
+	<label for="personType">Only People</label>
+	
+	<input type="checkbox" value="cat" id="catType" x-model="typeFilter"> 
+	<label for="catType">Only Cats</label>
+
+	<input type="checkbox" value="dog" id="dogType" x-model="typeFilter"> 
+	<label for="dogType">Only Dogs</label>
+	</p>
+
+	<ul>
+		<template x-for="result of filteredResults">
+			<li x-text="result.name"></li>
+		</template>
+	</ul>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.9.6/cdn.js" defer></script>
+<script>
+// hard coded for simplicity...
+const ITEMS = [
+	{ name: "Ray", type: "person" },
+	{ name: "Lindy", type: "person" },
+	{ name: "Jacob", type: "person" },
+	{ name: "Lynn", type: "person" },
+	{ name: "Noah", type: "person" },
+	{ name: "Jane", type: "person" },
+	{ name: "Maisie", type: "person" },
+	{ name: "Carol", type: "person" },
+	{ name: "Ashton", type: "person" },
+	{ name: "Weston", type: "person" },
+	{ name: "Sammy", type: "cat" },
+	{ name: "Aleese", type: "cat" },
+	{ name: "Luna", type: "cat" },
+	{ name: "Pig", type: "cat" },
+	{ name: "Cayenne", type: "dog" }
+];
+
+document.addEventListener('alpine:init', () => {
+	Alpine.data('myApp', () => ({
+		async init() {
+			this.results = ITEMS;
+			this.filteredResults = this.results;
+			this.$watch('nameFilter', () => this.updateFilter() );
+			this.$watch('typeFilter', () => this.updateFilter() );
+
+			let qp = new URLSearchParams(window.location.search);
+			if(qp.get('filter')) this.nameFilter = qp.get('filter');
+			let tf = qp.get('typeFilter');
+			if(tf) {
+				this.typeFilter = tf.split(',');
+			}
+
+		},
+		nameFilter:'',
+		typeFilter:[],
+		results:[],
+		filteredResults:[],
+		updateFilter() {
+			this.filteredResults = this.results.filter(i => {
+				if(this.nameFilter !== '' && i.name.toLowerCase().indexOf(this.nameFilter.toLowerCase()) === -1) return false;
+				if(this.typeFilter.length > 0 && !this.typeFilter.includes(i.type)) return false;
+				return true;
+			});
+			this.updateURL();
+		},
+		updateURL() {
+			let qp = new URLSearchParams();
+			if(this.nameFilter !== '') qp.set('filter', this.nameFilter);
+
+			if(this.typeFilter.length) qp.set('typeFilter', this.typeFilter);
+			history.replaceState(null, null, "?"+qp.toString());
+		}
+	}))
+})
+
+</script>
+</body>
+</html>
