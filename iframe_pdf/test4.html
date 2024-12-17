@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+	main {
+		width: 80%;
+		margin: auto;
+	}
+	</style>
+</head>
+<body>
+
+<main>
+<h2>My Site</h2>
+
+<p>
+<a href="https://static.raymondcamden.com/enclosures/cat.pdf">cat.pdf</a> ~ 
+<a href="https://static.raymondcamden.com/enclosures/gilbane.pdf">gilbane.pdf</a>
+</p> 
+
+<iframe src="https://static.raymondcamden.com/enclosures/cat.pdf" 
+	width="100%" height="700px" loading="lazy" id="pdfFrame"></iframe>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	console.log("DOM ready");
+	let pdfFrame = document.querySelector('#pdfFrame');
+	let pdfLinks = document.querySelectorAll('a[href$=".pdf"]');
+	pdfLinks.forEach(p => {
+		p.addEventListener('click', e => {
+			e.preventDefault();
+			let url = e.currentTarget.href;
+			pdfFrame.src = url;
+		});
+	});
+	console.log(pdfLinks);
+});
+</script>
+</body>
+</html>
