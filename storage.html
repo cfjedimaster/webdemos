@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+
+<p>
+<button id="checkStyle">Check Persistence Style</button>
+<button id="reqPersistence">Request Persistence</button>
+</p>
+
+<div id="result">
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	let $result = document.querySelector('#result');
+
+	document.querySelector('#checkStyle').addEventListener('click', checkStyle);
+	document.querySelector('#reqPersistence').addEventListener('click', reqPersistence);
+
+	async function checkStyle() {
+		let persisted = await navigator.storage.persisted();
+		$result.innerHTML = `Storage ${persisted?'is':'is not'} persisted.`;
+	}
+
+	async function reqPersistence() {
+		let persisted = await navigator.storage.persist();
+		if(persisted) {
+			$result.innerHTML = 'Storage will now persist (more).';
+		} else {
+			$result.innerHTML = 'Permission for greater persistence was not granted.';		
+		}
+	}
+
+	/*
+	navigator.storage.estimate().then((estimate) => {
+		console.log(estimate);
+	// estimate.quota is the estimated quota
+	// estimate.usage is the estimated number of bytes used
+	});
+	*/
+});
+</script>
+
+</body>
+</html>

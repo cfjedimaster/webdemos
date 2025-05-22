@@ -1,0 +1,7 @@
+vcard: https://github.com/ertant/vCard, nope
+
+https://gist.github.com/m1k1o/fe51ce4862853f13620a4312a693eeef
+
+https://stuk.github.io/jszip/
+
+

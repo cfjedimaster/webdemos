@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Bluetooth Testing</title>
+</head>
+<body>
+
+<p>
+<button id="reqDevice">Call request device</button>
+
+<button id="testDevice">
+	Test device, only click if you have one device.
+</button>
+</p>
+
+<div id="status"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', init, false);
+let $status;
+let device;
+
+async function init() {
+
+	$status = document.querySelector('#status');
+
+	let isAvailable = await navigator.bluetooth.getAvailability();
+	// stop doing anything at this point
+	if(!isAvailable) return;
+
+	let devices = await navigator.bluetooth.getDevices();
+	if(devices.length === 0) {
+		$status.innerText = `You are not connected to any devices yet.`;
+	} else {
+		device = devices[0];
+		$status.innerText = `Connected to ${device.name}.`;
+	}
+
+	document.querySelector('#reqDevice').addEventListener('click', reqDevice);
+	document.querySelector('#testDevice').addEventListener('click', testDevice);
+
+}
+
+const serviceID = '0000fff0-0000-1000-8000-00805f9b34fb';
+const tempService = '0000ffb0-0000-1000-8000-00805f9b34fb';
+const namePrefix = 'WGX_iBeacon';
+
+const services = [ serviceID, tempService, 'battery_service', 'generic_access' ];
+
+async function reqDevice() {
+	let requests = await navigator.bluetooth.requestDevice({
+		filters: [
+			{namePrefix}
+		],
+    	optionalServices: services
+	});
+	
+	let devices = await navigator.bluetooth.getDevices();
+	device = devices[0];
+	$status.innerText = `Connected to ${device.name}.`;
+}
+
+
+async function testDevice() {
+	console.log('Beginning scan process.');
+	let decoder = new TextDecoder('utf-8');
+	
+	let server = await device.gatt.connect();
+
+	for(let serviceId of services) {
+		let service = await server.getPrimaryService(serviceId);
+		console.log(`Connected to ${serviceId} service.`);
+		let chars = await service.getCharacteristics();
+		console.log(`This service has ${chars.length} characteristics`);
+		for(let i=0; i<chars.length; i++) {
+			console.log(`%c Characteristic: ${chars[i].uuid}`,'color:yellow');
+			try {
+				let descriptors = await chars[i].getDescriptors();
+				if(descriptors) {
+					for(let x=0; x<descriptors.length;x++) {
+						let value = await descriptors[x].readValue();
+						console.log(`%c Descriptor: ${decoder.decode(value)}`,'color:green');
+					}
+				} else console.log('No descriptors for this characteristic.');
+			} catch {
+				// getDescriptors throws an error when there are none - this is not documented afaik
+				console.error('Error running getDescriptors');
+				console.log(chars[i]);
+			}
+
+			if(chars[i].properties.read) {
+				let value = await chars[i].readValue();
+				console.log(`Value via decoder: ${decoder.decode(value)}`);
+				console.log(`Value via UInt: ${value.getUint8(0)}`);
+				//console.log('test from readValue', test);
+				//console.log('decoder test', decoder.decode(test));
+			} else console.log('Cant read it.');
+
+			console.log('');
+		}
+	}
+
+	/*
+	for(let i=0;i<chars.length;i++) {
+		console.log('Characteristic:', chars[i]);
+
+		let descriptors = await chars[i].getDescriptors();
+		for(let x=0; x<descriptors.length;x++) {
+			let value = await descriptors[x].readValue();
+			console.log(`%c Descriptor: ${decoder.decode(value)}`,'color:green');
+		}
+
+		if(chars[i].properties.read) {
+			let test = await chars[i].readValue();
+			console.log('test from readValue', test);
+			console.log('decoder test', decoder.decode(test));
+		} else console.log('cant read it');
+	};
+
+	// Battery specific area
+	console.log('---------------BATTERY---------------');
+	service = await server.getPrimaryService('battery_service');
+	let characteristic = await service.getCharacteristic('battery_level');
+	let bvalue = await characteristic.readValue();
+	console.log('Battery %',bvalue.getUint8(0));
+
+	// Temp specific area
+	console.log('---------------TEMP---------------');
+	service = await server.getPrimaryService(tempService);
+	
+	chars = await service.getCharacteristics();
+	console.log('got chars');
+
+	for(let i=0;i<chars.length;i++) {
+		console.log('Characteristic:', chars[i]);
+
+		let descriptors = await chars[i].getDescriptors();
+		for(let x=0; x<descriptors.length;x++) {
+			let value = await descriptors[x].readValue();
+			console.log(`%c Descriptor: ${decoder.decode(value)}`,'color:green');
+		}
+
+		if(chars[i].properties.read) {
+			let test = await chars[i].readValue();
+			console.log('test from readValue', test);
+			console.log('decoder test', decoder.decode(test));
+		} else console.log('cant read it');
+		
+	};
+	*/
+
+}
+</script>
+</body>
+</html>

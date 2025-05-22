@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+
+<p>
+<button id="reqDevice">Call request device</button>
+
+<button id="testDevice">
+	Test device, only click if you have one device.
+</button>
+</p>
+
+<div id="status"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', init, false);
+let $status;
+let device;
+
+async function init() {
+
+	$status = document.querySelector('#status');
+
+	let isAvailable = await navigator.bluetooth.getAvailability();
+	// stop doing anything at this point
+	if(!isAvailable) return;
+
+	let devices = await navigator.bluetooth.getDevices();
+	if(devices.length === 0) {
+		$status.innerText = `You are not connected to any devices yet.`;
+	} else {
+		device = devices[0];
+		$status.innerText = `Connected to ${device.name}.`;
+	}
+	console.log(devices);
+
+	document.querySelector('#reqDevice').addEventListener('click', reqDevice);
+	document.querySelector('#testDevice').addEventListener('click', testDevice);
+
+}
+
+/*
+Services reported by tool:
+0000180f-0000-1000-8000-00805f9b34fb
+0000ffb0-0000-1000-8000-00805f9b34fb
+0000ffa0-0000-1000-8000-00805f9b34fb
+0000180a-0000-1000-8000-00805f9b34fb
+0000fff0-0000-1000-8000-00805f9b34fb
+	
+	0000fff2-0000-1000-8000-00805f9b34fb
+		has a descriptor that reads as Major
+	0000fff3-0000-1000-8000-00805f9b34fb
+		has a descriptor that reads as Minor
+
+
+00001801-0000-1000-8000-00805f9b34fb
+	has no characteristics
+00001800-0000-1000-8000-00805f9b34fb
+	00002a00-0000-1000-8000-00805f9b34fb = name of device
+
+*/
+
+const serviceID = '0000fff0-0000-1000-8000-00805f9b34fb';
+const tempService = '0000ffb0-0000-1000-8000-00805f9b34fb';
+const namePrefix = 'WGX_iBeacon';
+
+async function reqDevice() {
+	let requests = await navigator.bluetooth.requestDevice({
+		filters: [
+			{namePrefix}
+		],
+    	optionalServices:[ serviceID, 'battery_service', tempService ]
+	});
+	
+	let devices = await navigator.bluetooth.getDevices();
+	device = devices[0];
+	$status.innerText = `Connected to ${device.name}.`;
+}
+
+/*
+async function reqDevice() {
+	let requests = await navigator.bluetooth.requestDevice({
+		acceptAllDevices:true
+	});
+	console.log(requests);
+}
+*/
+
+async function testDevice() {
+	console.log('testDevice');
+	let decoder = new TextDecoder('utf-8');
+	
+	let server = await device.gatt.connect();
+	console.log('server', server);
+
+	let service = await server.getPrimaryService(serviceID);
+	console.log('service', service);  
+
+	let chars = await service.getCharacteristics();
+	console.log('got chars');
+
+	for(let i=0;i<chars.length;i++) {
+		console.log('Characteristic:', chars[i]);
+
+		let descriptors = await chars[i].getDescriptors();
+		for(let x=0; x<descriptors.length;x++) {
+			let value = await descriptors[x].readValue();
+			console.log(`%c Descriptor: ${decoder.decode(value)}`,'color:green');
+		}
+
+		if(chars[i].properties.read) {
+			let test = await chars[i].readValue();
+			console.log('test from readValue', test);
+			console.log('decoder test', decoder.decode(test));
+		} else console.log('cant read it');
+	};
+
+	// Battery specific area
+	console.log('---------------BATTERY---------------');
+	service = await server.getPrimaryService('battery_service');
+	let characteristic = await service.getCharacteristic('battery_level');
+	let bvalue = await characteristic.readValue();
+	console.log('Battery %',bvalue.getUint8(0));
+
+	// Temp specific area
+	console.log('---------------TEMP---------------');
+	service = await server.getPrimaryService(tempService);
+	
+	chars = await service.getCharacteristics();
+	console.log('got chars');
+
+	for(let i=0;i<chars.length;i++) {
+		console.log('Characteristic:', chars[i]);
+
+		let descriptors = await chars[i].getDescriptors();
+		for(let x=0; x<descriptors.length;x++) {
+			let value = await descriptors[x].readValue();
+			console.log(`%c Descriptor: ${decoder.decode(value)}`,'color:green');
+		}
+
+		if(chars[i].properties.read) {
+			let test = await chars[i].readValue();
+			console.log('test from readValue', test);
+			console.log('decoder test', decoder.decode(test));
+		} else console.log('cant read it');
+	};
+
+}
+</script>
+</body>
+</html>
