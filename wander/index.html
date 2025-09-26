@@ -10,6 +10,8 @@
 
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+<h3>wander</h3>
+
 <div x-data="app">
 	<table @keyup.up.window="move('up')" @keyup.down.window="move('down')" @keyup.right.window="move('right')" @keyup.left.window="move('left')" tabindex="1">
 		<template x-for="(row,idx) in plate" :key="idx">
@@ -21,9 +23,14 @@
 		</template>
 	</table>
 
-	<div id="whisper" x-show="showText" x-transition:leave.duration.5000ms>
- 	<span x-text="whisper" :class="{ 'opacity-0': !showText, 'opacity-100': showText }" x-transition></span>
+	<div class="fadeDiv">
+		<div class="fade-overlay-top"></div>
+	 	<span x-html="whisper"></span>
 	</div>
+
+	<footer>
+	<p>made by <a href="https://www.raymondcamden.com">raymond camden</a></p>
+	</footer>
 
 </div>
 

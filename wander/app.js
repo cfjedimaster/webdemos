@@ -1,11 +1,47 @@
 /*
 The random things you hear when you are all alone... or are you?
+So these are some things I feel, some things that are random/creepy, 
+some things silly. 
 */
 const MSGS = [
 	"There is a rustle somewhere near you.",
 	"Does this ever end?",
 	"You almost see the sun through the clouds.",
-	"A bird flies by, but you loose sight of it quickly."
+	"A bird flies by, but you lose sight of it quickly.",
+	"Is there anybody here?",
+	"You can't remember what day it is.",
+	"You can still see their eyes.",
+	"You can still remember their smell.",
+	"They are better off without you.",
+	"It will get better soon.",
+	"It's almost over.",
+	"This is never going to end.",
+	"This has to end, right?",
+	"Is the sun setting?",
+	"You hum to yourself.",
+	"Your muscles are cramping.",
+	"When was the last time you ate?",
+	"Why aren't I thirsty?",
+	"Was that cat over there?",
+	"It's hard to breathe.",
+	"Maybe you can just stop?",
+	"Is there something over there?",
+	"You want to scream.",
+	"You want to laugh.",
+	"To the east, the sun may be brighter?",
+	"To the south, you think you see mountains.",
+	"Is that a forest on the western horizon?",
+	"The moon is rising.",
+	"North of you is something different.",
+	"Things were different back then.",
+	"You can do this.",
+	"Where is everyone?",
+	"I'm happy I'm here.",
+	"I wish I wasn't here.",
+	"I wish you were here instead of me.",
+	"The end is in sight.",
+	"Don't give up.",
+	"I want to give up."
 ];
 
 document.addEventListener('alpine:init', () => {
@@ -19,7 +55,6 @@ document.addEventListener('alpine:init', () => {
 		plate:[],
 		plateLocation: [0, 0],
 		playerLocation:null,
-		showText:false,
 		whisper:'',
 		async init() {
 			this.db = await this.setupDb();
@@ -27,7 +62,7 @@ document.addEventListener('alpine:init', () => {
 			this.playerLocation = [ Math.floor(this.PLATE_SIZE.width/2), Math.floor(this.PLATE_SIZE.height/2) ];
 			this.plate = await this.getPlate(this.plateLocation);
 			// start initial hb, after this it's called with a random interval
-			setTimeout(() => { this.whisperHeartBeat() }, 30 * 10);
+			setTimeout(() => { this.whisperHeartBeat() }, 30 * 1000);
 		},
 		async setupDb() {
 		  return new Promise((resolve, reject) => {
@@ -35,16 +70,16 @@ document.addEventListener('alpine:init', () => {
 			let request = indexedDB.open('wander', 1);
 
 			request.onerror = event => {
-			alert('Error Event, check console');
-			console.error(event);
+				alert('Error Event, check console');
+				console.error(event);
 			}
 		
 			request.onupgradeneeded = event => {
-			console.log('idb onupgradeneeded firing');
+				console.log('idb onupgradeneeded firing');
 
-			let db = event.target.result;
+				let db = event.target.result;
 
-			let objectStore = db.createObjectStore('plates', { keyPath: 'location' });
+				let objectStore = db.createObjectStore('plates', { keyPath: 'location' });
 			};
 			
 			request.onsuccess = event => {
@@ -129,7 +164,7 @@ document.addEventListener('alpine:init', () => {
 		async move(dir) {
 			console.log('move',dir, 'player at ', this.playerLocation);
 
-			if(getRandomIntInclusive(1,10) < 3) this.whisperMessage("Your feet are hurting.");
+			if(getRandomIntInclusive(1,10) < 2) this.whisperMessage("Your feet are hurting.");
 			
 			/*
 			we need to check for an obstacle block (then end of plate)
@@ -269,18 +304,19 @@ document.addEventListener('alpine:init', () => {
 			});
 		},
 		whisperMessage(s) {
-			this.whisper = s;
-			this.showText = true;
-			this.$nextTick(() => {
-					this.showText = false;
-			});
+			/*
+			if 5 lines, delete one
+			*/
+			let lines = this.whisper.split('\n');
+			if(lines.length >= 5) lines.shift();
+			this.whisper = lines.join('\n');
+			this.whisper += s + '<br>\n';
 		},
 		whisperHeartBeat() {
-			console.log('running whisper hb');
 			let msg = MSGS[getRandomIntInclusive(0, MSGS.length-1)];
-			console.log('selected msg', msg);
+			console.log('selected msg', msg, new Date());
 			this.whisperMessage(msg);
-			setTimeout(() => { this.whisperHeartBeat() }, getRandomIntInclusive(30,90) * 100);
+			setTimeout(() => { this.whisperHeartBeat() }, getRandomIntInclusive(30,90) * 1000);
 		}
   }))
 });

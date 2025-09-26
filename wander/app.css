@@ -18,3 +18,27 @@ th, td {
 	margin-left: 30px;
 	margin-top: 10px;
 }
+
+.fadeDiv {
+  position: relative; 
+  height: 200px; 
+  overflow-y: auto; 
+  padding: 20px;
+}
+
+.fade-overlay-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px; /* Adjust this value to control the fade area height */
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none; 
+  z-index: 1; 
+}
+
+footer {
+	a {
+		color: black;
+	}
+}
