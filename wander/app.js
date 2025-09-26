@@ -22,7 +22,7 @@ const MSGS = [
 	"Your muscles are cramping.",
 	"When was the last time you ate?",
 	"Why aren't I thirsty?",
-	"Was that cat over there?",
+	"Was that a cat over there?",
 	"It's hard to breathe.",
 	"Maybe you can just stop?",
 	"Is there something over there?",
