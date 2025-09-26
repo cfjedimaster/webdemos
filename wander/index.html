@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Wander</title>
+	<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<div x-data="app">
+	<table @keyup.up.window="move('up')" @keyup.down.window="move('down')" @keyup.right.window="move('right')" @keyup.left.window="move('left')" tabindex="1">
+		<template x-for="(row,idx) in plate" :key="idx">
+			<tr>
+				<template x-for="(col,idx2) in row" :key="idx2">
+					<td><span x-text="col"></span></td>
+				</template>
+			</tr>
+		</template>
+	</table>
+
+	<div id="whisper" x-show="showText" x-transition:leave.duration.5000ms>
+ 	<span x-text="whisper" :class="{ 'opacity-0': !showText, 'opacity-100': showText }" x-transition></span>
+	</div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

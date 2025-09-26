@@ -1,0 +1,20 @@
+[x-cloak] { display: none !important; }
+
+table {
+	margin-left: 30px;
+	margin-top: 30px;
+	border-collapse: collapse;
+	border: 1px solid black;
+}
+
+th, td {
+	padding: 5px; 
+	width: 15px;
+	height: 15px;
+	text-align: center;
+}
+
+#whisper {
+	margin-left: 30px;
+	margin-top: 10px;
+}
