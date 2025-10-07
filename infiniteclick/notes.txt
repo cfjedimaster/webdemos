@@ -1,0 +1,9 @@
+10/6/2025, 11am
+manage button is there, need to write logic for it
+
+10/7
+automation is done, and makes new business
+
+i think... i think that may be it
+
+add big # support to shiny objects

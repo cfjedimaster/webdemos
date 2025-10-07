@@ -1,0 +1,22 @@
+body {
+	margin: 20px;
+}
+
+.grid-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+}
+
+.industries {
+	width: 800px;
+}
+
+.message {
+	padding-left: 50px;
+	font-style: italic;
+}
+
+button {
+	width: 120px;
+}

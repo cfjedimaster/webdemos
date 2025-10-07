@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+	<link rel="stylesheet" href="app.css">
+</head>
+<body>
+	
+<h2>Infinite Click</h2>
+<div x-data="app">
+	<p>
+	<strong>Wealth: </strong> <span x-text="shinyObjects"></span>
+	<span x-text="message" class="message"></span>
+	</p>
+
+	<template x-for="industry in industries">
+		<div class="grid-container industries">
+			<strong x-text="industry.count + ' ' + industry.name"></strong>
+			<!-- for buttons -->
+			<div>
+			<button @click="clickIndustry(industry)" x-text="industry.enabled?'Run':'Working'" :disabled="!industry.enabled"></button>
+			<!--
+			Now for the complex part. We will render two additional buttons, based on certain circumstances.
+			First, at a threshold we allow you to buy a manager for that industry. This button will show up
+			when you have ... shoot, I just realized something - brb
+
+			Ok, 3 buttons, one to buy a new count 
+			one to buy manager (auto clicker) 
+			one to buy speed 
+
+			-->
+			<button @click="buyIndustry(industry)">Buy</button>
+			<!--
+			Management logic... at least 10 count? maybe 100? lets do with 100, i'll make it a variable eventually
+			doing 10 though for quick testing
+			-->
+			<template x-if="industry.count &gt;= automationTrigger">
+				<button @click="buyAutomation(industry)" :disabled="industry.managed">Automate</button>
+			</template>
+			</div>
+		</div>
+	</template>
+</div>
+
+<script src="app.js" type="module"></script>
+<script src="//unpkg.com/alpinejs" defer></script>
+</body>
+</html>
