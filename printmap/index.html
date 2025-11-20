@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Map Test</title>
+</head>
+<body>
+    
+    <h2>Map Demo</h2> 
+
+    <div id="map" style="height: 500px; width: 500px;"></div>
+    
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3hC35ehz1oAfUll7q7qzUlPa27Gz5g5g&loading=async&callback=initMap">
+</script>
+<script>
+let map;
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: 30.216667, lng: -92.033333 },
+    zoom: 8,
+    });
+}
+</script>
+</body>
+</html>
