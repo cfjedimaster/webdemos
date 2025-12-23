@@ -7,7 +7,7 @@ import pluralize from "https://cdn.skypack.dev/pluralize";
 const CONSTANTS = {
 	industryTrigger: 10,
 	automationTrigger: 10,
-	baseGain: 10000
+	baseGain: 1000
 };
 
 document.addEventListener('alpine:init', () => {
@@ -22,7 +22,7 @@ document.addEventListener('alpine:init', () => {
 			setInterval(() => { this.heartBeat() }, 1000);
 		},
 		numFormat(x) {
-			return formatLargeNumber(x.asIntN());
+			return formatLargeNumber(Number(BigInt.asIntN(64,x)));
 		},
 		heartBeat() {
 			console.log('💓');
