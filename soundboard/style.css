@@ -1,0 +1,38 @@
+:root {
+  --primary-color: #4a90e2;
+  --bg-color: #f5f7fa;
+  --text-color: #333;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.container {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+audio {
+  width: 100%;
+  margin-bottom: 2rem;
+}
