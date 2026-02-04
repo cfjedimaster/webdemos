@@ -21,7 +21,7 @@
         <sl-card class="card-header" :class="{'bad': card.sentiment < -0.5, 'good': card.sentiment > 0.5}">
           <div slot="header">
             <span x-text="card.term"></span>
-            <sl-icon-button name="trash" label="Delete" @click="deleteTerm(card.term)"></sl-icon-button>
+            <sl-icon-button name="trash" label="Delet Term" title="Delete Term" @click="deleteTerm(card.term)"></sl-icon-button>
           </div>
           <p>
             Sentiment: <span x-text="card.sentiment"></span>

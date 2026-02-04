@@ -37,7 +37,7 @@ document.addEventListener('alpine:init', () => {
                 // we need to show a modal so they can click to confirm, and navigator.userActivation.isActive will be true
                this.$refs.dlDialog.show();
             } else {
-                this.makeSession();
+                await this.makeSession();
             }
             console.log('Model availability: ', available);
             setInterval(() => { this.heartBeat() }, HB_TIME);
