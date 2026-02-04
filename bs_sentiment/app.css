@@ -58,3 +58,11 @@ main {
 .card-header sl-icon-button {
   font-size: var(--sl-font-size-medium);
 }
+
+sl-card.bad::part(base) {
+  background-color: #ef4444;
+}
+
+sl-card.good::part(base) {
+  background: #127035;
+}
