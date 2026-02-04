@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" class="sl-theme-dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bluesky Sentiment Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/dark.css" />
+  <link rel="stylesheet" href="app.css" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
+</head>
+<body x-data="app">
+  <header class="header">
+    <h1 class="header__title">Bluesky Sentiment Dashboard</h1>
+    <span x-text="running ? 'Searching and Analyzing...' : ''"></span>
+    <sl-button variant="primary" @click="showAddTerm">Add Term</sl-button>
+  </header>
+  <main>
+    <div id="dashboard-content">
+      <template x-for="card in cards" :key="card.term">
+        <sl-card class="card-header">
+          <div slot="header">
+            <span x-text="card.term"></span>
+            <sl-icon-button name="trash" label="Delete" @click="deleteTerm(card.term)"></sl-icon-button>
+          </div>
+          <p>
+            Sentiment: <span x-text="card.sentiment"></span>
+          </p>
+          <p>
+            Total: <span x-text="card.total"></span>
+          </p>
+          <p>
+            Latest: <span x-text="formatDate(card.latest)"></span>
+          </p>
+          <p>
+            Earliest: <span x-text="formatDate(card.earliest)"></span>
+          </p>
+        </sl-card>
+      </template>
+    </div>
+  </main>
+
+  <sl-dialog label="Add Term" @closed="resetForm" x-ref="addTermDialog">
+    <p>
+    <sl-input x-model="term" placeholder="Enter a term" x-model="term"></sl-input>
+    </p>
+    <p>
+    <sl-button variant="primary" @click="addTerm">Add</sl-button>
+    <sl-button variant="secondary" @click="resetForm">Cancel</sl-button>
+    </p>
+  </sl-dialog>
+
+  <sl-dialog label="Model Warning" @closed="closeWarningDialog" x-ref="dlDialog">
+    <p>
+      This is your first time using the Chrome Prompt API. In order to use it, a download will be required. 
+      This can take a few minutes, but will only happen once. 
+    </p>
+    <p>
+    <sl-button variant="primary" @click="closeWarningDialog">Ok!</sl-button>
+    </p>
+  </sl-dialog>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

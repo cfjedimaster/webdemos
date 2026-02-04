@@ -1,0 +1,60 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #1e293b;
+  color: #f1f5f9;
+  font-family: var(--sl-font-sans);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: #374151;
+  border-bottom: 1px solid #4b5563;
+  flex-shrink: 0;
+}
+
+.header__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+main {
+  flex: 1;
+  padding: 1.5rem;
+  overflow: auto;
+}
+
+#dashboard-content {
+  /* Empty container for JS-rendered Shoelace cards */
+  min-height: 200px;
+}
+
+.card-header {
+  max-width: 300px;
+  padding: var(--sl-spacing-medium);
+}
+
+.card-header [slot='header'] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-header h3 {
+  margin: 0;
+}
+
+.card-header sl-icon-button {
+  font-size: var(--sl-font-size-medium);
+}
