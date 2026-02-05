@@ -86,7 +86,7 @@ document.addEventListener('alpine:init', () => {
         },
         closeWarningDialog() {
             this.$refs.dlDialog.hide();
-            this.makeSession();
+            await this.makeSession();
         },
         async heartBeat() {
             if(this.running) return;
