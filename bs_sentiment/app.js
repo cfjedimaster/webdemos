@@ -84,7 +84,7 @@ document.addEventListener('alpine:init', () => {
             this.term = '';
             this.$refs.addTermDialog.hide();
         },
-        closeWarningDialog() {
+        async closeWarningDialog() {
             this.$refs.dlDialog.hide();
             await this.makeSession();
         },
