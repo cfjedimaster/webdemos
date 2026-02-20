@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Maze Crawler</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="ui">
+    <h1>3D Maze Crawler</h1>
+    <div id="controls">
+      <kbd>↑</kbd> forward &nbsp; <kbd>↓</kbd> back &nbsp; <kbd>←</kbd> turn left &nbsp; <kbd>→</kbd> turn right
+    </div>
+  </div>
+  <canvas id="canvas"></canvas>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>

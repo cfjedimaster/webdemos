@@ -1,0 +1,46 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  overflow: hidden;
+  background: #1a1a24;
+  font-family: system-ui, sans-serif;
+}
+
+#canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+#ui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+  color: #e8e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+#ui h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+#controls {
+  font-size: 0.85rem;
+  opacity: 0.95;
+}
+
+#controls kbd {
+  display: inline-block;
+  padding: 0.2em 0.5em;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  margin: 0 0.1em;
+}
