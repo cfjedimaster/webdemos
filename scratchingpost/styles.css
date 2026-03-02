@@ -1,0 +1,251 @@
+/* ===== The Scratching Post - Pink Sparkly Theme ===== */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  --pink-50: #fdf2f8;
+  --pink-100: #fce7f3;
+  --pink-200: #fbcfe8;
+  --pink-300: #f9a8d4;
+  --pink-400: #f472b6;
+  --pink-500: #ec4899;
+  --pink-600: #db2777;
+  --pink-700: #be185d;
+  --pink-800: #9d174d;
+  --pink-900: #831843;
+  --glitter: rgba(255, 255, 255, 0.6);
+  --sparkle: rgba(255, 182, 193, 0.9);
+  --shadow-pink: 0 4px 14px rgba(236, 72, 153, 0.25);
+  --shadow-glitter: 0 0 20px rgba(255, 182, 193, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(135deg, var(--pink-100) 0%, var(--pink-200) 25%, #fce7f3 50%, var(--pink-200) 75%, var(--pink-100) 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+  min-height: 100vh;
+  color: var(--pink-900);
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Sparkle overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, var(--glitter), transparent),
+    radial-gradient(2px 2px at 40px 70px, var(--sparkle), transparent),
+    radial-gradient(2px 2px at 50px 160px, var(--glitter), transparent),
+    radial-gradient(2px 2px at 90px 40px, var(--sparkle), transparent),
+    radial-gradient(2px 2px at 130px 80px, var(--glitter), transparent);
+  background-size: 200px 200px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.7;
+}
+
+/* ===== Layout ===== */
+.app {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Header ===== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(180deg, rgba(253, 242, 248, 0.98) 0%, rgba(252, 231, 243, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--pink-300);
+  box-shadow: var(--shadow-pink);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  gap: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--pink-800);
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+
+.logo:hover {
+  color: var(--pink-600);
+}
+
+.logo-icon {
+  font-size: 1.75rem;
+  filter: drop-shadow(0 0 6px var(--pink-400));
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav a {
+  color: var(--pink-700);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  border-radius: 9999px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav a:hover {
+  background: var(--pink-200);
+  color: var(--pink-800);
+}
+
+/* ===== Main feed ===== */
+.main {
+  flex: 1;
+  padding: 1rem 0;
+}
+
+.feed-title {
+  padding: 0 1rem 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--pink-800);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feed-title .sparkle {
+  font-size: 1.25rem;
+  animation: twinkle 1.5s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+/* ===== Post card web component ===== */
+post-card {
+  display: block;
+  margin: 0 1rem 0.75rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(253, 242, 248, 0.98) 100%);
+  border: 2px solid var(--pink-200);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-pink), 0 0 0 1px rgba(236, 72, 153, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+post-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glitter), 0 6px 20px rgba(236, 72, 153, 0.2);
+}
+
+.post-card-inner {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.post-avatar {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink-300), var(--pink-400));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+  border: 2px solid var(--pink-200);
+}
+
+.post-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.post-display-name {
+  font-weight: 800;
+  color: var(--pink-800);
+  font-size: 0.95rem;
+}
+
+.post-handle {
+  color: var(--pink-500);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.post-time {
+  color: var(--pink-400);
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+
+.post-content {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--pink-900);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.post-actions {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--pink-100);
+}
+
+.post-actions span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--pink-500);
+  font-weight: 600;
+}
+
+.post-actions span::before {
+  font-size: 1rem;
+}
+
+.post-actions .replies::before { content: '💬'; }
+.post-actions .reposts::before { content: '🔁'; }
+.post-actions .likes::before { content: '❤️'; }
