@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galactic Feline Adventures</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Using CDN for js-yaml to easily parse frontmatter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <!-- Using CDN for marked to easily parse markdown body -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div id="game-container">
+        <div id="output">
+            <!-- Game text will appear here -->
+        </div>
+        <div id="input-area">
+            <span id="prompt">&gt;</span>
+            <input type="text" id="command-input" autocomplete="off" autofocus spellcheck="false">
+        </div>
+    </div>
+
+    <script src="js/roomLoader.js"></script>
+    <script src="js/parser.js"></script>
+    <script src="js/engine.js"></script>
+</body>
+</html>

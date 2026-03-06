@@ -1,0 +1,95 @@
+:root {
+    --bg-color: #0d0d0d;
+    --text-color: #33ff33; /* Retro green */
+    --prompt-color: #ffcc00; /* Amber prompt */
+    --font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+#game-container {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 40px);
+}
+
+#output {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    line-height: 1.5;
+    font-size: 1.1rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-color) var(--bg-color);
+}
+
+/* Custom scrollbar for webkit */
+#output::-webkit-scrollbar {
+    width: 8px;
+}
+#output::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+#output::-webkit-scrollbar-thumb {
+    background-color: var(--text-color);
+    border-radius: 4px;
+}
+
+/* Markdown styling within output */
+#output p {
+    margin: 0 0 1em 0;
+}
+#output ul {
+    margin-top: 0;
+}
+#output strong {
+    color: #ffffff; /* Make strong text stand out a bit */
+}
+
+/* Command echo style */
+.command-echo {
+    color: var(--prompt-color);
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.error-text {
+    color: #ff3333;
+}
+
+#input-area {
+    display: flex;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid #333;
+}
+
+#prompt {
+    color: var(--prompt-color);
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+#command-input {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-family: var(--font-family);
+    font-size: 1.2rem;
+    outline: none;
+}
