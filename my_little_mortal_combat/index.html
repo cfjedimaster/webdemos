@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Little Mortal Combat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Sora:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <div class="blood-splats" aria-hidden="true">
+      <svg class="splat splat--1" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill="currentColor"
+          d="M60 5c8 12 22 8 28 20 6 14-4 28 8 38 10 8 24 4 22 18-2 12-18 14-28 8-14-8-12-26-24-32-10-4-24 2-30-10-6-14 8-28 24-42z"
+        />
+      </svg>
+      <svg class="splat splat--2" viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill="currentColor"
+          d="M50 2c15 8 20 24 12 38-6 10 4 22-6 32-8 8-22 6-32-4-8-8-6-22 2-32 8-10 4-24 24-34z"
+        />
+      </svg>
+      <svg class="splat splat--3" viewBox="0 0 90 80" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill="currentColor"
+          d="M45 0c12 6 18 20 10 32-8 12 2 24-8 34-10 10-26 8-34-6-6-12 2-26 14-36 10-8 8-20 18-24z"
+        />
+      </svg>
+    </div>
+
+    <header class="site-header">
+      <p class="tagline">Friendship is fatal</p>
+      <h1 class="logo">
+        <span class="logo__my">My Little</span>
+        <span class="logo__mk">Mortal Combat</span>
+      </h1>
+    </header>
+
+    <main class="main">
+      <section class="panel panel--hero" aria-labelledby="welcome-heading">
+        <h2 id="welcome-heading" class="panel__title">Choose your champion</h2>
+        <p class="panel__lede">
+          Name your pony and step into the arena. The pasture has never been this
+          <em>personal</em>.
+        </p>
+
+        <form class="form-new" action="#" method="get">
+          <div class="field">
+            <label class="field__label" for="pony-name">Pony name</label>
+            <input
+              class="field__input"
+              type="text"
+              id="pony-name"
+              name="pony"
+              placeholder="e.g. Buttercup the Destroyer"
+              autocomplete="nickname"
+            />
+          </div>
+          <button type="submit" class="btn btn--primary">Enter the arena</button>
+        </form>
+      </section>
+
+      <section class="panel panel--continue" aria-labelledby="continue-heading">
+        <h2 id="continue-heading" class="panel__title panel__title--small">Or continue</h2>
+        <p class="panel__hint">Pick up where you left off—same sparkle, new bruises.</p>
+        <ul class="save-slots">
+          <li class="save-slot save-slot--empty">
+            <span class="save-slot__label">No saved pony yet</span>
+            <span class="save-slot__meta">Your journey starts above</span>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>MLMC · Not affiliated with any actual ponies or kombats</p>
+    </footer>
+  </body>
+</html>
