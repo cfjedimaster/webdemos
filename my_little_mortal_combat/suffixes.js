@@ -58,3 +58,5 @@ const suffixes = [
   "Hollowhoof",
   "Nighttrot",
 ];
+
+export { suffixes };
