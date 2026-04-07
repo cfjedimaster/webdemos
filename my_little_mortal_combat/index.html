@@ -212,7 +212,7 @@
 				</section>
 			</main>
 		
-			<dialog class="fight-result-dialog" x-ref="fight-result-dialog" aria-labelledby="fight-result-title">
+			<dialog class="fight-result-dialog" x-ref="fight-result-dialog" aria-labelledby="fight-result-title" @close="onFightResultDialogClosed">
 				<div class="fight-result-dialog__panel" :class="{'fight-result-dialog__panel--victory': pcPony.currentHp > 0, 'fight-result-dialog__panel--defeat': pcPony.currentHp <= 0}">
 				<template x-if="pcPony.currentHp > 0">
 				<h2 id="fight-result-title" class="fight-result-dialog__title fight-result-dialog__title--victory">
@@ -228,7 +228,7 @@
 					1. On the panel div above, swap fight-result-dialog__panel--victory for fight-result-dialog__panel--defeat
 				-->
 				<p class="fight-result-dialog__text" id="fight-result-message" x-text="fightResultMessage"></p>
-				<button type="button" class="btn fight-result-dialog__btn" id="fight-result-dismiss">
+				<button type="button" class="btn fight-result-dialog__btn" id="fight-result-dismiss" @click.prevent="$refs['fight-result-dialog'].close()">
 					Return to arena
 				</button>
 				</div>

@@ -64,12 +64,26 @@ Alpine.data('app', () => ({
 		},
 		fight() {
 			console.log('fight clicked');
-			if(!this.selectedOpponentIdx) return;
+			if (this.selectedOpponentIdx === null || this.selectedOpponentIdx === undefined) return;
 			this.selectedOpponent = this.opponents[this.selectedOpponentIdx];
 			console.log(this.selectedOpponent);
 			this.view = 'battle';
 		},
+		onFightResultDialogClosed() {
+			// lets also clean up from the last battle
+			this.pcPony.currentHp = this.pcPony.hp;
+			this.pcPony.hpPercentage = 100;
+			this.round = 1;
+			this.battleLog = [];
+			this.fightResultMessage = '';
+			this.playerMove = null;
+			this.view = 'main';
+			this.selectedOpponentIdx = null;
+			this.makeOpponentList();
+		},
 		move(type) {
+			// ai added the line right below, pretty sure i dont need it
+			if (this.pcPony.currentHp <= 0 || this.selectedOpponent.currentHp <= 0) return;
 			console.log(`pony did ${type}`);
 			let npcMove = getRandomArr(NPCMoves);
 			console.log(`npc did ${npcMove}`);
@@ -113,16 +127,14 @@ Alpine.data('app', () => ({
 			if(this.pcPony.currentHp <= 0 || this.selectedOpponent.currentHp <= 0) {
 				let purse = this.selectedOpponent.level * 100;
 				if(this.pcPony.currentHp <= 0) {
-					this.$refs['fight-result-dialog'].showModal();
 					// gold is 10% of what you would have gotten if you had won
 					purse = Math.floor(this.selectedOpponent.level * 0.1);
 					this.fightResultMessage = `You have been defeated. Better luck next time! Your embarassing performance earns you a small portion of the purse: ${purse} gold.`;
 				} else if(this.selectedOpponent.currentHp <= 0) {
 					this.fightResultMessage = `You have defeated your opponent. Congratulations! Your victory earns you ${purse} gold.`;
-					this.$refs['fight-result-dialog'].showModal();
 				}
 				this.pcPony.gold += purse;
-				this.view = 'main';
+				this.$refs['fight-result-dialog'].showModal();
 			}
 		},
 	}))
