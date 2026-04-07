@@ -13,6 +13,7 @@ Alpine.data('app', () => ({
 			level:1,
 			currentHp: 50, 
 			hp: 50, 
+			hpPercentage: 100,
 			exp:0,
 			gold:0,
 			attack: 1, 
@@ -25,6 +26,7 @@ Alpine.data('app', () => ({
 		},
 		selectedOpponentIdx: null,
 		battleLog: [],
+		fightResultMessage: '',
 		playerMove: null, 
 		opponents: [],
 		init() {
@@ -49,6 +51,7 @@ Alpine.data('app', () => ({
 				level: 1, 
 				currentHp: 50, 
 				hp: 50, 
+				hpPercentage: 100,
 				bio
 			}
 			return opp;
@@ -95,20 +98,31 @@ Alpine.data('app', () => ({
 			if(result === 'win') {
 				resultMsg += `You win the exchange. They take ${dmg} damage.`;
 				this.selectedOpponent.currentHp -= dmg;
+				this.selectedOpponent.hpPercentage = this.selectedOpponent.currentHp / this.selectedOpponent.hp * 100;
 			}
 			if(result === 'lose') {
 				resultMsg += `They win the exchange. You take ${dmg} damage.`;
 				this.pcPony.currentHp -= dmg;
+				this.pcPony.hpPercentage = this.pcPony.currentHp / this.pcPony.hp * 100;
 			}
 			if(result === 'draw') resultMsg += 'Draw - no damage.';
 
 			this.round++;
 			this.battleLog.push(resultMsg);
 
-			// todo - handle victory/loss
-			if(result === 'win') {
-				// give exp + gold
-				// show the right modal 
+			if(this.pcPony.currentHp <= 0 || this.selectedOpponent.currentHp <= 0) {
+				let purse = this.selectedOpponent.level * 100;
+				if(this.pcPony.currentHp <= 0) {
+					this.$refs['fight-result-dialog'].showModal();
+					// gold is 10% of what you would have gotten if you had won
+					purse = Math.floor(this.selectedOpponent.level * 0.1);
+					this.fightResultMessage = `You have been defeated. Better luck next time! Your embarassing performance earns you a small portion of the purse: ${purse} gold.`;
+				} else if(this.selectedOpponent.currentHp <= 0) {
+					this.fightResultMessage = `You have defeated your opponent. Congratulations! Your victory earns you ${purse} gold.`;
+					this.$refs['fight-result-dialog'].showModal();
+				}
+				this.pcPony.gold += purse;
+				this.view = 'main';
 			}
 		},
 	}))

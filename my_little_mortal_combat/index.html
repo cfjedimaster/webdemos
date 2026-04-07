@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pen</title>
+    <title>My Little Mortal Combat</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Sora:wght@400;500;600&display=swap" rel="stylesheet" />
 	</head>
   <body>
 
-		<div class="page-bg" aria-hidden="true"></div>
+	<div class="page-bg" aria-hidden="true"></div>
     <div class="blood-splats" aria-hidden="true">
       <svg class="splat splat--1" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -33,214 +33,210 @@
       </svg>
     </div>
 		
-		<div x-data="app" x-cloak>
+	<div x-data="app" x-cloak>
 
-				<div x-show="view === 'intro'">
+		<div x-show="view === 'intro'">
 
-			    <header class="site-header">
-			      <p class="tagline">Friendship is fatal</p>
-			      <h1 class="logo">
-			        <span class="logo__my">My Little</span>
-			        <span class="logo__mk">Mortal Combat</span>
-			      </h1>
-			    </header>
+			<header class="site-header">
+				<p class="tagline">Friendship is fatal</p>
+				<h1 class="logo">
+				<span class="logo__my">My Little</span>
+				<span class="logo__mk">Mortal Combat</span>
+				</h1>
+			</header>
 			
-			    <main class="main">
-			      <section class="panel panel--hero" aria-labelledby="welcome-heading">
-			        <h2 id="welcome-heading" class="panel__title">Choose your champion</h2>
-			        <p class="panel__lede">
-			          Name your pony and step into the arena. The pasture has never been this
-			          <em>personal</em>.
-			        </p>
-			
-			        <form class="form-new" action="#" method="get">
-			          <div class="field">
-			            <label class="field__label" for="pony-name">Pony name</label>
-			            <input
-			              class="field__input"
-			              type="text"
-			              id="pony-name"
-			              name="pony"
-			              placeholder="e.g. Buttercup the Destroyer"
-			              autocomplete="nickname"
-										x-model="pcPony.name"
-			            />
-			          </div>
-			          <button type="submit" class="btn btn--primary" @click.prevent="enterArena">Enter the arena</button>
-			        </form>
-			      </section>
-			
-			      <section class="panel panel--continue" aria-labelledby="continue-heading">
-			        <h2 id="continue-heading" class="panel__title panel__title--small">Or continue</h2>
-			        <p class="panel__hint">Pick up where you left off—same sparkle, new bruises.</p>
-			        <ul class="save-slots">
-			          <li class="save-slot save-slot--empty">
-			            <span class="save-slot__label">No saved pony yet</span>
-			            <span class="save-slot__meta">Your journey starts above</span>
-			          </li>
-			        </ul>
-			      </section>
-			    </main>
+			<main class="main">
+				<section class="panel panel--hero" aria-labelledby="welcome-heading">
+				<h2 id="welcome-heading" class="panel__title">Choose your champion</h2>
+				<p class="panel__lede">
+					Name your pony and step into the arena. The pasture has never been this
+					<em>personal</em>.
+				</p>
+		
+				<form class="form-new" action="#" method="get">
+					<div class="field">
+					<label class="field__label" for="pony-name">Pony name</label>
+					<input
+						class="field__input"
+						type="text"
+						id="pony-name"
+						name="pony"
+						placeholder="e.g. Buttercup the Destroyer"
+						autocomplete="nickname"
+									x-model="pcPony.name"
+					/>
+					</div>
+					<button type="submit" class="btn btn--primary" @click.prevent="enterArena">Enter the arena</button>
+				</form>
+				</section>
+		
+				<section class="panel panel--continue" aria-labelledby="continue-heading">
+				<h2 id="continue-heading" class="panel__title panel__title--small">Or continue</h2>
+				<p class="panel__hint">Pick up where you left off—same sparkle, new bruises.</p>
+				<ul class="save-slots">
+					<li class="save-slot save-slot--empty">
+					<span class="save-slot__label">No saved pony yet</span>
+					<span class="save-slot__meta">Your journey starts above</span>
+					</li>
+				</ul>
+				</section>
+			</main>
 					
-				</div>
-
-				<div x-show="view === 'main'">
-			    <header class="dash-header">
-			      <p class="dash-header__title">The arena</p>
-			    </header>
-			
-			    <main class="dashboard">
-			      <section class="panel panel--dash-stats" aria-labelledby="pony-heading">
-			        <h1 id="pony-heading" class="dash-player-name" x-text="pcPony.name"></h1>
-			
-			        <div class="dash-meta">
-			          <div class="dash-meta__item">
-			            <span class="dash-meta__label">Level</span>
-			            <span class="dash-meta__value" x-text="pcPony.level"></span>
-			          </div>
-			          <div class="dash-meta__item">
-			            <span class="dash-meta__label">Gold</span>
-			            <span class="dash-meta__value" x-text="pcPony.gold"></span>
-			          </div>
-			        </div>
-			
-			        <h2 class="dash-section-title">Skills</h2>
-			        <p class="dash-section-hint">Spend gold to train.</p>
-			
-			        <ul class="skill-train-list">
-			          <li class="skill-train">
-			            <span class="skill-train__name">Attack</span>
-			            <span class="skill-train__rank" aria-label="Attack level" x-text="pcPony.attack"></span>
-			            <button type="button" class="btn btn--train">Train · 10 gold</button>
-			          </li>
-			          <li class="skill-train">
-			            <span class="skill-train__name">Defense</span>
-			            <span class="skill-train__rank" aria-label="Defense level" x-text="pcPony.defense"></span>
-			            <button type="button" class="btn btn--train">Train · 10 gold</button>
-			          </li>
-			          <li class="skill-train">
-			            <span class="skill-train__name">Strike a Pose</span>
-			            <span class="skill-train__rank" aria-label="Strike a Pose level" x-text="pcPony.pose"></span>
-			            <button type="button" class="btn btn--train">Train · 10 gold</button>
-			          </li>
-			        </ul>
-			      </section>
-			
-			      <section class="dash-opponents" aria-labelledby="opponents-heading">
-			        <h2 id="opponents-heading" class="dash-opponents__title">Pick a pony to fight</h2>
-			        <p class="dash-opponents__hint">Select a challenger, then let them have it.</p>
-			
-			        <form class="dash-opponents__form" action="battle.html" method="get">
-			          <div class="opponent-cards" role="radiogroup" aria-label="Opponents">
-									<template x-for="(opponent,x) in opponents">
-			            <label class="opponent-card">
-			              <input
-			                class="opponent-card__input"
-			                type="radio"
-			                name="opponent"
-			                :value="x"
-											
-											x-model="selectedOpponentIdx"
-			              />
-			              <span class="opponent-card__surface">
-			                <span class="opponent-card__name" x-text="opponent.name"></span>
-			                <span class="opponent-card__level">Level <span x-text="opponent.level"></span></span>
-			              </span>
-			            </label>
-									</template>
-			          </div>
-			
-			          <button type="submit" class="btn btn--fight" @click.prevent="fight">FIGHT!</button>
-			        </form>
-			      </section>
-			    </main>
-				
-				</div>
-
-				<div x-show="view === 'battle'">
-			    <header class="battle-header">
-			      <h1 class="battle-title">FIGHT!</h1>
-			      <p class="battle-header__label">Round <span class="battle-header__round-num" x-text="round"></span></p>
-			    </header>
-			
-			    <main class="battle-main">
-			      <div class="battle-arena-cards">
-			        <article class="battle-card battle-card--player" aria-labelledby="player-name">
-			          <h2 id="player-name" class="battle-card__name" x-text="pcPony.name"></h2>
-			          <div class="battle-card__hp">
-			            <span class="battle-card__hp-label">HP</span>
-			            <div class="battle-hp-bar" aria-hidden="true">
-			              <div class="battle-hp-bar__fill" style="width: 80%"></div>
-			            </div>
-			            <span class="battle-card__hp-values"><span x-text="pcPony.currentHp"></span> / <span x-text="pcPony.hp"></span></span>
-			          </div>
-			          <div class="battle-moves" role="group" aria-label="Your move">
-			            <button type="button" class="btn btn--battle-move" @click.prevent="move('attack')">Attack</button>
-			            <button type="button" class="btn btn--battle-move" @click.prevent="move('defend')">Defend</button>
-			            <button type="button" class="btn btn--battle-move" @click.prevent="move('vogue')">Vogue</button>
-			          </div>
-			        </article>
-			
-			        <article class="battle-card battle-card--opponent" aria-labelledby="opponent-name">
-			          <h2 id="opponent-name" class="battle-card__name" x-text="selectedOpponent.name"></h2>
-			          <div class="battle-card__hp">
-			            <span class="battle-card__hp-label">HP</span>
-			            <div class="battle-hp-bar" aria-hidden="true">
-			              <div class="battle-hp-bar__fill battle-hp-bar__fill--foe" style="width: 90%"></div>
-			            </div>
-			            <span class="battle-card__hp-values"><span x-text="selectedOpponent.currentHp"></span> / <span x-text="selectedOpponent.hp"></span></span>
-			          </div>
-			          <section class="battle-card__bio" aria-label="Opponent bio" id="opponent-bio">
-			            <p class="battle-card__bio-text" x-html="selectedOpponent.bio"></p>
-			          </section>
-			        </article>
-			      </div>
-			
-			      <section class="battle-log panel" aria-labelledby="battle-log-heading">
-			        <h2 id="battle-log-heading" class="battle-log__title">Battle log</h2>
-			        <p class="battle-log__rules">
-			          Rock-paper-scissors: <strong>Attack</strong> beats <strong>Vogue</strong>,
-			          <strong>Vogue</strong> beats <strong>Defend</strong>,
-			          <strong>Defend</strong> beats <strong>Attack</strong>. Same move = draw (no damage).
-			        </p>
-			        <ol class="battle-log__list">
-								<!--
-			          <li class="battle-log__entry">
-			            You used Defend. They used Attack. They win the exchange! You take 10 damage.
-			          </li>
-								-->
-								<template x-for="log in battleLog">
-			          <li class="battle-log__entry" x-text="log"></li>
-								</template>
-
-			        </ol>
-			      </section>
-			    </main>
-			
-			    <dialog class="fight-result-dialog" id="fight-result-dialog" aria-labelledby="fight-result-title">
-			      <div class="fight-result-dialog__panel fight-result-dialog__panel--victory">
-			        <h2 id="fight-result-title" class="fight-result-dialog__title fight-result-dialog__title--victory">
-			          Victory
-			        </h2>
-			        <!--
-			          Preview Defeat styling in static HTML:
-			          1. On the panel div above, swap fight-result-dialog__panel--victory for fight-result-dialog__panel--defeat
-			          2. Comment out the Victory <h2> and use:
-			             <h2 id="fight-result-title" class="fight-result-dialog__title fight-result-dialog__title--defeat">Defeat</h2>
-			        -->
-			        <p class="fight-result-dialog__text" id="fight-result-message">
-			          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur non nulla sit amet nisl tempus
-			          convallis quis ac lectus. Vivamus suscipit tortor eget felis porttitor volutpat. Pellentesque in
-			          ipsum id orci porta dapibus.
-			        </p>
-			        <button type="button" class="btn fight-result-dialog__btn" id="fight-result-dismiss">
-			          Return to arena
-			        </button>
-			      </div>
-			    </dialog>			
-					
-				</div>
 		</div>
+
+		<div x-show="view === 'main'">
+			<header class="dash-header">
+				<p class="dash-header__title">The arena</p>
+			</header>
+			
+			<main class="dashboard">
+				<section class="panel panel--dash-stats" aria-labelledby="pony-heading">
+				<h1 id="pony-heading" class="dash-player-name" x-text="pcPony.name"></h1>
+		
+				<div class="dash-meta">
+					<div class="dash-meta__item">
+					<span class="dash-meta__label">Level</span>
+					<span class="dash-meta__value" x-text="pcPony.level"></span>
+					</div>
+					<div class="dash-meta__item">
+					<span class="dash-meta__label">Gold</span>
+					<span class="dash-meta__value" x-text="pcPony.gold"></span>
+					</div>
+				</div>
+		
+				<h2 class="dash-section-title">Skills</h2>
+				<p class="dash-section-hint">Spend gold to train.</p>
+		
+				<ul class="skill-train-list">
+					<li class="skill-train">
+					<span class="skill-train__name">Attack</span>
+					<span class="skill-train__rank" aria-label="Attack level" x-text="pcPony.attack"></span>
+					<button type="button" class="btn btn--train">Train · 10 gold</button>
+					</li>
+					<li class="skill-train">
+					<span class="skill-train__name">Defense</span>
+					<span class="skill-train__rank" aria-label="Defense level" x-text="pcPony.defense"></span>
+					<button type="button" class="btn btn--train">Train · 10 gold</button>
+					</li>
+					<li class="skill-train">
+					<span class="skill-train__name">Strike a Pose</span>
+					<span class="skill-train__rank" aria-label="Strike a Pose level" x-text="pcPony.pose"></span>
+					<button type="button" class="btn btn--train">Train · 10 gold</button>
+					</li>
+				</ul>
+				</section>
+		
+				<section class="dash-opponents" aria-labelledby="opponents-heading">
+				<h2 id="opponents-heading" class="dash-opponents__title">Pick a pony to fight</h2>
+				<p class="dash-opponents__hint">Select a challenger, then let them have it.</p>
+		
+				<form class="dash-opponents__form" action="battle.html" method="get">
+					<div class="opponent-cards" role="radiogroup" aria-label="Opponents">
+					<template x-for="(opponent,x) in opponents">
+						<label class="opponent-card">
+							<input
+							class="opponent-card__input"
+							type="radio"
+							name="opponent"
+							:value="x"	
+							x-model="selectedOpponentIdx"
+							/>
+							<span class="opponent-card__surface">
+							<span class="opponent-card__name" x-text="opponent.name"></span>
+							<span class="opponent-card__level">Level <span x-text="opponent.level"></span></span>
+							</span>
+						</label>
+					</template>
+					</div>
+		
+					<button type="submit" class="btn btn--fight" @click.prevent="fight">FIGHT!</button>
+				</form>
+				</section>
+			</main>
+				
+		</div>
+
+		<div x-show="view === 'battle'">
+
+			<header class="battle-header">
+				<h1 class="battle-title">FIGHT!</h1>
+				<p class="battle-header__label">Round <span class="battle-header__round-num" x-text="round"></span></p>
+			</header>
+			
+			<main class="battle-main">
+				<div class="battle-arena-cards">
+				<article class="battle-card battle-card--player" aria-labelledby="player-name">
+					<h2 id="player-name" class="battle-card__name" x-text="pcPony.name"></h2>
+					<div class="battle-card__hp">
+					<span class="battle-card__hp-label">HP</span>
+					<div class="battle-hp-bar" aria-hidden="true">
+						<div class="battle-hp-bar__fill" :style="{width: pcPony.hpPercentage + '%'}"></div>
+					</div>
+					<span class="battle-card__hp-values"><span x-text="pcPony.currentHp"></span> / <span x-text="pcPony.hp"></span></span>
+					</div>
+					<div class="battle-moves" role="group" aria-label="Your move">
+					<button type="button" class="btn btn--battle-move" @click.prevent="move('attack')">Attack</button>
+					<button type="button" class="btn btn--battle-move" @click.prevent="move('defend')">Defend</button>
+					<button type="button" class="btn btn--battle-move" @click.prevent="move('vogue')">Vogue</button>
+					</div>
+				</article>
+		
+				<article class="battle-card battle-card--opponent" aria-labelledby="opponent-name">
+					<h2 id="opponent-name" class="battle-card__name" x-text="selectedOpponent.name"></h2>
+					<div class="battle-card__hp">
+					<span class="battle-card__hp-label">HP</span>
+					<div class="battle-hp-bar" aria-hidden="true">
+						<div class="battle-hp-bar__fill battle-hp-bar__fill--foe" :style="{width: selectedOpponent.hpPercentage + '%'}"></div>
+					</div>
+					<span class="battle-card__hp-values"><span x-text="selectedOpponent.currentHp"></span> / <span x-text="selectedOpponent.hp"></span></span>
+					</div>
+					<section class="battle-card__bio" aria-label="Opponent bio" id="opponent-bio">
+					<p class="battle-card__bio-text" x-html="selectedOpponent.bio"></p>
+					</section>
+				</article>
+				</div>
+		
+				<section class="battle-log panel" aria-labelledby="battle-log-heading">
+				<h2 id="battle-log-heading" class="battle-log__title">Battle log</h2>
+				<p class="battle-log__rules">
+					Rock-paper-scissors: <strong>Attack</strong> beats <strong>Vogue</strong>,
+					<strong>Vogue</strong> beats <strong>Defend</strong>,
+					<strong>Defend</strong> beats <strong>Attack</strong>. Same move = draw (no damage).
+				</p>
+				<ol class="battle-log__list">
+					<template x-for="log in battleLog">
+					<li class="battle-log__entry" x-text="log"></li>
+					</template>
+
+				</ol>
+				</section>
+			</main>
+		
+			<dialog class="fight-result-dialog" x-ref="fight-result-dialog" aria-labelledby="fight-result-title">
+				<div class="fight-result-dialog__panel" :class="{'fight-result-dialog__panel--victory': pcPony.currentHp > 0, 'fight-result-dialog__panel--defeat': pcPony.currentHp <= 0}">
+				<template x-if="pcPony.currentHp > 0">
+				<h2 id="fight-result-title" class="fight-result-dialog__title fight-result-dialog__title--victory">
+					Victory
+				</h2>
+				</template>
+				<template x-if="pcPony.currentHp <= 0">
+				<h2 id="fight-result-title" class="fight-result-dialog__title fight-result-dialog__title--defeat">
+					Defeat
+				</h2>
+				</template>
+				<!--
+					1. On the panel div above, swap fight-result-dialog__panel--victory for fight-result-dialog__panel--defeat
+				-->
+				<p class="fight-result-dialog__text" id="fight-result-message" x-text="fightResultMessage"></p>
+				<button type="button" class="btn fight-result-dialog__btn" id="fight-result-dismiss">
+					Return to arena
+				</button>
+				</div>
+			</dialog>			
+					
+		</div>
+
+	</div>
 
     <footer class="site-footer">
       <p>MLMC · Not affiliated with any actual ponies or kombats</p>
