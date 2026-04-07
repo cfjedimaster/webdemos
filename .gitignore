@@ -1,3 +1,7 @@
 .vscode
 CNAME
 node_modules
+# Local Netlify folder
+.netlify
+
+.DS_Store

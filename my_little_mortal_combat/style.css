@@ -345,6 +345,10 @@ body {
   text-transform: uppercase;
   color: var(--text-soft);
   opacity: 0.75;
+
+  a {
+    color: black;
+  }
 }
 
 /* Reduced motion */
