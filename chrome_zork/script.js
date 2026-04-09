@@ -131,27 +131,111 @@ class ZorkEngine {
   }
 }
 
+// AI Stuff
+async function getAIStatus() {
+	if(!window.LanguageModel) return 'unsupported';
+	return await LanguageModel.availability();
+}
+
+let $output, $gameoutput;
+let $session;
+let engine, lastResponse;
+
 document.addEventListener('DOMContentLoaded', async function() {
-  const res = await fetch('zork1.b64.txt');
-  const b64 = await res.text();
+
+    $output = document.querySelector('#output');
+    $gameoutput = document.querySelector('#gameoutput');
+
+
+    // First - can they do AI?
+	let canDoIt = await getAIStatus();
+	if(!canDoIt) {
+		alert("I'm sorry, but you can't run this demo.");
+		return;
+	}
+
+    // todo - may remove as it's near instant
+    $output.innerHTML = '<i>Loading Zork and preparing the game engine.</i>';
+
+    const res = await fetch('zork1.b64.txt');
+    const b64 = await res.text();
 	
-	// decode base64 → ArrayBuffer
-  const binary = atob(b64.trim());
-  const arrayBuffer = new ArrayBuffer(binary.length);
-  const view = new Uint8Array(arrayBuffer);
-  for (let i = 0; i < binary.length; i++) {
-    view[i] = binary.charCodeAt(i);
-  }
-	
-  const engine = new ZorkEngine();
-  engine.load(arrayBuffer);
+    const binary = atob(b64.trim());
+    const arrayBuffer = new ArrayBuffer(binary.length);
+    const view = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < binary.length; i++) {
+        view[i] = binary.charCodeAt(i);
+    }
+
+    engine = new ZorkEngine();
+    engine.load(arrayBuffer);
+
+    $output.innerHTML = '<i>Creating the AI session.</i>';
+	$session = await LanguageModel.create({
+		initialPrompts:[
+            { 
+                role: 'system', 
+                content: 
+                        `
+You are playing the classic text adventure game Zork. You will be given the current game output, and you will 
+respond with a single command to play the game. You will not explain your command, just give the command. 
+
+Remember to keep your commands concise and to the point, as if you were playing the game yourself. Do not include any extra text or explanations.
+                        `
+                }
+            ],		
+			monitor(m) {
+					m.addEventListener("downloadprogress", e => {
+						console.log(`Downloaded ${e.loaded * 100}%`);
+						if(e.loaded === 0 || e.loaded === 1) {
+							$output.innerHTML = '';
+							return;
+						}
+						$output.innerHTML = `Downloading AI model, currently at ${Math.floor(e.loaded * 100)}%`;
+					});
+				}		
+		});
+    $output.innerHTML = '<i>AI session created. Starting the game...</i>';
+
+    gameHeartBeat();
+
+    /*
   console.log(engine.getOutput()); // intro text
 
   let response = engine.send('open mailbox');
   console.log(response);
-
-  response = engine.send('take leaflet from mailbox');
-  console.log(response);
-
+*/
 
 });
+
+async function gameHeartBeat() {
+
+    console.log('in hb');
+    let gameResponse = engine.getOutput();
+    if(!gameResponse) gameResponse = lastResponse;
+
+    if(gameResponse) {
+        $gameoutput.value += gameResponse + '\n';
+        $gameoutput.scrollTop = $gameoutput.scrollHeight;
+
+            // Send the output to the AI and get a command back
+            /*
+            $session.send(gameOutput).then(command => {
+                if(command) {
+                    const response = engine.send(command);
+                    $gameoutput.value += `> ${command}\n`;
+                    $gameoutput.scrollTop = $gameoutput.scrollHeight;
+                }
+            });
+            */
+            let command = await $session.prompt(gameResponse);
+            lastResponse = engine.send(command);
+
+            $gameoutput.value += `> ${command}\n`;
+            $gameoutput.scrollTop = $gameoutput.scrollHeight;
+
+           console.log('Resp',command);
+           setTimeout(gameHeartBeat, 1000 * 4);
+    }
+ 
+}
