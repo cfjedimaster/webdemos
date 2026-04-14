@@ -6,6 +6,7 @@
 const THEMES = [
   {
     name: "Paws & Whiskers Pet Supply",
+    slug: "paws-whiskers-pet-supply",
     emoji: "🐾",
     tagline: "Treats, toys, and suspiciously happy goldfish.",
     barLabel: "Snacks moved (7-day)",
@@ -23,6 +24,7 @@ const THEMES = [
   },
   {
     name: "Bean There Café",
+    slug: "bean-there-cafe",
     emoji: "☕",
     tagline: "Espresso, empathy, and Wi-Fi passwords written in pencil.",
     barLabel: "Cups poured (week)",
@@ -40,6 +42,7 @@ const THEMES = [
   },
   {
     name: "OrbitWorks Space Snacks",
+    slug: "orbitworks-space-snacks",
     emoji: "🛰️",
     tagline: "Nutrition for people who say “nominal” about toast.",
     barLabel: "Pouches launched",
@@ -57,6 +60,7 @@ const THEMES = [
   },
   {
     name: "Pixel & Parchment Games",
+    slug: "pixel-parchment-games",
     emoji: "🎲",
     tagline: "Boards, bytes, and one haunted dice tower.",
     barLabel: "Sessions hosted",
@@ -74,6 +78,7 @@ const THEMES = [
   },
   {
     name: "Greenhouse Grumbles Nursery",
+    slug: "greenhouse-grumbles-nursery",
     emoji: "🪴",
     tagline: "Plants, pots, and passive-aggressive watering reminders.",
     barLabel: "Leaves high-fived",
@@ -91,6 +96,7 @@ const THEMES = [
   },
   {
     name: "Velocity Vinyl Gym",
+    slug: "velocity-vinyl-gym",
     emoji: "🏋️",
     tagline: "PRs, playlists, and protein powder in the HVAC.",
     barLabel: "Grunts logged",
@@ -108,6 +114,7 @@ const THEMES = [
   },
   {
     name: "Wobble & Sprocket Bike Co.",
+    slug: "wobble-sprocket-bike-co",
     emoji: "🚲",
     tagline: "Chains, spokes, and emotional support allen keys.",
     barLabel: "Flat fixes (week)",
@@ -125,6 +132,7 @@ const THEMES = [
   },
   {
     name: "Slice Theory Pizzeria Lab",
+    slug: "slice-theory-pizzeria-lab",
     emoji: "🍕",
     tagline: "R&D stands for “Ranch & Drama.”",
     barLabel: "Pies launched",
@@ -140,7 +148,212 @@ const THEMES = [
     blurb:
       "We tried AI-generated toppings. It suggested “whispered oregano.” We went outside and touched grass.",
   },
+  {
+    name: "Dog-Ear Books & Naps",
+    slug: "dog-ear-books-naps",
+    emoji: "📚",
+    tagline: "New releases, old coffee rings, and one chair nobody admits to.",
+    barLabel: "Pages sniffed (week)",
+    donutLabel: "Shelf mood by genre",
+    lineLabel: "Live bookmark anxiety",
+    tableTitle: "Overdue drama kings",
+    tableRows: ["Reader", "Days"],
+    names: ["Marginalia Marge", "Spoiler Steve", "Hardcover Hank", "Audiobook Ava", "Dewey Decimal Dan", "Late Fee Larry"],
+    kpiLabels: ["Ink sniff index", "Live whisper volume", "Dust jacket pride", "Staff recommendations"],
+    kpiLive: [0, 1],
+    categories: ["Fiction cope", "Self-help hope", "True crime side-eye", "Cookbooks (unopened)", "Maps to nowhere"],
+    barKeys: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    blurb:
+      "We added a “silent section.” Someone still sneezed like a paperback thunderclap. We’re calling it character development.",
+  },
+  {
+    name: "Spin Cycle Confessional Laundromat",
+    slug: "spin-cycle-laundromat",
+    emoji: "🧺",
+    tagline: "Quarters, dryers, and overheard breakups in surround sound.",
+    barLabel: "Loads judged (week)",
+    donutLabel: "Sock disappearance theories",
+    lineLabel: "Live dryer harmonics",
+    tableTitle: "Lint trap philosophers",
+    tableRows: ["Patron", "Wisdom"],
+    names: ["Bleach Brenda", "Delicates Derek", "Quarter Queen", "Static Cling Carl", "Fold-and-Go Fran", "Mystery Stain Stan"],
+    kpiLabels: ["Lost sock rate", "Live humidity gossip", "Quarter gravity", "Dryer sheet diplomacy"],
+    kpiLive: [1, 2],
+    categories: ["Aliens", "Cats", "Gremlins", "Quantum laundry", "Acceptance"],
+    barKeys: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    blurb:
+      "A dryer ate a hoodie drawstring and returned a paperclip. We framed it as “found art.” Insurance said no.",
+  },
+  {
+    name: "Glacier Grin Dental Spa",
+    slug: "glacier-grin-dental-spa",
+    emoji: "🦷",
+    tagline: "Smiles, drills, and magazines from 2014.",
+    barLabel: "Floss lies detected",
+    donutLabel: "Waiting-room dread mix",
+    lineLabel: "Live suction serenade",
+    tableTitle: "Patients by brave face",
+    tableRows: ["Patient", "Grit"],
+    names: ["Novocaine Nina", "Rinse-and-Spit Rick", "Molar Molly", "Wisdom Wendy", "Brace Face Bryce", "Gag Reflex Gary"],
+    kpiLabels: ["Mint fear index", "Live rinse drama", "Sticker stash", "X-ray optimism"],
+    kpiLive: [2, 3],
+    categories: ["Pop hits", "Smooth jazz", "Nature sounds", "Podcasts (loud)", "Silence (louder)"],
+    barKeys: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    blurb:
+      "We replaced ceiling TVs with fish. Fish do not judge. Fish still feel judgmental somehow.",
+  },
+  {
+    name: "Locksmith & Panic Escape Rooms",
+    slug: "locksmith-panic-escape-rooms",
+    emoji: "🔐",
+    tagline: "Puzzles, padlocks, and one clue written in crayon.",
+    barLabel: "Rooms survived",
+    donutLabel: "Hint shame distribution",
+    lineLabel: "Live panic oscillation",
+    tableTitle: "Fastest “we’re fine” teams",
+    tableRows: ["Team", "Seconds"],
+    names: ["Ctrl+Alt+Defeat", "The Spreadsheeteers", "Karen & The Karens", "Birthday Party B-team", "HR Was Right", "We Skipped Tutorial"],
+    kpiLabels: ["Clue side-eye", "Live shouting", "Key under fake rock", "Emergency phone dignity"],
+    kpiLive: [0, 3],
+    categories: ["Logic", "Rage clicking", "Teamwork theater", "Phone flashlights", "Bribery (emotional)"],
+    barKeys: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    blurb:
+      "Someone tried to brute-force a combination lock by saying numbers loudly. It worked once. We are still processing that.",
+  },
+  {
+    name: "Bubble & Fin Tropical Emporium",
+    slug: "bubble-fin-tropical-emporium",
+    emoji: "🐠",
+    tagline: "Fish, filters, and philosophical debates about gravel color.",
+    barLabel: "Bubbles rated (week)",
+    donutLabel: "Tank drama by species",
+    lineLabel: "Live pH melodrama",
+    tableTitle: "Most dramatic fish (subjective)",
+    tableRows: ["Fish", "Oscars"],
+    names: ["Sir Swimsalot", "Neon Nancy", "Betta Attitude", "Pleco The Janitor", "Goldie Hawn Jr.", "Shrimp Named Kevin"],
+    kpiLabels: ["Algae optimism", "Live filter side-eye", "Rock stack hubris", "Thermometer trust"],
+    kpiLive: [1, 2],
+    categories: ["Community tank", "Aggro apartment", "Plant cosplay", "Reef delusion", "Bowl (please no)"],
+    barKeys: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    blurb:
+      "A customer asked if fish get déjà vu. We said yes, but only on Tuesdays. Science cannot prove us wrong yet.",
+  },
+  {
+    name: "Thrift Witch Vintage Collective",
+    slug: "thrift-witch-vintage",
+    emoji: "👗",
+    tagline: "Jackets with pockets, jackets with curses—hard to tell which.",
+    barLabel: "Hangers exorcised",
+    donutLabel: "Decade energy (fake %)",
+    lineLabel: "Live denim aura",
+    tableTitle: "Best “this is vintage” lies",
+    tableRows: ["Shopper", "Confidence"],
+    names: ["Corduroy Cassandra", "Patchwork Pat", "Shoulder Pad Pete", "Mom Jeans Morgan", "Oversized Owen", "Smells Like Story Sarah"],
+    kpiLabels: ["Mothball index", "Live mirror lighting", "Tag typo charm", "Checkout small talk"],
+    kpiLive: [0, 2],
+    categories: ["70s optimism", "90s angst", "Y2K panic", "2010s irony", "2020s cope"],
+    barKeys: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    blurb:
+      "We found a jacket that only fits when you’re lying about your weekend plans. It sold in six minutes.",
+  },
+  {
+    name: "Honk If Hungry Taco Zeppelin",
+    slug: "honk-hungry-taco-zeppelin",
+    emoji: "🌮",
+    tagline: "Street food, sky dreams, and salsa velocity research.",
+    barLabel: "Tortillas launched",
+    donutLabel: "Sauce heat complaints",
+    lineLabel: "Live line-length lies",
+    tableTitle: "Spiciest Yelp metaphors",
+    tableRows: ["Reviewer", "Scoville (fake)"],
+    names: ["Mild Mike", "Ghost Pepper Gabby", "Double Shell Shelly", "Cilantro Truth Tina", "Guac-is-Extra Greg", "Soggy Bottom Ben"],
+    kpiLabels: ["Lime squeeze justice", "Live napkin shortage", "Nap decision regret", "Honk-to-order ratio"],
+    kpiLive: [1, 3],
+    categories: ["Mild lies", "Medium truth", "Hot honesty", "Reaper regret", "Mystery pink sauce"],
+    barKeys: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    blurb:
+      "We added a “chef’s kiss” surcharge. People paid. Economics is a social construct and we are exploiting it gently.",
+  },
+  {
+    name: "Pillowfort Bed & Breakfast",
+    slug: "pillowfort-bed-breakfast",
+    emoji: "🛏️",
+    tagline: "Fluffy towels, creaky stairs, and jam nobody asked for.",
+    barLabel: "Pillows fluffed (week)",
+    donutLabel: "Breakfast carb politics",
+    lineLabel: "Live innkeeper patience",
+    tableTitle: "Guests by duvet hog score",
+    tableRows: ["Guest", "Hog"],
+    names: ["Early Bird Bernie", "Late Checkout Linda", "Jam Hoarder Jo", "Tea Snob Theo", "Stairs Complainer Carl", "Cozy Karen"],
+    kpiLabels: ["Quilt diplomacy", "Live kettle whistle", "Wi-Fi password shame", "Local map lies"],
+    kpiLive: [0, 1],
+    categories: ["Scone supremacy", "Waffle waffle", "Fruit bowl theater", "Bacon peace treaty", "Yogurt confusion"],
+    barKeys: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    blurb:
+      "Room 3 says the house is haunted. Room 3 is also where we store extra pillows. Correlation is spooky.",
+  },
+  {
+    name: "Split Happens Bowling & Grill",
+    slug: "split-happens-bowling-grill",
+    emoji: "🎳",
+    tagline: "Strikes, fries, and shoes that remember every foot.",
+    barLabel: "Pins bullied (week)",
+    donutLabel: "Shoe spray philosophy",
+    lineLabel: "Live lane jealousy",
+    tableTitle: "Worst victory dances",
+    tableRows: ["Bowler", "Cringe"],
+    names: ["Gutterball Gary", "Turkey Terry", "Cosmic Bowl Connie", "Shoe Spray Steve", "Pizza Slice Pete", "Bumpers Brenda"],
+    kpiLabels: ["Gutter guilt", "Live fry steam", "Arcade ticket inflation", "DJ request veto"],
+    kpiLive: [2, 3],
+    categories: ["Classic rock", "Top 40 chaos", "Birthday party bangers", "Sad slow songs", "Mystery MIDI"],
+    barKeys: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    blurb:
+      "League night banned “granny style” then unbanned it after tears. We are not emotionally prepared for playoffs.",
+  },
+  {
+    name: "Merlin’s Markdown Apothecary",
+    slug: "merlins-markdown-apothecary",
+    emoji: "🧙",
+    tagline: "Potions, promotions, and receipts written in riddles.",
+    barLabel: "Spells discounted",
+    donutLabel: "Side-effect severity",
+    lineLabel: "Live cauldron gossip",
+    tableTitle: "Most cursed impulse buys",
+    tableRows: ["Customer", "Curse"],
+    names: ["Wand Warranty Walt", "Potion Penny", "Crystal Chad", "Tarot Tina", "Candle Cursed Carl", "Herbology Hannah"],
+    kpiLabels: ["Mystical shrinkflation", "Live raven traffic", "Moon phase refunds", "Spellcheck (literal)"],
+    kpiLive: [0, 3],
+    categories: ["Love", "Luck", "Revenge (mild)", "Hair growth", "Wi-Fi strength"],
+    barKeys: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    blurb:
+      "We sold a candle labeled “focus.” It focused everyone on the snack table. HR wants a word with alchemy.",
+  },
 ];
+
+const THEME_BY_SLUG = Object.fromEntries(THEMES.map((t) => [t.slug, t]));
+
+function parseHashSlug() {
+  const raw = location.hash.slice(1).trim();
+  if (!raw) return "";
+  try {
+    return decodeURIComponent(raw).trim().toLowerCase();
+  } catch {
+    return raw.trim().toLowerCase();
+  }
+}
+
+function findThemeFromHash() {
+  const slug = parseHashSlug();
+  if (!slug) return null;
+  return THEME_BY_SLUG[slug] ?? null;
+}
+
+/** Keep URL shareable without stacking extra history entries on each random pick. */
+function syncHashToTheme(slug) {
+  const next = `#${slug}`;
+  if (location.hash === next) return;
+  history.replaceState(null, "", `${location.pathname}${location.search}${next}`);
+}
 
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -439,9 +652,22 @@ function startLiveUpdates(theme, data, palette) {
   tick();
 }
 
-function initDashboard() {
+/**
+ * @param {{ forceRandom?: boolean }} [options]
+ * - forceRandom: pick a new random theme and update the hash (e.g. “New theme” button).
+ * - otherwise: use `#slug` when valid; if missing or unknown slug, pick random and set hash.
+ */
+function initDashboard(options = {}) {
+  const forceRandom = options.forceRandom === true;
   clearTimers();
-  const theme = pick(THEMES);
+  let theme = null;
+  if (!forceRandom) {
+    theme = findThemeFromHash();
+  }
+  if (!theme) {
+    theme = pick(THEMES);
+  }
+  syncHashToTheme(theme.slug);
   const palette = makePalette();
   applyCssVars(palette);
   setLegendSwatches(palette);
@@ -500,7 +726,11 @@ tickClock();
 setInterval(tickClock, 1000);
 
 document.getElementById("reshuffle").addEventListener("click", () => {
-  initDashboard();
+  initDashboard({ forceRandom: true });
 });
 
-initDashboard();
+window.addEventListener("hashchange", () => {
+  initDashboard({ forceRandom: false });
+});
+
+initDashboard({ forceRandom: false });
