@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MD Viewer</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #24292f;
+      --text-secondary: #636c76;
+      --banner-bg: #f6f8fa;
+      --border: #d0d7de;
+      --code-bg: #f6f8fa;
+      --btn-bg: #ffffff;
+      --btn-hover: #f3f4f6;
+      --btn-active: #ebecf0;
+      --link: #0969da;
+      --scrollbar-thumb: #c1c7cd;
+      --scrollbar-track: transparent;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --text: #e6edf3;
+        --text-secondary: #8b949e;
+        --banner-bg: #161b22;
+        --border: #30363d;
+        --code-bg: #161b22;
+        --btn-bg: #21262d;
+        --btn-hover: #30363d;
+        --btn-active: #3a424b;
+        --link: #58a6ff;
+        --scrollbar-thumb: #484f58;
+        --scrollbar-track: transparent;
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: var(--banner-bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    #file-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: 12px;
+    }
+
+    #banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    button {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--btn-bg);
+      color: var(--text);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button:hover { background: var(--btn-hover); }
+    button:active { background: var(--btn-active); }
+
+    #content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px;
+    }
+
+    /* Scrollbar theming */
+    #content-area::-webkit-scrollbar { width: 8px; }
+    #content-area::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+    #content-area::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 4px;
+    }
+
+    /* Rendered markdown styles */
+    #rendered h1, #rendered h2, #rendered h3, #rendered h4, #rendered h5, #rendered h6 {
+      margin-top: 24px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+    #rendered h1 { font-size: 2em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border); }
+    #rendered h2 { font-size: 1.5em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border); }
+    #rendered h3 { font-size: 1.25em; }
+    #rendered p { margin-bottom: 16px; line-height: 1.6; }
+    #rendered ul, #rendered ol { margin-bottom: 16px; padding-left: 2em; }
+    #rendered li { margin-bottom: 4px; line-height: 1.6; }
+    #rendered code {
+      background: var(--code-bg);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-size: 85%;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    #rendered pre {
+      background: var(--code-bg);
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+    #rendered pre code { background: none; padding: 0; font-size: 85%; }
+    #rendered blockquote {
+      padding: 0 1em;
+      color: var(--text-secondary);
+      border-left: 0.25em solid var(--border);
+      margin-bottom: 16px;
+    }
+    #rendered table {
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      width: auto;
+    }
+    #rendered th, #rendered td {
+      padding: 6px 13px;
+      border: 1px solid var(--border);
+    }
+    #rendered th { font-weight: 600; background: var(--code-bg); }
+    #rendered img { max-width: 100%; }
+    #rendered a { color: var(--link); text-decoration: none; }
+    #rendered a:hover { text-decoration: underline; }
+    #rendered hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+    /* Source view */
+    #source {
+      display: none;
+      white-space: pre-wrap;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    /* Empty state */
+    #empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-secondary);
+    }
+    #empty-state p { font-size: 16px; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+  <div id="banner">
+    <span id="file-name">No file loaded</span>
+    <div id="banner-actions">
+      <button id="open-btn">Open File</button>
+      <button id="toggle-btn" style="display:none;">View Source</button>
+    </div>
+  </div>
+
+  <div id="content-area">
+    <div id="empty-state">
+      <p>No Markdown file loaded.</p>
+      <button id="empty-open-btn">Open a file&hellip;</button>
+    </div>
+    <div id="rendered"></div>
+    <div id="source"></div>
+  </div>
+
+  <script src="node_modules/marked/marked.min.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
