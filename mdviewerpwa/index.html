@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MD Viewer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="banner">
+    <span id="file-name">No file loaded</span>
+    <div id="banner-actions">
+      <button id="open-btn">Open File</button>
+      <button id="toggle-btn" style="display:none;">View Source</button>
+    </div>
+  </div>
+
+  <div id="content-area">
+    <div id="empty-state">
+      <p>No Markdown file loaded.</p>
+      <button id="empty-open-btn">Open a file&hellip;</button>
+      <input type="file" id="file-input" accept=".md,.markdown" style="display: none;">
+    </div>
+    <div id="rendered"></div>
+    <div id="source"></div>
+  </div>
+
+  <script src="marked.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
