@@ -12,6 +12,28 @@ document.addEventListener('DOMContentLoaded', () => {
     let showingSource = false;
     let rawContent = '';
 
+    if("launchQueue" in window) {
+        console.log('Launch Queue API is supported, setting up consumer');
+        window.launchQueue.setConsumer(launchParams => {
+            if (!launchParams.files.length) {
+                return;
+            }
+            const fileHandle = launchParams.files[0];
+            console.log('File launched:', fileHandle);
+            fileHandle.getFile().then(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const content = e.target.result;
+                    fileNameEl.textContent = file.name;
+                    renderMarkdown(content);
+                };
+                reader.readAsText(file);
+            }).catch(error => {
+                console.error('Error reading file:', error);
+            });
+        });
+    }
+
     const renderMarkdown = content => {
         rawContent = content;
         /*

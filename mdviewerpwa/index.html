@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MD Viewer</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#333333">
 </head>
 <body>
 
@@ -28,5 +30,17 @@
 
   <script src="marked.min.js"></script>
   <script src="app.js"></script>
+  <script>
+    // Register Service Worker for offline support
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then((registration) => {
+          console.log('Service Worker registered:', registration);
+        })
+        .catch((error) => {
+          console.log('Service Worker registration failed:', error);
+        });
+    }
+  </script>
 </body>
 </html>
