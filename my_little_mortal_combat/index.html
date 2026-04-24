@@ -96,7 +96,7 @@
 				<div class="dash-meta">
 					<div class="dash-meta__item">
 					<span class="dash-meta__label">Level</span>
-					<span class="dash-meta__value" x-text="pcPony.level"></span>
+					<span class="dash-meta__value" x-text="level"></span>
 					</div>
 					<div class="dash-meta__item">
 					<span class="dash-meta__label">Gold</span>
@@ -111,17 +111,17 @@
 					<li class="skill-train">
 					<span class="skill-train__name">Attack</span>
 					<span class="skill-train__rank" aria-label="Attack level" x-text="pcPony.attack"></span>
-					<button type="button" class="btn btn--train">Train · 10 gold</button>
+					<button type="button" class="btn btn--train" @click="train('attack')">Train · <span x-text="pcPony.attack * 10"></span> gold</button>
 					</li>
 					<li class="skill-train">
 					<span class="skill-train__name">Defense</span>
-					<span class="skill-train__rank" aria-label="Defense level" x-text="pcPony.defense"></span>
-					<button type="button" class="btn btn--train">Train · 10 gold</button>
+					<span class="skill-train__rank" aria-label="Defend level" x-text="pcPony.defend"></span>
+					<button type="button" class="btn btn--train" @click="train('defend')">Train · <span x-text="pcPony.defend * 10"></span> gold</button>
 					</li>
 					<li class="skill-train">
 					<span class="skill-train__name">Strike a Pose</span>
-					<span class="skill-train__rank" aria-label="Strike a Pose level" x-text="pcPony.pose"></span>
-					<button type="button" class="btn btn--train">Train · 10 gold</button>
+					<span class="skill-train__rank" aria-label="Strike a Pose level" x-text="pcPony.vogue"></span>
+					<button type="button" class="btn btn--train" @click="train('vogue')">Train · <span x-text="pcPony.vogue * 10"></span> gold</button>
 					</li>
 				</ul>
 				</section>

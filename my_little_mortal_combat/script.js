@@ -5,20 +5,20 @@ import { bios } from './bios.js';
 import Alpine from 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/module.esm.js';
 
 const NPCMoves = ['attack', 'defend', 'vogue'];
+const HP_PER_LEVEL = 50;
 
 Alpine.data('app', () => ({
 		view:'intro',
 		pcPony: {
 			name:'',
-			level:1,
-			currentHp: 50, 
-			hp: 50, 
+			currentHp: HP_PER_LEVEL, 
+			hp: HP_PER_LEVEL, 
 			hpPercentage: 100,
-			exp:0,
+			xp:0,
 			gold:0,
 			attack: 1, 
-			defense: 1, 
-			pose: 1,
+			defend: 1, 
+			vogue: 1,
 		},
 		round: 1, 
 		selectedOpponent: {
@@ -46,13 +46,21 @@ Alpine.data('app', () => ({
 				${name} ${getRandomArr(bios)}<br><br>
 				${name} ${getRandomArr(bios)}
 			`;
+
+			/*
+			my level is -1 to +1 of my current level 
+			*/
+			let level = Math.max(1, this.level + getRandomIntInclusive(-1, 1)) 
 			let opp = {
 				name: name + ' ' + getRandomArr(suffixes),
-				level: 1, 
-				currentHp: 50, 
-				hp: 50, 
+				level,
+				currentHp: HP_PER_LEVEL * level, 
+				hp: HP_PER_LEVEL * level, 
 				hpPercentage: 100,
-				bio
+				bio, 
+				attack: Math.max(1, getRandomIntInclusive(level-2, level+2)),
+				defend: Math.max(1, getRandomIntInclusive(level-2, level+2)),
+				vogue: Math.max(1, getRandomIntInclusive(level-2, level+2)),
 			}
 			return opp;
 		},
@@ -71,7 +79,7 @@ Alpine.data('app', () => ({
 		},
 		onFightResultDialogClosed() {
 			// lets also clean up from the last battle
-			this.pcPony.currentHp = this.pcPony.hp;
+			this.pcPony.currentHp = this.pcPony.hp = this.level * HP_PER_LEVEL;
 			this.pcPony.hpPercentage = 100;
 			this.round = 1;
 			this.battleLog = [];
@@ -82,6 +90,7 @@ Alpine.data('app', () => ({
 			this.makeOpponentList();
 		},
 		move(type) {
+			console.log('Selected Opponent:', JSON.stringify(this.selectedOpponent));
 			// ai added the line right below, pretty sure i dont need it
 			if (this.pcPony.currentHp <= 0 || this.selectedOpponent.currentHp <= 0) return;
 			console.log(`pony did ${type}`);
@@ -106,17 +115,23 @@ Alpine.data('app', () => ({
 			console.log(result);
 			let resultMsg = `You used ${type.charAt(0).toUpperCase() + type.slice(1)}. They used ${npcMove.charAt(0).toUpperCase() + npcMove.slice(1)}. `;
 
-			// TODO - make damage dependant on skills and such
-			let dmg = 10;
-			
+			/*
+			dmg is 10 * the skill of the attack you made
+			ditto for them
+			*/
+			let pcdmg = 10 * this.pcPony[type];
+			let npcdmg = 10 * this.selectedOpponent[npcMove];
+			console.log(`damage calculated: ${pcdmg}`);
+			console.log(`npc damage calculated: ${npcdmg}`);
+
 			if(result === 'win') {
-				resultMsg += `You win the exchange. They take ${dmg} damage.`;
-				this.selectedOpponent.currentHp -= dmg;
+				resultMsg += `You win the exchange. They take ${pcdmg} damage.`;
+				this.selectedOpponent.currentHp -= pcdmg;
 				this.selectedOpponent.hpPercentage = this.selectedOpponent.currentHp / this.selectedOpponent.hp * 100;
 			}
 			if(result === 'lose') {
-				resultMsg += `They win the exchange. You take ${dmg} damage.`;
-				this.pcPony.currentHp -= dmg;
+				resultMsg += `They win the exchange. You take ${npcdmg} damage.`;
+				this.pcPony.currentHp -= npcdmg;
 				this.pcPony.hpPercentage = this.pcPony.currentHp / this.pcPony.hp * 100;
 			}
 			if(result === 'draw') resultMsg += 'Draw - no damage.';
@@ -126,17 +141,33 @@ Alpine.data('app', () => ({
 
 			if(this.pcPony.currentHp <= 0 || this.selectedOpponent.currentHp <= 0) {
 				let purse = this.selectedOpponent.level * 100;
+				// currently, you get the same XP as gold - will probably tweak
 				if(this.pcPony.currentHp <= 0) {
 					// gold is 10% of what you would have gotten if you had won
-					purse = Math.floor(this.selectedOpponent.level * 0.1);
-					this.fightResultMessage = `You have been defeated. Better luck next time! Your embarassing performance earns you a small portion of the purse: ${purse} gold.`;
+					purse = Math.floor(purse * 0.1);
+					this.fightResultMessage = `You have been defeated. Better luck next time! Your embarrassing performance earns you a small portion of the purse: ${purse} gold and XP.`;
 				} else if(this.selectedOpponent.currentHp <= 0) {
-					this.fightResultMessage = `You have defeated your opponent. Congratulations! Your victory earns you ${purse} gold.`;
+					this.fightResultMessage = `You have defeated your opponent. Congratulations! Your victory earns you ${purse} gold and XP.`;
 				}
 				this.pcPony.gold += purse;
+				this.pcPony.xp += purse; 
 				this.$refs['fight-result-dialog'].showModal();
+
 			}
 		},
+		get level() {
+			if (this.pcPony.xp <= 0) return 1;
+		    // Formula: level = (xp / 100)^(1/1.5)
+	    	return Math.floor(Math.pow(this.pcPony.xp / 100, 1 / 1.5)) + 1;
+		},
+		train(skill) {
+			if(this.pcPony.gold < this.pcPony[skill] * 10) {
+				alert('Not enough gold to train!');
+				return;
+			}
+			this.pcPony.gold -= this.pcPony[skill] * 10;
+			this.pcPony[skill]++;
+		}
 	}))
 
 Alpine.start();
