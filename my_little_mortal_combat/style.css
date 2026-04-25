@@ -315,10 +315,14 @@ body {
   border-radius: 12px;
   border: 2px dashed var(--pink-300);
   background: var(--pink-50);
+  text-align: center;
 }
 
 .save-slot--empty {
-  text-align: center;
+}
+
+.save-slot--full {
+  cursor: pointer;
 }
 
 .save-slot__label {

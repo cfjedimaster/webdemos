@@ -74,10 +74,18 @@
 				<h2 id="continue-heading" class="panel__title panel__title--small">Or continue</h2>
 				<p class="panel__hint">Pick up where you left off—same sparkle, new bruises.</p>
 				<ul class="save-slots">
-					<li class="save-slot save-slot--empty">
-					<span class="save-slot__label">No saved pony yet</span>
-					<span class="save-slot__meta">Your journey starts above</span>
-					</li>
+					<template x-if="hasSavedGame()">
+						<li class="save-slot save-slot--full" @click="loadGame">
+							<span class="save-slot__label" x-text="lastName"></span>
+							<span class="save-slot__meta">Level <span x-text="lastLevel"></span></span>
+						</li>
+					</template>
+					<template x-if="!hasSavedGame()">
+						<li class="save-slot save-slot--empty">
+						<span class="save-slot__label">No saved pony yet</span>
+						<span class="save-slot__meta">Your journey starts above</span>
+						</li>
+					</template>
 				</ul>
 				</section>
 			</main>
