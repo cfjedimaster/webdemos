@@ -29,11 +29,28 @@ Alpine.data('app', () => ({
 		fightResultMessage: '',
 		playerMove: null, 
 		opponents: [],
+		lastName: '',
+		lastLevel: '',
 		init() {
 			console.log('start me up');
+			if(this.hasSavedGame()) {
+				const savedData = localStorage.getItem('pcPony');
+				if(savedData) {
+					const data = JSON.parse(savedData);
+					console.log('found saved game data:', data);
+					this.lastName = data.name;
+					console.log('last name set to:', this.lastName);
+					this.lastLevel = xpToLevel(data.xp);
+				}
+			}
 		},
 		enterArena() {
 			if(this.pcPony.name.trim() === '') return;
+			if(this.hasSavedGame()) {
+				if(!confirm('Starting a new game will overwrite your existing progress. Are you sure you want to continue?')) {
+					return;
+				}
+			}
 			this.makeOpponentList();
 			this.view = 'main';
 		},
@@ -151,14 +168,13 @@ Alpine.data('app', () => ({
 				}
 				this.pcPony.gold += purse;
 				this.pcPony.xp += purse; 
+				this.persist();
 				this.$refs['fight-result-dialog'].showModal();
 
 			}
 		},
 		get level() {
-			if (this.pcPony.xp <= 0) return 1;
-		    // Formula: level = (xp / 100)^(1/1.5)
-	    	return Math.floor(Math.pow(this.pcPony.xp / 100, 1 / 1.5)) + 1;
+			return xpToLevel(this.pcPony.xp);
 		},
 		train(skill) {
 			if(this.pcPony.gold < this.pcPony[skill] * 10) {
@@ -167,6 +183,23 @@ Alpine.data('app', () => ({
 			}
 			this.pcPony.gold -= this.pcPony[skill] * 10;
 			this.pcPony[skill]++;
+			this.persist();
+		},
+		persist() {
+			console.log('saving to local storage');
+			localStorage.setItem('pcPony', JSON.stringify(this.pcPony));
+			console.log('saved data:', JSON.stringify(this.pcPony));
+		},
+		hasSavedGame() {
+			return localStorage.getItem('pcPony') !== null;
+		},
+		loadGame() {
+			const savedData = localStorage.getItem('pcPony');
+			if (savedData) {
+				this.pcPony = JSON.parse(savedData);
+				this.makeOpponentList();
+				this.view = 'main';
+			}
 		}
 	}))
 
@@ -180,4 +213,9 @@ function getRandomIntInclusive(min, max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min + 1) + min); 
+}
+
+function xpToLevel(xp) {
+	if (xp <= 0) return 1;
+	return Math.floor(Math.pow(xp / 100, 1 / 1.5)) + 1;
 }
