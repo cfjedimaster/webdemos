@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice to Song</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+  <main class="app">
+    <header class="hero">
+      <h1 class="title">Voice to Song</h1>
+      <p class="tagline">You Sing — AI (tries to) Identify</p>
+    </header>
+
+    <p class="intro">
+      Hum, belt, or mumble a few bars into your mic. We'll listen, pretend to think very hard,
+      then guess what song you had in mind. No guarantees. Maximum synth.
+    </p>
+
+    <section class="controls" aria-label="Recording controls" hidden>
+      <button type="button" id="recordBtn" class="record-btn" aria-pressed="false">
+        <span class="record-btn__icon record-btn__icon--mic" aria-hidden="true"></span>
+        <span class="record-btn__label">Start recording</span>
+      </button>
+    </section>
+
+    <section class="transcript-panel" aria-live="polite" aria-atomic="true" hidden>
+      <h2 class="panel-label">Live transcript</h2>
+      <p id="transcript" class="transcript">Say something when you're ready.</p>
+    </section>
+
+    <section id="statusPanel" class="status-panel" hidden>
+      <p id="statusMessage" class="status-message"></p>
+    </section>
+
+    <section id="resultPanel" class="result-panel" hidden>
+      <h2 class="panel-label">Our best guess</h2>
+      <p id="songTitle" class="song-title"></p>
+      <p id="songArtist" class="song-artist"></p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

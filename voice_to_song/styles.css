@@ -1,0 +1,236 @@
+:root {
+  --bg-deep: #0a0614;
+  --bg-panel: rgba(18, 10, 36, 0.82);
+  --neon-pink: #ff2bd6;
+  --neon-cyan: #2df7ff;
+  --neon-purple: #9b5cff;
+  --neon-yellow: #ffe66d;
+  --text-main: #f4ecff;
+  --text-muted: #b9a8d9;
+  --border-glow: rgba(45, 247, 255, 0.35);
+  --font-display: "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: "Outfit", "Avenir Next", "Segoe UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  color: var(--text-main);
+  font-family: var(--font-body);
+  background:
+    radial-gradient(circle at top left, rgba(255, 43, 214, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(45, 247, 255, 0.16), transparent 24%),
+    linear-gradient(160deg, #12061f 0%, var(--bg-deep) 45%, #05030a 100%);
+}
+
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.08) 0,
+    rgba(255, 255, 255, 0.08) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+.app {
+  width: min(720px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0 4rem;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 8vw, 4.4rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--neon-cyan);
+  text-shadow:
+    0 0 12px rgba(45, 247, 255, 0.55),
+    0 0 28px rgba(255, 43, 214, 0.35);
+}
+
+.tagline {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--neon-pink);
+}
+
+.intro {
+  margin: 0 0 2rem;
+  padding: 1.25rem 1.5rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-glow);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 0 24px rgba(155, 92, 255, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.controls[hidden],
+.transcript-panel[hidden] {
+  display: none;
+}
+
+.record-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 14rem;
+  padding: 1rem 1.5rem;
+  border: 2px solid var(--neon-pink);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 43, 214, 0.18), rgba(45, 247, 255, 0.12));
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow:
+    0 0 18px rgba(255, 43, 214, 0.35),
+    inset 0 0 12px rgba(45, 247, 255, 0.08);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.record-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--neon-cyan);
+  box-shadow:
+    0 0 24px rgba(45, 247, 255, 0.45),
+    inset 0 0 16px rgba(255, 43, 214, 0.12);
+}
+
+.record-btn:focus-visible {
+  outline: 2px solid var(--neon-yellow);
+  outline-offset: 4px;
+}
+
+.record-btn.is-recording {
+  border-color: var(--neon-yellow);
+  background: linear-gradient(135deg, rgba(255, 230, 109, 0.18), rgba(255, 43, 214, 0.16));
+  box-shadow:
+    0 0 22px rgba(255, 230, 109, 0.35),
+    inset 0 0 14px rgba(255, 43, 214, 0.12);
+}
+
+.record-btn__icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: 0 0 auto;
+}
+
+.record-btn__icon--mic {
+  border-radius: 50%;
+  background: var(--neon-pink);
+  box-shadow: 0 0 12px rgba(255, 43, 214, 0.8);
+}
+
+.record-btn__icon--stop {
+  border-radius: 0.2rem;
+  background: var(--neon-yellow);
+  box-shadow: 0 0 12px rgba(255, 230, 109, 0.8);
+}
+
+.transcript-panel,
+.status-panel,
+.result-panel {
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-glow);
+  border-radius: 18px;
+  box-shadow: inset 0 0 24px rgba(45, 247, 255, 0.08);
+}
+
+.transcript-panel {
+  margin-bottom: 1.5rem;
+}
+
+.status-panel,
+.result-panel {
+  margin-top: 1.5rem;
+}
+
+.panel-label {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--neon-purple);
+}
+
+.transcript {
+  margin: 0;
+  min-height: 4.5rem;
+  line-height: 1.7;
+  color: var(--text-main);
+}
+
+.status-message {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  color: var(--neon-cyan);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.song-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-weight: 800;
+  color: var(--neon-yellow);
+  text-shadow: 0 0 16px rgba(255, 230, 109, 0.45);
+}
+
+.song-artist {
+  margin: 0.5rem 0 0;
+  font-size: 1.15rem;
+  color: var(--text-muted);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
