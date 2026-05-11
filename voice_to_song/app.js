@@ -160,7 +160,8 @@ async function recognize(transcript) {
 	}
 
   console.log(`Passing: ${transcript}`);
-  let result = await session.prompt(
+  let thisSession = await session.clone();
+  let result = await thisSession.prompt(
     [
       { role: 'user', content: transcript }
     ], { responseConstraint: schema });
