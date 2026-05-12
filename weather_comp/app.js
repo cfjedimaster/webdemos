@@ -104,15 +104,20 @@ function sameCalendarDayInYear(date, year) {
   return target;
 }
 
-async function mapWithConcurrency(items, concurrency, worker) {
+async function mapWithConcurrency(items, concurrency, worker, onProgress) {
   const results = new Array(items.length);
   let nextIndex = 0;
+  let completed = 0;
 
   async function runWorker() {
     while (nextIndex < items.length) {
       const currentIndex = nextIndex;
       nextIndex += 1;
       results[currentIndex] = await worker(items[currentIndex], currentIndex);
+      completed += 1;
+      if (onProgress) {
+        onProgress(completed, items.length);
+      }
     }
   }
 
@@ -124,8 +129,17 @@ async function mapWithConcurrency(items, concurrency, worker) {
   return results;
 }
 
+function formatWeatherProgress(completed, total) {
+  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+  return `Loading ${YEARS_TO_COMPARE} years of daily temperatures... ${percent}% complete (${completed} of ${total}).`;
+}
+
 async function loadComparison(address) {
+  setStatus("Geocoding location...");
   const location = await geocodeAddress(address);
+  const totalWeatherRequests = YEARS_TO_COMPARE * DAYS_TO_COMPARE;
+
+  setStatus("Resolving local timezone...");
   const initialWeather = await fetchDayTemperatures(
     location.lat,
     location.lng,
@@ -148,18 +162,27 @@ async function loadComparison(address) {
     }
   }
 
-  const readings = await mapWithConcurrency(jobs, REQUEST_CONCURRENCY, async (job) => {
-    const weather = await fetchDayTemperatures(location.lat, location.lng, job.unixSeconds);
+  setStatus(formatWeatherProgress(0, totalWeatherRequests));
 
-    return {
-      month: job.date.month,
-      day: job.date.day,
-      dayLabel: job.date.toFormat("MMM d"),
-      year: job.year,
-      high: weather.high,
-      low: weather.low,
-    };
-  });
+  const readings = await mapWithConcurrency(
+    jobs,
+    REQUEST_CONCURRENCY,
+    async (job) => {
+      const weather = await fetchDayTemperatures(location.lat, location.lng, job.unixSeconds);
+
+      return {
+        month: job.date.month,
+        day: job.date.day,
+        dayLabel: job.date.toFormat("MMM d"),
+        year: job.year,
+        high: weather.high,
+        low: weather.low,
+      };
+    },
+    (completed, total) => {
+      setStatus(formatWeatherProgress(completed, total));
+    },
+  );
 
   const dayMap = new Map();
 
@@ -333,7 +356,7 @@ form.addEventListener("submit", async (event) => {
   }
 
   submitButton.disabled = true;
-  setStatus("Geocoding your location and loading five years of daily temperatures...");
+  setStatus("Geocoding location...");
 
   try {
     const payload = await loadComparison(address);
