@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Week Comparison</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.6.1/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">Past week vs prior years</p>
+        <h1>Is this week cooler than usual?</h1>
+        <p class="lede">
+          Enter a location to compare daily highs and lows for the last seven
+          days against the same calendar days over the previous four years.
+        </p>
+      </header>
+
+      <section class="panel">
+        <form id="location-form" class="location-form">
+          <label for="address">Location</label>
+          <div class="input-row">
+            <input
+              id="address"
+              name="address"
+              type="text"
+              placeholder="City, address, or ZIP code"
+              autocomplete="street-address"
+              required
+            />
+            <button type="submit" id="submit-button">Compare weather</button>
+          </div>
+        </form>
+        <p id="status" class="status" aria-live="polite"></p>
+      </section>
+
+      <section id="results" class="results hidden" aria-live="polite">
+        <div class="summary-card">
+          <h2 id="results-title">Comparison</h2>
+          <p id="results-subtitle" class="results-subtitle"></p>
+          <div id="summary-grid" class="summary-grid"></div>
+        </div>
+
+        <section class="chart-card">
+          <div class="chart-header">
+            <h3>Daily highs</h3>
+            <p>Maximum temperature for each day in the comparison window.</p>
+          </div>
+          <div class="chart-surface">
+            <canvas id="high-chart" aria-label="Daily high temperatures by year"></canvas>
+          </div>
+        </section>
+
+        <section class="chart-card">
+          <div class="chart-header">
+            <h3>Daily lows</h3>
+            <p>Minimum temperature for each day in the comparison window.</p>
+          </div>
+          <div class="chart-surface">
+            <canvas id="low-chart" aria-label="Daily low temperatures by year"></canvas>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
