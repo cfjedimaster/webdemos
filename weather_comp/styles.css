@@ -53,7 +53,6 @@ h3 {
 
 h1 {
   font-size: clamp(2.2rem, 4vw, 3.5rem);
-  max-width: 12ch;
 }
 
 .lede,
@@ -151,7 +150,7 @@ button:disabled {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.85rem;
 }
 
@@ -159,6 +158,7 @@ button:disabled {
   padding: 0.95rem 1rem;
   border-radius: 1rem;
   background: rgba(15, 118, 110, 0.08);
+  min-width: 0;
 }
 
 .summary-item.current {
@@ -175,7 +175,8 @@ button:disabled {
 .summary-item strong {
   display: block;
   margin-top: 0.35rem;
-  font-size: 1.35rem;
+  font-size: clamp(1rem, 2.4vw, 1.35rem);
+  line-height: 1.2;
 }
 
 .chart-header {
@@ -192,6 +193,12 @@ button:disabled {
   height: 320px;
 }
 
+@media (max-width: 960px) {
+  .summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 720px) {
   .input-row {
     grid-template-columns: 1fr;
@@ -200,5 +207,19 @@ button:disabled {
   .page {
     width: min(100% - 1.25rem, 1100px);
     padding-top: 1.5rem;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-item {
+    padding: 0.85rem 0.95rem;
   }
 }
