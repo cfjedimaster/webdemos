@@ -1,7 +1,7 @@
 const { DateTime } = luxon;
 
 const GEOCODIO_API_KEY = "7cf958ee8f68f665ff96c88f86f6965f5ffeffc";
-const PIRATE_WEATHER_API_KEY = "lrokzEoN2n7ifLAVgrChU4V6XPEyqAZp5ikO6UWF";
+const PIRATE_WEATHER_API_KEY = "sDXCl6BromrKNFcuFSZBKUQD1Ar6OzOe";
 const PIRATE_WEATHER_API_BASE = "https://dev.pirateweather.net";
 const YEARS_TO_COMPARE = 5;
 const DAYS_TO_COMPARE = 7;
