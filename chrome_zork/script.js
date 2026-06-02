@@ -180,7 +180,24 @@ document.addEventListener('DOMContentLoaded', async function() {
 You are playing the classic text adventure game Zork. You will be given the current game output, and you will 
 respond with a single command to play the game. You will not explain your command, just give the command. 
 
-Remember to keep your commands concise and to the point, as if you were playing the game yourself. Do not include any extra text or explanations.
+Remember to keep your commands concise and to the point, as if you were playing the game yourself. Do not include 
+any extra text or explanations.
+
+Zork is a text-based adventure game where you explore a mysterious underground world filled with treasures, puzzles, 
+and dangers. Your goal is to navigate through the various locations, solve puzzles, and collect treasures 
+while avoiding traps and monsters.
+
+Here are some examples of commands you might use in Zork:
+- "go north"
+- "take lamp"
+- "open mailbox"
+- "look around"
+- "inventory"
+
+Do your best to play the game effectively and efficiently, making smart choices based on the current game output.
+
+Try not to keep returning to the same location repeatedly, as that can lead to getting stuck in loops. Instead, 
+explore new areas and try different actions to progress through the game. Remember that you can travel in all directions.
                         `
                 }
             ],		
@@ -200,11 +217,10 @@ Remember to keep your commands concise and to the point, as if you were playing 
     gameHeartBeat();
 
     /*
-  console.log(engine.getOutput()); // intro text
-
-  let response = engine.send('open mailbox');
-  console.log(response);
-*/
+    console.log(engine.getOutput()); // intro text
+    let response = engine.send('open mailbox');
+    console.log(response);
+    */
 
 });
 
@@ -218,24 +234,14 @@ async function gameHeartBeat() {
         $gameoutput.value += gameResponse + '\n';
         $gameoutput.scrollTop = $gameoutput.scrollHeight;
 
-            // Send the output to the AI and get a command back
-            /*
-            $session.send(gameOutput).then(command => {
-                if(command) {
-                    const response = engine.send(command);
-                    $gameoutput.value += `> ${command}\n`;
-                    $gameoutput.scrollTop = $gameoutput.scrollHeight;
-                }
-            });
-            */
-            let command = await $session.prompt(gameResponse);
-            lastResponse = engine.send(command);
+        let command = await $session.prompt(gameResponse);
+        lastResponse = engine.send(command);
 
-            $gameoutput.value += `> ${command}\n`;
-            $gameoutput.scrollTop = $gameoutput.scrollHeight;
+        $gameoutput.value += `> ${command}\n`;
+        $gameoutput.scrollTop = $gameoutput.scrollHeight;
 
-           console.log('Resp',command);
-           setTimeout(gameHeartBeat, 1000 * 4);
+        console.log('Resp',command);
+        setTimeout(gameHeartBeat, 1000 * 2);
     }
  
 }
