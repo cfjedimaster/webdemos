@@ -222,7 +222,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  console.log('Creating session...');
   await createSession();
+  console.log('Session created...');
   restoreFeedLayout();
-  await loadFeed(50);
+  console.log('Feed layout restored...');
+  await loadFeed(10);
 });
