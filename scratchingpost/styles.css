@@ -139,6 +139,27 @@ body::before {
   gap: 0.5rem;
 }
 
+.feed-title-text {
+  flex-shrink: 0;
+}
+
+.feed-loading-status {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--pink-500);
+  animation: feedLoadingPulse 1.4s ease-in-out infinite;
+}
+
+.feed-loading-status[hidden] {
+  display: none;
+}
+
+@keyframes feedLoadingPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
 .feed-title .sparkle {
   font-size: 1.25rem;
   animation: twinkle 1.5s ease-in-out infinite;
@@ -147,6 +168,36 @@ body::before {
 @keyframes twinkle {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+/* ===== Feed post enter (prepend) ===== */
+#feed post-card {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#feed post-card.post-card--enter {
+  animation: postCardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes postCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #feed post-card {
+    transition: none;
+  }
+
+  #feed post-card.post-card--enter {
+    animation: none;
+  }
 }
 
 /* ===== Prompt API unavailable ===== */

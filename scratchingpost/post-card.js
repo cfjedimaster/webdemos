@@ -120,6 +120,25 @@
     </div>
   `;
 
+  function formatPostDate(iso) {
+    if (!iso) return '';
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return iso;
+
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    let h = date.getHours();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    if (h === 0) h = 12;
+    const hh = String(h).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    const sec = String(date.getSeconds()).padStart(2, '0');
+
+    return `${y}/${m}/${d} ${hh}:${min}:${sec} ${ampm}`;
+  }
+
   customElements.define('post-card', class PostCard extends HTMLElement {
     static get observedAttributes() {
       return ['avatar', 'avatar-hue', 'display-name', 'handle', 'datetime'];
@@ -166,7 +185,7 @@
       if (timeEl) {
         var dt = this.getAttribute('datetime') || '';
         timeEl.setAttribute('datetime', dt);
-        timeEl.textContent = dt; // you can replace with relative time later
+        timeEl.textContent = formatPostDate(dt);
       }
     }
   });

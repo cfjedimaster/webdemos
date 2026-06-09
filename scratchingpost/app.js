@@ -1,13 +1,37 @@
 const CAT_AVATARS = ['😺', '😸', '🙀', '😻', '🐱', '😽', '😼', '😹'];
 let session = null;
 let downloadStatusEl = null;
+let feedLoadingCount = 0;
 
 const MAIN_FEED_HTML = `
   <h1 class="feed-title">
-    <span class="sparkle">✨</span> Your feed
+    <span class="sparkle">✨</span>
+    <span class="feed-title-text">Your feed</span>
+    <span id="feed-loading-status" class="feed-loading-status" hidden aria-live="polite">
+      Loading new posts…
+    </span>
   </h1>
   <div id="feed"></div>
 `;
+
+function setFeedLoading(active) {
+  const el = document.getElementById('feed-loading-status');
+  if (el) {
+    el.hidden = !active;
+  }
+}
+
+function beginFeedLoading() {
+  feedLoadingCount += 1;
+  setFeedLoading(true);
+}
+
+function endFeedLoading() {
+  feedLoadingCount = Math.max(0, feedLoadingCount - 1);
+  if (feedLoadingCount === 0) {
+    setFeedLoading(false);
+  }
+}
 
 async function getAvailability() {
   if (!window.LanguageModel) return 'unavailable';
@@ -23,6 +47,7 @@ function needsModelDownload(availability) {
 }
 
 function setDownloadStatus(message) {
+  console.log('Setting download status:', message);
   if (downloadStatusEl) {
     downloadStatusEl.textContent = message;
   }
@@ -33,6 +58,7 @@ function restoreFeedLayout() {
   if (!main) return;
   main.innerHTML = MAIN_FEED_HTML;
   downloadStatusEl = null;
+  feedLoadingCount = 0;
 }
 
 const postSchema = {
@@ -46,6 +72,7 @@ const postSchema = {
 };
 
 async function createSession() {
+  console.log('Creating session...');
   session = await LanguageModel.create({
     expectedOutputs: [
       { type:'text', languages: ['en'] }
@@ -59,7 +86,8 @@ async function createSession() {
     ],
     monitor(m) {
       m.addEventListener('downloadprogress', (e) => {
-        if (e.loaded === 0) return;
+        console.log('Download progress:', e.loaded);
+        if (e.loaded === 0 || e.loaded === 1) return;
         const pct = Math.floor(e.loaded * 100);
         setDownloadStatus(`Downloading model… ${pct}%`);
       });
@@ -180,33 +208,100 @@ function randomAvatarHue() {
   return String(Math.floor(Math.random() * 360));
 }
 
-function randomDatetime() {
-  const now = Date.now();
-  const hoursAgo = Math.floor(Math.random() * 72);
-  const minutesAgo = Math.floor(Math.random() * 60);
-  const ms = now - hoursAgo * 60 * 60 * 1000 - minutesAgo * 60 * 1000;
-  return new Date(ms).toISOString();
-}
-
 function createPostCard(post) {
   const card = document.createElement('post-card');
   card.setAttribute('avatar', randomCatAvatar());
   card.setAttribute('avatar-hue', randomAvatarHue());
   card.setAttribute('display-name', post.displayName);
   card.setAttribute('handle', post.handle);
-  card.setAttribute('datetime', randomDatetime());
+  card.setAttribute('datetime', new Date().toISOString());
   card.textContent = post.text;
   return card;
+}
+
+function isPostError(post) {
+  return (
+    !post ||
+    post.displayName === 'Error' ||
+    post.handle === 'Error' ||
+    post.text === 'Error'
+  );
+}
+
+/** Prepend a post to the feed (newest on top) with slide-in animation. */
+function prependPostToFeed(post) {
+  if (isPostError(post)) return null;
+
+  const feed = document.getElementById('feed');
+  if (!feed) return null;
+
+  const card = createPostCard(post);
+  const existing = [...feed.querySelectorAll('post-card')];
+  const tops = new Map(existing.map((el) => [el, el.getBoundingClientRect().top]));
+
+  feed.insertBefore(card, feed.firstChild);
+  card.classList.add('post-card--enter');
+
+  existing.forEach((el) => {
+    const delta = tops.get(el) - el.getBoundingClientRect().top;
+    if (delta !== 0) {
+      el.style.transform = `translateY(${delta}px)`;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.transform = '';
+        });
+      });
+    }
+  });
+
+  card.addEventListener(
+    'animationend',
+    () => card.classList.remove('post-card--enter'),
+    { once: true }
+  );
+
+  return card;
+}
+
+function randomHeartbeatDelayMs() {
+  const min = 10_000;
+  const max = 30_000;
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+
+function startFeedHeartbeat() {
+  async function tick() {
+    console.log('Heartbeat tick...');
+    beginFeedLoading();
+    try {
+      const post = await getPostContent();
+      prependPostToFeed(post);
+    } catch (err) {
+      console.error('Heartbeat post failed:', err);
+    } finally {
+      endFeedLoading();
+    }
+    setTimeout(tick, randomHeartbeatDelayMs());
+  }
+
+  setTimeout(tick, randomHeartbeatDelayMs());
 }
 
 async function loadFeed(count = 10) {
   const feed = document.getElementById('feed');
   if (!feed) return;
 
-  for (let i = 0; i < count; i++) {
-    const post = await getPostContent();
-    feed.appendChild(createPostCard(post));
+  beginFeedLoading();
+  try {
+    for (let i = 0; i < count; i++) {
+      const post = await getPostContent();
+      prependPostToFeed(post);
+    }
+  } finally {
+    endFeedLoading();
   }
+
+  startFeedHeartbeat();
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
