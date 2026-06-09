@@ -123,6 +123,45 @@ body::before {
   color: var(--pink-800);
 }
 
+/* ===== Footer ===== */
+.footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  margin-top: auto;
+  background: linear-gradient(0deg, rgba(253, 242, 248, 0.98) 0%, rgba(252, 231, 243, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  border-top: 2px solid var(--pink-300);
+  box-shadow: 0 -4px 14px rgba(236, 72, 153, 0.15);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  padding: 0.65rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--pink-700);
+}
+
+.footer-inner a {
+  color: var(--pink-600);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-inner a:hover {
+  color: var(--pink-800);
+  text-decoration: underline;
+}
+
+.footer-sep {
+  color: var(--pink-400);
+}
+
 /* ===== Main feed ===== */
 .main {
   flex: 1;
