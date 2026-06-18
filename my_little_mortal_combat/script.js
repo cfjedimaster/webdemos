@@ -67,7 +67,7 @@ Alpine.data('app', () => ({
 			/*
 			my level is -1 to +1 of my current level 
 			*/
-			let level = Math.max(1, this.level + getRandomIntInclusive(-1, 1)) 
+			let level = Math.max(1, this.level + getRandomIntInclusive(-2, 2)) 
 			let opp = {
 				name: name + ' ' + getRandomArr(suffixes),
 				level,
