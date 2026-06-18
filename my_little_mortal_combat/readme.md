@@ -16,5 +16,6 @@ My new little web game. I need to write this out a bit more.
 
 | Date | Change |
 | ---- | ------ |
+| 6/18/26 | Opponent levels were +1/-1, not 2. Fixed. |
 | 4/25/26 | Save game logic working, hackable as hell, enjoy |
 | 4/24/26 | Opponents now scale to your level, along with their skills. You can buy skills. Your HP scales. |
