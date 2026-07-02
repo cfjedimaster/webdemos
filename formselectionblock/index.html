@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+    <title>Custom Form Selection Blocks</title>
+  </head>
+  <body>
+
+    <form method="post" action="https://postman-echo.com/post">
+
+      <p>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name">
+      </p>
+      <p>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email">
+      </p>
+
+      <fieldset class="option-group" aria-describedby="option-hint">
+        <legend>Choose a cat</legend>
+        <p id="option-hint" class="option-hint">
+          Use <kbd>Tab</kbd> to reach this choice, then <kbd>arrow keys</kbd> to switch options.
+        </p>
+        <div class="option-cards">
+          <label class="custom-card">
+            <input type="radio" name="option" value="1">
+            <span class="selected-badge" aria-hidden="true">Selected</span>
+            <h3>Option 1 - Luna</h3>
+            <img src="https://placecats.com/200/250" alt="Photo of Luna the cat">
+          </label>
+          <label class="custom-card">
+            <input type="radio" name="option" value="2">
+            <span class="selected-badge" aria-hidden="true">Selected</span>
+            <h3>Option 2 - Pig</h3>
+            <img src="https://placecats.com/300/200" alt="Photo of Pig the cat">
+          </label>
+        </div>
+      </fieldset>
+
+      <p>
+        <input type="submit">
+      </p>
+    </form>
+
+  </body>
+</html>
