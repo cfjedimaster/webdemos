@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fileNameEl = document.getElementById('file-name');
     const toggleBtn = document.getElementById('toggle-btn');
+    const copyBtn = document.getElementById('copy-btn');
     const openBtn = document.getElementById('open-btn');
     const emptyOpenBtn = document.getElementById('empty-open-btn');
     const emptyState = document.getElementById('empty-state');
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderedEl.style.display = 'block';
         sourceEl.style.display = 'none';
         toggleBtn.style.display = 'inline-block';
+        copyBtn.style.display = 'none';
         showingSource = false;
         toggleBtn.textContent = 'View Source';
 
@@ -72,11 +74,36 @@ document.addEventListener('DOMContentLoaded', () => {
             renderedEl.style.display = 'none';
             sourceEl.style.display = 'block';
             toggleBtn.textContent = 'View Rendered';
+            copyBtn.style.display = 'inline-block';
         } else {
             renderedEl.style.display = 'block';
             sourceEl.style.display = 'none';
             toggleBtn.textContent = 'View Source';
+            copyBtn.style.display = 'none';
         }
+        copyBtn.textContent = 'Copy Source';
+    });
+
+    copyBtn.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(rawContent);
+            copyBtn.textContent = 'Copied!';
+        } catch (error) {
+            console.error('Error copying to clipboard:', error);
+            copyBtn.textContent = 'Copy failed';
+        }
+        setTimeout(() => copyBtn.textContent = 'Copy Source', 2000);
+    });
+
+    document.addEventListener('keydown', e => {
+        if (!showingSource) return;
+        if (e.key !== 'a' || !(e.metaKey || e.ctrlKey) || e.altKey) return;
+        e.preventDefault();
+        const range = document.createRange();
+        range.selectNodeContents(sourceEl);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
     });
 
     openBtn.addEventListener('click', () => fileInput.click());
