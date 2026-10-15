@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'md-viewer-v2';
+const CACHE_VERSION = 'md-viewer-v3';
 const URLS_TO_CACHE = [
   '/',
   '/index.html',
