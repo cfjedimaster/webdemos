@@ -1,5 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    mermaid.initialize({ startOnLoad: false });
+
+    marked.use({
+        renderer: {
+            code({ text, lang }) {
+                if (lang === 'mermaid') {
+                    // Return a raw container that Mermaid can target later
+                    return `<pre class="mermaid">${text}</pre>`;
+                }
+                // Fall back to default behavior for all other code languages (js, python, etc.)
+                return false; 
+                }
+        }
+    });
+
     const fileNameEl = document.getElementById('file-name');
     const toggleBtn = document.getElementById('toggle-btn');
     const openBtn = document.getElementById('open-btn');
@@ -34,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const renderMarkdown = content => {
+    const renderMarkdown = async content => {
         rawContent = content;
         /*
         Special tweak for frontmatter. If our content starts with '---' and 
@@ -54,6 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         renderedEl.innerHTML = marked.parse(contentToRender);
+        await mermaid.run({
+            querySelector: '.mermaid',
+            suppressErrors: true
+        });
+        
         sourceEl.textContent = content;
 
         emptyState.style.display = 'none';
