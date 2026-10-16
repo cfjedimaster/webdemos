@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f5f7" />
+    <title>Customer Report</title>
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="form-pane" aria-labelledby="page-title">
+        <header class="page-header">
+          <p class="eyebrow">REPORTING</p>
+          <h1 id="page-title">Customer report</h1>
+          <p class="intro">Enter the details below to prepare a customer report.</p>
+        </header>
+
+        <form id="customer-report-form">
+          <div class="form-grid">
+            <div class="field field-wide">
+              <label for="customerName">Customer name</label>
+              <input id="customerName" name="customerName" type="text" autocomplete="organization" required />
+            </div>
+
+            <div class="field">
+              <label for="date">Date</label>
+              <input id="date" name="date" type="date" required />
+            </div>
+
+            <div class="field">
+              <label for="productsTotal">Total number of products</label>
+              <input id="productsTotal" name="productsTotal" type="number" min="0" step="1" required />
+            </div>
+
+            <div class="field">
+              <label for="reportYear">Report year</label>
+              <input id="reportYear" name="reportYear" type="number" step="1" required />
+            </div>
+
+            <div class="field">
+              <label for="profit">Profit</label>
+              <input id="profit" name="profit" type="number" step="any" required />
+            </div>
+
+            <div class="field">
+              <label for="losses">Losses</label>
+              <input id="losses" name="losses" type="number" step="any" required />
+            </div>
+
+            <div class="field field-wide">
+              <label for="recommendation">Recommendation</label>
+              <textarea id="recommendation" name="recommendation" rows="4" required></textarea>
+            </div>
+
+            <div class="field field-wide">
+              <label for="reporter">Reporter</label>
+              <input id="reporter" name="reporter" type="text" autocomplete="name" required />
+            </div>
+          </div>
+
+          <button type="submit">Submit report <span aria-hidden="true">→</span></button>
+        </form>
+      </section>
+
+      <aside class="preview-pane" aria-labelledby="preview-title">
+        <header class="preview-header">
+          <div>
+            <p class="eyebrow">DOCUMENT</p>
+            <h2 id="preview-title">Report preview</h2>
+          </div>
+          <button id="download-report" class="pdf-download" type="button" hidden>Download PDF</button>
+        </header>
+        <p id="report-status" class="report-status" role="status" aria-live="polite" hidden></p>
+        <div id="report-preview" class="report-preview" role="status" aria-live="polite">
+          <p class="preview-loading">Loading report preview…</p>
+        </div>
+      </aside>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
