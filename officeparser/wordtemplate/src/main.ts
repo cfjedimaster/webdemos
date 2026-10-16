@@ -4,10 +4,10 @@ import { OfficeConverter, OfficeTemplate } from 'officeparser/browser-native-pdf
 type CustomerReport = {
   customerName: string
   date: string
-  productsTotal: number
+  productsTotal: string
   reportYear: number
-  profit: number
-  losses: number
+  profit: string
+  losses: string
   recommendation: string
   reporter: string
 }
@@ -30,13 +30,37 @@ function readCustomerReport(formElement: HTMLFormElement): CustomerReport {
     return value
   }
 
+  const dateValue = stringValue('date')
+  const date = new Date(`${dateValue}T00:00:00Z`)
+  if (Number.isNaN(date.getTime())) {
+    throw new Error('Invalid report date.')
+  }
+
+  const productsTotal = Number(stringValue('productsTotal'))
+  const profit = Number(stringValue('profit'))
+  const losses = Number(stringValue('losses'))
+  if (![productsTotal, profit, losses].every(Number.isFinite)) {
+    throw new Error('Product total, profit, and losses must be valid numbers.')
+  }
+
   return {
     customerName: stringValue('customerName'),
-    date: stringValue('date'),
-    productsTotal: Number(stringValue('productsTotal')),
+    date: new Intl.DateTimeFormat('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(date),
+    productsTotal: new Intl.NumberFormat('en-US').format(productsTotal),
     reportYear: Number(stringValue('reportYear')),
-    profit: Number(stringValue('profit')),
-    losses: Number(stringValue('losses')),
+    profit: new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(profit),
+    losses: new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(losses),
     recommendation: stringValue('recommendation'),
     reporter: stringValue('reporter'),
   }
