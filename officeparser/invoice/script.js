@@ -123,11 +123,20 @@ async function generateInvoices(inputPath, outputPath, templatePath) {
 
   await mkdir(outputPath, { recursive: true })
 
-  for (const invoice of invoices) {
-    const renderedDocx = await OfficeTemplate.render(template, {
-      data: invoice,
-      onMissing: 'error',
-    })
+  const renderedDocuments = await OfficeTemplate.render(template, {
+    data: invoices,
+    onMissing: 'error',
+  })
+  if (!Array.isArray(renderedDocuments) || renderedDocuments.length !== invoices.length) {
+    throw new Error('officeparser did not return one rendered document per invoice.')
+  }
+
+  for (const [index, invoice] of invoices.entries()) {
+    const renderedDocx = renderedDocuments[index]
+    if (!(renderedDocx instanceof Uint8Array)) {
+      throw new Error(`officeparser did not return a rendered document for ${invoice.invoiceNumber}.`)
+    }
+
     const { value: pdfBytes } = await OfficeConverter.convert(renderedDocx, 'pdf', {
       generatorConfig: {
         pdfConfig: { engine: 'native' },
