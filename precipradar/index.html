@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Precipitation Radar</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  >
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <div id="map" class="radar-map" aria-label="Interactive precipitation radar map"></div>
+
+    <section class="control-widget" aria-labelledby="widget-title">
+      <div class="widget-header">
+        <div class="widget-title-group">
+          <svg class="widget-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+            <path d="M16 14v6"/>
+            <path d="M8 14v6"/>
+            <path d="M12 16v6"/>
+          </svg>
+          <div>
+            <h1 id="widget-title">Precipitation Radar</h1>
+            <p id="active-location" class="active-location">United States Overview</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          id="collapse-btn"
+          class="icon-btn"
+          aria-expanded="true"
+          aria-controls="widget-body"
+          aria-label="Collapse location controls"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <div id="widget-body" class="widget-body">
+        <button type="button" id="geolocate-btn" class="geo-btn">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 2v3"></path>
+            <path d="M12 19v3"></path>
+            <path d="M2 12h3"></path>
+            <path d="M19 12h3"></path>
+            <circle cx="12" cy="12" r="7"></circle>
+          </svg>
+          <span id="geolocate-label">Use Current Location</span>
+        </button>
+
+        <div class="divider" role="separator">
+          <span>or enter an address</span>
+        </div>
+
+        <form id="location-form" action="#" method="GET" novalidate>
+          <label for="location-input" class="field-label">City, postal code, or street address</label>
+          <div class="search-row">
+            <input
+              type="search"
+              id="location-input"
+              name="q"
+              placeholder="e.g., Lafayette, LA or 70501"
+              autocomplete="street-address"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              enterkeyhint="search"
+              required
+              aria-describedby="form-error"
+            >
+            <button type="submit" id="search-btn" class="submit-btn">Go</button>
+          </div>
+          <p id="form-error" class="error-msg" role="alert" hidden></p>
+        </form>
+
+        <div class="radar-controls">
+          <div class="radar-meta">
+            <span class="radar-badge">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <span id="radar-time">Loading radar…</span>
+            </span>
+            <button type="button" id="refresh-btn" class="text-btn" aria-label="Refresh radar data">
+              Refresh
+            </button>
+          </div>
+
+          <div class="timeline-row" id="timeline-controls" hidden>
+            <button
+              type="button"
+              id="play-btn"
+              class="play-btn"
+              aria-pressed="false"
+              aria-label="Play radar loop"
+            >
+              <svg id="play-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="6 4 20 12 6 20 6 4"></polygon>
+              </svg>
+              <svg id="pause-icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" hidden>
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+            </button>
+            <label for="frame-slider" class="visually-hidden">Radar timeline frame</label>
+            <input
+              type="range"
+              id="frame-slider"
+              name="frame"
+              min="0"
+              max="0"
+              value="0"
+              step="1"
+            >
+          </div>
+
+          <div class="legend" aria-label="Precipitation intensity scale">
+            <div class="legend-labels">
+              <span>Light</span>
+              <span>Moderate</span>
+              <span>Heavy</span>
+              <span>Snow</span>
+            </div>
+            <div class="legend-bar" aria-hidden="true">
+              <span class="rain-gradient"></span>
+              <span class="snow-gradient"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="sr-status" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+  </main>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script src="app.js"></script>
+</body>
+</html>
