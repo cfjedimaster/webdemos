@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAGEL // GRID '84 — Serigraph Light-Cycle Duel</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="audio.js"></script>
+  <script defer src="game.js"></script>
+</head>
+<body data-crt="on">
+  <header class="cabinet-header">
+    <div class="brand-lockup">
+      <h1 class="brand-title">NAGEL // GRID ’84</h1>
+      <span class="brand-tag">Serigraph Cyber-Cycle Salon • Tokyo / Miami</span>
+    </div>
+
+    <div class="header-controls">
+      <div class="mode-switcher" role="group" aria-label="Game Mode">
+        <button type="button" class="mode-btn" data-mode="circuit" aria-pressed="true">1P Circuit</button>
+        <button type="button" class="mode-btn" data-mode="versus" aria-pressed="false">2P Duel</button>
+        <button type="button" class="mode-btn" data-mode="chaos" aria-pressed="false">4-Bike Chaos</button>
+      </div>
+
+      <button type="button" class="utility-btn" id="audio-btn" aria-pressed="true" title="Toggle Synth &amp; Arcade Audio">
+        SFX + Synth: ON
+      </button>
+      <button type="button" class="utility-btn" id="crt-btn" aria-pressed="true" title="Toggle Trinitron Scanlines &amp; Shake">
+        CRT + VFX: ON
+      </button>
+      <button type="button" class="utility-btn" id="manual-open-btn" command="show-modal" commandfor="manual-dialog">
+        Manual
+      </button>
+    </div>
+  </header>
+
+  <main class="arcade-stage">
+    <!-- PLAYER 1 NAGEL DOSSIER -->
+    <aside class="dossier-card dossier-p1" aria-label="Player 1 Dossier">
+      <div class="dossier-ribbon">
+        <span>CHASSIS 01</span>
+        <span class="dossier-ribbon-accent">SERIGRAPH TEAL</span>
+      </div>
+
+      <figure class="portrait-frame">
+        <img src="assets/nagel-hero.jpg" alt="Nagel-style porcelain cyber-rider wearing wraparound neon grid sunglasses" width="512" height="512">
+        <figcaption class="portrait-badge" id="p1-status-badge">READY</figcaption>
+      </figure>
+
+      <div class="rider-identity">
+        <h2 class="rider-name" id="p1-name">RYDER // RIO-01</h2>
+        <p class="rider-sub" id="p1-sub">Shoulder Pads Sharp Enough to Cut Chrome</p>
+      </div>
+
+      <div class="telemetry-grid">
+        <div class="stat-box">
+          <span class="stat-label">Score</span>
+          <span class="stat-value" id="p1-score">000000</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Style Mult</span>
+          <span class="stat-value" id="p1-mult">×1.0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Round Wins</span>
+          <span class="stat-value" id="p1-wins">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Razor Grazes</span>
+          <span class="stat-value" id="p1-grazes">0</span>
+        </div>
+      </div>
+
+      <div class="meter-block">
+        <div class="meter-header">
+          <span>Turbo Overdrive</span>
+          <span id="p1-boost-pct">100%</span>
+        </div>
+        <div class="meter-track">
+          <div class="meter-fill" id="p1-boost-bar"></div>
+        </div>
+      </div>
+
+      <div class="key-legend" id="p1-keys">
+        <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Steer</span>
+        <span><kbd>SPACE</kbd> Overdrive</span>
+        <span><kbd>P</kbd> Pause</span>
+      </div>
+    </aside>
+
+    <!-- 2D NEON SERIGRAPH ARENA -->
+    <section class="arena-column" aria-label="Light Cycle Arena">
+      <div class="arena-mat" id="arena-mat">
+        <div class="arena-viewport">
+          <canvas id="grid-canvas" width="960" height="672" aria-label="2D Light Cycle Grid"></canvas>
+          <div class="crt-overlay" aria-hidden="true"></div>
+
+          <!-- ATTRACT / ROUND INTERMISSION POSTER -->
+          <div class="stage-overlay" id="stage-overlay">
+            <div class="poster-card">
+              <span class="poster-kicker" id="overlay-kicker">EDITION 1984 // GALLERY &amp; ARCADE</span>
+              <h2 class="poster-headline" id="overlay-headline">SILK, LIPSTICK &amp; LETHAL LIGHT</h2>
+              <p class="poster-copy" id="overlay-copy">
+                Carve 90-degree neon ribbons across a razor-flat serigraph grid. Skim enemy walls for Razor Graze voltage, ignite Turbo Overdrive, and derez every poser in the district.
+              </p>
+              <div class="poster-actions">
+                <button type="button" class="cta-primary" id="start-btn">Insert Coin // Ride</button>
+                <button type="button" class="cta-secondary" id="overlay-manual-btn" command="show-modal" commandfor="manual-dialog">
+                  How to Ride
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arena-ticker">
+        <span id="stage-readout">CIRCUIT STAGE 01 // SECTOR: MIAMI-GINZA</span>
+        <span>HI-SCORE: <strong class="ticker-highlight" id="hi-score-readout">019840</strong></span>
+      </div>
+
+      <!-- Touch Controls for Mobile / Tablet -->
+      <div class="touch-deck" aria-label="Touch Controls">
+        <div class="dpad-grid">
+          <button type="button" class="dpad-btn dpad-up" data-dir="up" aria-label="Turn Up">▲</button>
+          <button type="button" class="dpad-btn dpad-left" data-dir="left" aria-label="Turn Left">◀</button>
+          <button type="button" class="dpad-btn dpad-right" data-dir="right" aria-label="Turn Right">▶</button>
+          <button type="button" class="dpad-btn dpad-down" data-dir="down" aria-label="Turn Down">▼</button>
+        </div>
+        <button type="button" class="touch-boost-btn" id="touch-boost-btn">Hold Overdrive</button>
+      </div>
+    </section>
+
+    <!-- RIVAL / PLAYER 2 NAGEL DOSSIER -->
+    <aside class="dossier-card dossier-rival" aria-label="Opponent Dossier">
+      <div class="dossier-ribbon">
+        <span id="rival-slot-label">CHALLENGER</span>
+        <span class="dossier-ribbon-accent" id="rival-color-label">LIPSTICK CRIMSON</span>
+      </div>
+
+      <figure class="portrait-frame">
+        <img id="rival-portrait" src="assets/rival-valerie.jpg" alt="Nagel-style cyberpunk rival portrait" width="512" height="512">
+        <figcaption class="portrait-badge" id="rival-status-badge">LOCKED IN</figcaption>
+      </figure>
+
+      <div class="rider-identity">
+        <h2 class="rider-name" id="rival-name">VALERIE // VIPER-84</h2>
+        <p class="rider-sub" id="rival-sub">Neural-Jacked Couture Assassin</p>
+      </div>
+
+      <div class="telemetry-grid">
+        <div class="stat-box">
+          <span class="stat-label" id="rival-stat1-label">Threat Tier</span>
+          <span class="stat-value" id="rival-stat1-val">STAGE 01</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Round Wins</span>
+          <span class="stat-value" id="rival-wins">0</span>
+        </div>
+      </div>
+
+      <div class="meter-block">
+        <div class="meter-header">
+          <span>Rival Overdrive</span>
+          <span id="rival-boost-pct">100%</span>
+        </div>
+        <div class="meter-track">
+          <div class="meter-fill" id="rival-boost-bar"></div>
+        </div>
+      </div>
+
+      <blockquote class="editorial-quote" id="rival-quote">
+        “Darling, that teal chassis clashes horribly with your imminent explosion.”
+      </blockquote>
+    </aside>
+  </main>
+
+  <!-- NATIVE ARCADE MANUAL DIALOG -->
+  <dialog id="manual-dialog" closedby="any" aria-labelledby="manual-title">
+    <div class="manual-header">
+      <h2 class="manual-title" id="manual-title">OPERATOR MANUAL // 1984</h2>
+      <form method="dialog">
+        <button type="submit" class="cta-secondary" autofocus>Close [ESC]</button>
+      </form>
+    </div>
+
+    <div class="manual-section">
+      <h3>The Rules of the Serigraph Grid</h3>
+      <p>
+        Every light-cycle leaves an impenetrable solid-state neon ribbon in its wake. Touch the arena border, an opponent’s light ribbon, or your own trail and you instantly <strong>DEREZ</strong> into geometric confetti. Last rider intact takes the round; first to <strong>3 wins</strong> claims the match.
+      </p>
+    </div>
+
+    <div class="manual-section">
+      <h3>Controls</h3>
+      <ul>
+        <li><strong>1P Circuit / 4-Bike Chaos:</strong> Steer with <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>Arrow Keys</kbd>. Hold <kbd>SPACE</kbd> or <kbd>SHIFT</kbd> for <strong>Turbo Overdrive</strong>.</li>
+        <li><strong>2P Couch Duel:</strong> Player 1 steers with <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> + <kbd>SPACE</kbd> Boost. Player 2 steers with <kbd>Arrow Keys</kbd> + <kbd>SHIFT</kbd> or <kbd>ENTER</kbd> Boost.</li>
+        <li><strong>Quick Keys:</strong> <kbd>P</kbd> Pause • <kbd>M</kbd> Toggle Synth/SFX • <kbd>ENTER</kbd> Launch Next Round when overlay is open.</li>
+      </ul>
+    </div>
+
+    <div class="manual-section">
+      <h3>Over-The-Top Cyber Mechanics</h3>
+      <ul>
+        <li><strong>RAZOR GRAZE:</strong> Skim within 2 grid cells parallel to any active light wall to throw chrome sparks, rapidly recharge your Overdrive meter, and climb up to a <strong>×8.0 Style Multiplier</strong>.</li>
+        <li><strong>GOLD OVERDRIVE PRISM:</strong> Instant 100% Overdrive refill + bonus points.</li>
+        <li><strong>CRIMSON SLASH PRISM:</strong> Vaporizes the oldest 40% of every bike’s light trail across the grid, opening lethal ambush corridors.</li>
+        <li><strong>TEAL CHRONO PRISM:</strong> Triggers 3 seconds of New-Wave Time Dilation—enemy cycles crawl at half speed while you carve full-speed circles around them.</li>
+      </ul>
+    </div>
+  </dialog>
+</body>
+</html>

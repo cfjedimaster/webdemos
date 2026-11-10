@@ -1,0 +1,857 @@
+@layer reset, base, theme, layout, components, utilities;
+
+@layer reset {
+  html, body, header, main, footer, section, aside, article, div,
+  figure, figcaption, h1, h2, h3, p, ul, li, dl, dt, dd,
+  button, dialog, form, canvas, kbd, span, strong, em, img {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  img {
+    display: block;
+    max-inline-size: 100%;
+  }
+}
+
+@layer theme {
+  :root {
+    color-scheme: dark;
+
+    /* Progressive enhancement tokens for perceptual gradient interpolation */
+    --in-oklab: ;
+    --in-oklch: ;
+
+    /* Nagel Serigraph x 1984 Cyberpunk Palette */
+    --ink-obsidian: #090710;
+    --ink-midnight: #120d22;
+    --ink-violet-deep: #1d1138;
+    --porcelain: #faf6f0;
+    --porcelain-warm: #f2e8dc;
+    --nagel-crimson: #ff1755;
+    --nagel-coral: #ff6b6b;
+    --nagel-peach: #ff9a76;
+    --nagel-teal: #00f5d4;
+    --nagel-mint: #9bf6ff;
+    --nagel-violet: #9d4edd;
+    --nagel-magenta: #f72585;
+    --chrome-gold: #ffd166;
+    --chrome-silver: #cfd8e3;
+
+    /* Typography — bold geometric 80s sans + crisp telemetry mono */
+    --font-display: "Futura", "Avenir Next Condensed", "Arial Narrow", "Impact", sans-serif;
+    --font-editorial: "Didot", "Bodoni MT", "Georgia", serif;
+    --font-ui: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+    --font-mono: "SFMono-Regular", "Menlo", "Consolas", monospace;
+
+    /* UI Tokens */
+    --frame-border-porcelain: 3px solid var(--porcelain);
+    --frame-border-ink: 3px solid var(--ink-obsidian);
+    --shadow-serigraph: 6px 6px 0 var(--ink-obsidian), 10px 10px 0 var(--nagel-crimson);
+    --shadow-neon-teal: 0 0 18px rgb(0 245 212 / 0.45);
+    --shadow-neon-pink: 0 0 18px rgb(255 23 85 / 0.45);
+  }
+
+  @supports (background: linear-gradient(in oklab, white, black)) {
+    :root {
+      --in-oklab: in oklab;
+      --in-oklch: in oklch;
+    }
+  }
+}
+
+@layer base {
+  html, body {
+    min-block-size: 100dvh;
+    background-color: var(--ink-obsidian);
+    color: var(--porcelain);
+    font-family: var(--font-ui);
+    line-height: 1.35;
+    overflow-x: clip;
+  }
+
+  /* Architectural Nagel Diagonal Color-Block + Halftone Polka Backdrop */
+  body {
+    --dot-dist: 18px;
+    --dot-rad: 1.25px;
+    --halftone: radial-gradient(
+      circle,
+      rgb(250 246 240 / 0.07) var(--dot-rad),
+      transparent calc(var(--dot-rad) + 0.6px)
+    );
+    background-image:
+      var(--halftone),
+      linear-gradient(
+        122deg var(--in-oklch),
+        #0a0713 0% 42%,
+        #1b0e33 42% 42.4%,
+        #ff1755 42.4% 43.2%,
+        #150c29 43.2% 74%,
+        #00f5d4 74% 74.5%,
+        #0b1a28 74.5% 100%
+      );
+    background-size:
+      var(--dot-dist) var(--dot-dist),
+      100% 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--nagel-teal);
+    outline-offset: 3px;
+  }
+}
+
+@layer layout {
+  .cabinet-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding-block: 0.55rem;
+    padding-inline: clamp(0.85rem, 2vw, 1.75rem);
+    background: linear-gradient(
+      to right var(--in-oklab),
+      #0c0818,
+      #1b0f30 55%,
+      #10192b
+    );
+    border-block-end: 3px solid var(--porcelain);
+    box-shadow: 0 4px 0 var(--nagel-crimson);
+    position: relative;
+    z-index: 10;
+  }
+
+  .arcade-stage {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(225px, 272px) minmax(0, 1fr) minmax(225px, 272px);
+    align-items: center;
+    gap: clamp(0.75rem, 1.5vw, 1.35rem);
+    padding: clamp(0.65rem, 1.4vw, 1.2rem);
+    max-inline-size: 1660px;
+    inline-size: 100%;
+    margin-inline: auto;
+  }
+
+  @media (max-width: 1100px) {
+    .arcade-stage {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "arena arena"
+        "p1 rival";
+    }
+
+    .dossier-p1 {
+      grid-area: p1;
+    }
+
+    .arena-column {
+      grid-area: arena;
+    }
+
+    .dossier-rival {
+      grid-area: rival;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .arcade-stage {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "arena"
+        "p1"
+        "rival";
+    }
+  }
+}
+
+@layer components {
+  /* --- HEADER BRAND LOCKUP --- */
+  .brand-lockup {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .brand-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 1rem + 1.4vw, 2rem);
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: linear-gradient(
+      to bottom var(--in-oklch),
+      var(--porcelain) 0%,
+      var(--nagel-mint) 46%,
+      var(--nagel-crimson) 52%,
+      var(--nagel-peach) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(2px 2px 0 var(--ink-obsidian));
+  }
+
+  .brand-tag {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: clamp(0.82rem, 0.75rem + 0.35vw, 1rem);
+    color: var(--nagel-peach);
+    letter-spacing: 0.06em;
+  }
+
+  /* --- MODE PILLS & TOOLBAR --- */
+  .header-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mode-switcher {
+    display: inline-flex;
+    background: var(--ink-obsidian);
+    border: 2px solid var(--porcelain);
+    box-shadow: 3px 3px 0 var(--nagel-crimson);
+  }
+
+  .mode-btn {
+    padding: 0.35rem 0.75rem;
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--porcelain-warm);
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:not(:last-child) {
+      border-inline-end: 2px solid var(--porcelain);
+    }
+
+    &:hover:not(:disabled):not([aria-pressed="true"]) {
+      background: rgb(250 246 240 / 0.14);
+      color: var(--nagel-teal);
+    }
+
+    &[aria-pressed="true"] {
+      background: var(--nagel-teal);
+      color: var(--ink-obsidian);
+    }
+  }
+
+  .utility-btn {
+    padding: 0.35rem 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--ink-midnight);
+    color: var(--porcelain);
+    border: 2px solid var(--porcelain);
+    box-shadow: 3px 3px 0 var(--nagel-violet);
+    transition: transform 0.12s ease, background-color 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--nagel-crimson);
+      color: var(--porcelain);
+      transform: translate(-1px, -1px);
+    }
+
+    &[aria-pressed="false"] {
+      opacity: 0.68;
+      box-shadow: 2px 2px 0 #444;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+      &:hover:not(:disabled) {
+        transform: none;
+      }
+    }
+  }
+
+  /* --- NAGEL SERIGRAPH DOSSIER CARDS --- */
+  .dossier-card {
+    container-type: inline-size;
+    background: var(--porcelain);
+    color: var(--ink-obsidian);
+    border: 3px solid var(--ink-obsidian);
+    outline: 2px solid var(--porcelain);
+    box-shadow: 8px 8px 0 var(--nagel-crimson);
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    position: relative;
+    isolation: isolate;
+
+    &.dossier-p1 {
+      box-shadow: 8px 8px 0 var(--nagel-teal);
+    }
+  }
+
+  /* Diagonal serigraph accent stripe across top of card */
+  .dossier-ribbon {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.28rem 0.55rem;
+    background: var(--ink-obsidian);
+    color: var(--porcelain);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .dossier-ribbon-accent {
+    color: var(--nagel-teal);
+  }
+
+  .dossier-rival .dossier-ribbon-accent {
+    color: var(--nagel-crimson);
+  }
+
+  .portrait-frame {
+    position: relative;
+    border: 3px solid var(--ink-obsidian);
+    background: linear-gradient(
+      135deg var(--in-oklch),
+      var(--nagel-coral) 0% 45%,
+      var(--nagel-teal) 45% 75%,
+      var(--ink-violet-deep) 75% 100%
+    );
+    aspect-ratio: 1 / 1;
+    max-inline-size: 205px;
+    inline-size: 100%;
+    margin-inline: auto;
+    overflow: clip;
+    box-shadow: 4px 4px 0 var(--ink-obsidian);
+
+    & img {
+      inline-size: 100%;
+      block-size: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .portrait-badge {
+    position: absolute;
+    inset-block-end: 0.4rem;
+    inset-inline-end: 0.4rem;
+    background: var(--ink-obsidian);
+    color: var(--porcelain);
+    border: 2px solid var(--porcelain);
+    padding: 0.12rem 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .rider-identity {
+    border-block-end: 2px solid var(--ink-obsidian);
+    padding-block-end: 0.4rem;
+  }
+
+  .rider-name {
+    font-family: var(--font-display);
+    font-size: 1.18rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  .rider-sub {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: 0.85rem;
+    color: #3b2d54;
+  }
+
+  /* Telemetry readout */
+  .telemetry-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+  }
+
+  .stat-box {
+    background: var(--ink-obsidian);
+    color: var(--porcelain);
+    padding: 0.38rem 0.5rem;
+    border-inline-start: 4px solid var(--nagel-teal);
+  }
+
+  .dossier-rival .stat-box {
+    border-inline-start-color: var(--nagel-crimson);
+  }
+
+  .stat-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--chrome-silver);
+    text-transform: uppercase;
+  }
+
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--porcelain);
+  }
+
+  /* Overdrive Plasma Meter */
+  .meter-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .meter-header {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .meter-track {
+    block-size: 12px;
+    background: var(--ink-obsidian);
+    border: 2px solid var(--ink-obsidian);
+    padding: 1px;
+    position: relative;
+  }
+
+  .meter-fill {
+    block-size: 100%;
+    inline-size: 100%;
+    transform-origin: left center;
+    background: linear-gradient(
+      to right var(--in-oklch),
+      var(--nagel-teal),
+      var(--chrome-gold),
+      var(--nagel-crimson)
+    );
+    transition: transform 0.08s linear;
+  }
+
+  /* Editorial Quote / Controls Box */
+  .editorial-quote {
+    background: repeating-linear-gradient(
+      -45deg,
+      #f5ece0 0 8px,
+      #efe2d2 0 16px
+    );
+    border: 2px solid var(--ink-obsidian);
+    padding: 0.5rem 0.6rem;
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: 0.88rem;
+    line-height: 1.3;
+    color: var(--ink-obsidian);
+    min-block-size: 3.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .key-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    padding-block-start: 0.2rem;
+  }
+
+  kbd {
+    display: inline-block;
+    padding: 0.08rem 0.34rem;
+    background: var(--ink-obsidian);
+    color: var(--nagel-teal);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 700;
+    border-radius: 2px;
+  }
+
+  @container (max-width: 240px) {
+    .portrait-frame {
+      max-inline-size: 145px;
+    }
+    .rider-name {
+      font-size: 1rem;
+    }
+  }
+
+  /* --- CENTER ARENA STAGE --- */
+  .arena-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    min-inline-size: 0;
+  }
+
+  .arena-mat {
+    position: relative;
+    inline-size: 100%;
+    max-inline-size: min(100%, calc((100dvh - 135px) * 10 / 7));
+    aspect-ratio: 10 / 7;
+    padding: clamp(6px, 0.9vw, 12px);
+    background: var(--porcelain);
+    border: 4px solid var(--ink-obsidian);
+    box-shadow:
+      0 0 0 2px var(--porcelain),
+      10px 10px 0 var(--nagel-crimson),
+      -6px -6px 0 var(--nagel-teal),
+      0 0 42px rgb(247 37 133 / 0.32);
+    isolation: isolate;
+  }
+
+  .arena-viewport {
+    position: relative;
+    inline-size: 100%;
+    block-size: 100%;
+    background: var(--ink-obsidian);
+    border: 3px solid var(--ink-obsidian);
+    overflow: clip;
+  }
+
+  #grid-canvas {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* Optional 1984 Trinitron Scanlines + Vignette Overlay */
+  .crt-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    background:
+      linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgb(9 7 16 / 0.26) 0
+      ) 0 0 / 100% 4px,
+      radial-gradient(
+        circle at center,
+        transparent 62%,
+        rgb(9 7 16 / 0.52) 100%
+      );
+    mix-blend-mode: multiply;
+  }
+
+  body[data-crt="off"] .crt-overlay {
+    display: none;
+  }
+
+  /* --- POSTER / INTERMISSION OVERLAY INSIDE ARENA --- */
+  .stage-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 3vw, 2.2rem);
+    background:
+      linear-gradient(
+        130deg var(--in-oklch),
+        rgb(11 9 20 / 0.9) 0% 58%,
+        rgb(255 23 85 / 0.82) 58% 60%,
+        rgb(18 13 34 / 0.92) 60% 100%
+      );
+    backdrop-filter: blur(4px);
+    transition: opacity 0.22s ease;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .poster-card {
+    max-inline-size: 560px;
+    inline-size: 100%;
+    background: var(--porcelain);
+    color: var(--ink-obsidian);
+    border: 4px solid var(--ink-obsidian);
+    box-shadow:
+      8px 8px 0 var(--nagel-teal),
+      16px 16px 0 var(--nagel-crimson);
+    padding: clamp(1rem, 2.4vw, 1.65rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: left;
+  }
+
+  .poster-kicker {
+    display: inline-block;
+    align-self: flex-start;
+    background: var(--ink-obsidian);
+    color: var(--nagel-teal);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    padding: 0.2rem 0.55rem;
+    text-transform: uppercase;
+  }
+
+  .poster-headline {
+    font-family: var(--font-display);
+    font-size: clamp(1.55rem, 1.1rem + 2.2vw, 2.55rem);
+    font-weight: 900;
+    line-height: 0.98;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-obsidian);
+  }
+
+  .poster-copy {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.12rem);
+    color: #271b3b;
+  }
+
+  .poster-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    padding-block-start: 0.35rem;
+  }
+
+  .cta-primary {
+    padding: 0.65rem 1.35rem;
+    background: var(--nagel-crimson);
+    color: var(--porcelain);
+    border: 3px solid var(--ink-obsidian);
+    box-shadow: 4px 4px 0 var(--ink-obsidian);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: transform 0.12s ease, background-color 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--ink-obsidian);
+      color: var(--nagel-teal);
+      transform: translate(-2px, -2px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+      &:hover:not(:disabled) {
+        transform: none;
+      }
+    }
+  }
+
+  .cta-secondary {
+    padding: 0.65rem 1rem;
+    background: transparent;
+    color: var(--ink-obsidian);
+    border: 3px solid var(--ink-obsidian);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    &:hover:not(:disabled) {
+      background: var(--ink-obsidian);
+      color: var(--porcelain);
+    }
+  }
+
+  /* Live ticker strip under arena */
+  .arena-ticker {
+    inline-size: 100%;
+    max-inline-size: min(100%, calc((100dvh - 135px) * 10 / 7));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding: 0.32rem 0.75rem;
+    background: var(--ink-obsidian);
+    border: 2px solid var(--porcelain);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ticker-highlight {
+    color: var(--chrome-gold);
+    font-weight: 800;
+  }
+
+  /* --- TOUCH / MOBILE ARCADE CONTROLS --- */
+  .touch-deck {
+    display: none;
+    inline-size: 100%;
+    max-inline-size: 460px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.35rem;
+  }
+
+  @media (pointer: coarse), (max-width: 820px) {
+    .touch-deck {
+      display: flex;
+    }
+  }
+
+  .dpad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 48px);
+    grid-template-rows: repeat(3, 44px);
+    gap: 4px;
+  }
+
+  .dpad-btn {
+    background: var(--ink-midnight);
+    color: var(--porcelain);
+    border: 2px solid var(--porcelain);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 900;
+    touch-action: manipulation;
+    user-select: none;
+
+    &:active {
+      background: var(--nagel-teal);
+      color: var(--ink-obsidian);
+    }
+  }
+
+  .dpad-up { grid-column: 2; grid-row: 1; }
+  .dpad-left { grid-column: 1; grid-row: 2; }
+  .dpad-right { grid-column: 3; grid-row: 2; }
+  .dpad-down { grid-column: 2; grid-row: 3; }
+
+  .touch-boost-btn {
+    padding: 1rem 1.25rem;
+    background: var(--nagel-crimson);
+    color: var(--porcelain);
+    border: 3px solid var(--porcelain);
+    box-shadow: 4px 4px 0 var(--nagel-teal);
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    touch-action: manipulation;
+    user-select: none;
+
+    &:active {
+      background: var(--chrome-gold);
+      color: var(--ink-obsidian);
+    }
+  }
+
+  /* --- NATIVE MODAL DIALOG (Modern Web Guidance Compliant) --- */
+  dialog:modal {
+    overscroll-behavior: contain;
+  }
+
+  dialog::backdrop {
+    overflow: hidden;
+    overscroll-behavior: contain;
+    background: rgb(9 7 16 / 0.78);
+    backdrop-filter: blur(4px);
+  }
+
+  #manual-dialog[open] {
+    margin: auto;
+    max-inline-size: 620px;
+    inline-size: calc(100% - 2rem);
+    max-block-size: 86dvh;
+    overflow-y: auto;
+    background: var(--porcelain);
+    color: var(--ink-obsidian);
+    border: 4px solid var(--ink-obsidian);
+    box-shadow:
+      10px 10px 0 var(--nagel-crimson),
+      -6px -6px 0 var(--nagel-teal);
+    padding: clamp(1.1rem, 2.5vw, 1.75rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .manual-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-block-end: 3px solid var(--ink-obsidian);
+    padding-block-end: 0.5rem;
+  }
+
+  .manual-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .manual-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    & h3 {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--ink-obsidian);
+      color: var(--nagel-teal);
+      padding: 0.2rem 0.5rem;
+      align-self: flex-start;
+    }
+
+    & p, & li {
+      font-size: 0.92rem;
+      color: #1c152b;
+    }
+
+    & li:not(:last-child) {
+      margin-block-end: 0.35rem;
+    }
+  }
+}
