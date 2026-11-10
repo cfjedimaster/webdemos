@@ -483,8 +483,10 @@
 
   .key-legend {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem 0.55rem;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
     font-family: var(--font-mono);
     font-size: 0.68rem;
     padding-block-start: 0.2rem;

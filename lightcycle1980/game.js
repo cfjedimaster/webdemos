@@ -21,8 +21,17 @@
   const DIR_KEYS = ['up', 'right', 'down', 'left'];
 
   const WINS_TO_CLAIM_MATCH = 3;
-  const BASE_STEP_SEC = 0.046; // ~21.7 cells/sec base speed (snappy arcade pace)
+  const BASE_STEP_SEC = 0.052; // ~19.2 cells/sec base speed (approachable Stage 1 pace)
   const BOOST_MULTIPLIER = 1.78;
+  const PANIC_MULTIPLIER = 2.15;
+
+  const PANIC_CALLOUTS = [
+    'BOXED IN?!',
+    'NO EXIT!',
+    'TRAPPED!',
+    'NOT THE HAIR!',
+    'SEALED OFF!',
+  ];
 
   // --- NAGEL RIVAL ROSTER ---
   const RIVALS = [
@@ -176,8 +185,34 @@
     });
   }
 
-  // --- AUDIO INSTANCE ---
+  // --- AUDIO INSTANCE & PERSISTENT SOUND PREFERENCE (checked first on load) ---
+  const AUDIO_STORAGE_KEY = 'nagel_grid84_audio';
   const audio = new window.SynthGridAudio();
+
+  function syncAudioButtonUI(isOn) {
+    audioBtn.setAttribute('aria-pressed', String(isOn));
+    audioBtn.textContent = `SFX + Synth: ${isOn ? 'ON' : 'OFF'}`;
+  }
+
+  try {
+    const savedAudio = window.localStorage.getItem(AUDIO_STORAGE_KEY);
+    if (savedAudio === 'off' || savedAudio === 'false') {
+      audio.setEnabled(false);
+      syncAudioButtonUI(false);
+    }
+  } catch {
+    // Ignore storage privacy restrictions
+  }
+
+  function handleAudioToggle() {
+    const isOn = audio.toggleAudio();
+    syncAudioButtonUI(isOn);
+    try {
+      window.localStorage.setItem(AUDIO_STORAGE_KEY, isOn ? 'on' : 'off');
+    } catch {
+      // Ignore storage restrictions
+    }
+  }
 
   // --- PERSISTENT HIGH SCORE ---
   const STORAGE_KEY = 'nagel_grid84_hiscore';
@@ -348,8 +383,15 @@
   }
 
   // --- GAME STATE ---
+  // Supported modes:
+  //   - 'circuit' : 1P fighting-game ladder (Valerie -> Dante -> Salon Syndicate)
+  //   - 'chaos'   : 1P endless escalating 4-bike survival waves
+  //   - 'versus'  : 2P same-keyboard PvP (P1: WASD+Space, P2: Arrows+Shift/Enter).
+  //                 NOTE: 'versus' is intentionally hidden in index.html UI,
+  //                 but all setup, input, HUD, and scoring logic remains intact here.
+  //                 To restore it, uncomment the `data-mode="versus"` button in index.html.
   const state = {
-    mode: 'circuit',     // 'circuit' | 'versus' | 'chaos'
+    mode: 'circuit',     // 'circuit' | 'chaos' | 'versus' (hidden in UI; see note above)
     phase: 'attract',    // 'attract' | 'countdown' | 'playing' | 'paused' | 'roundEnd' | 'matchEnd'
     circuitStage: 0,     // 0: Valerie, 1: Dante, 2: Syndicate Twins
     chaosWave: 1,
@@ -411,7 +453,11 @@
       stepAccum: 0,
       boostEnergy: 100,
       boosting: false,
+      aiBoostTicks: 0,
       grazeCooldown: 0,
+      turnCooldownCells: 0,
+      panicking: false,
+      hasPanicked: false,
 
       // Trail stored as list of polylines so EMP Slash can trim old cells cleanly!
       // Each cell entry: { gx, gy }
@@ -645,7 +691,7 @@
     p1GrazesEl.textContent = String(state.grazes);
 
     if (state.mode === 'versus') {
-      p1KeysEl.innerHTML = '<span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Steer</span><span><kbd>SPACE</kbd> Boost</span>';
+      p1KeysEl.innerHTML = '<span><kbd>WASD</kbd></span><span><kbd>SPACE</kbd> Boost</span><span><kbd>P</kbd> Pause</span>';
       rivalSlotLabel.textContent = 'PLAYER 02';
       rivalColorLabel.textContent = 'LIPSTICK CRIMSON';
       rivalPortrait.src = 'assets/rival-valerie.jpg';
@@ -656,7 +702,7 @@
       rivalQuoteEl.textContent = '“Same keyboard, zero excuses. First to 3 wins owns the penthouse.”';
       stageReadout.textContent = `2P COUCH DUEL // FIRST TO ${WINS_TO_CLAIM_MATCH} WINS`;
     } else if (state.mode === 'chaos') {
-      p1KeysEl.innerHTML = '<span><kbd>WASD</kbd>/<kbd>ARROWS</kbd></span><span><kbd>SPACE</kbd> Overdrive</span>';
+      p1KeysEl.innerHTML = '<span><kbd>SPACE</kbd> Overdrive</span><span><kbd>P</kbd> Pause</span>';
       rivalSlotLabel.textContent = '3-AI PACK';
       rivalColorLabel.textContent = 'NEON SYNDICATE';
       rivalPortrait.src = state.chaosWave % 2 === 1 ? 'assets/rival-dante.jpg' : 'assets/rival-valerie.jpg';
@@ -666,7 +712,7 @@
       rivalStat1Val.textContent = `×${state.chaosWave}`;
       stageReadout.textContent = `4-BIKE CHAOS // WAVE 0${state.chaosWave} // SURVIVE THE GRID`;
     } else {
-      p1KeysEl.innerHTML = '<span><kbd>WASD</kbd>/<kbd>ARROWS</kbd></span><span><kbd>SPACE</kbd> Overdrive</span>';
+      p1KeysEl.innerHTML = '<span><kbd>SPACE</kbd> Overdrive</span><span><kbd>P</kbd> Pause</span>';
       const rival = RIVALS[state.circuitStage];
       rivalSlotLabel.textContent = `RIVAL 0${state.circuitStage + 1}/03`;
       rivalColorLabel.textContent = rival.colorLabel;
@@ -680,6 +726,17 @@
   }
 
   function updateRealtimeMeters() {
+    // Do not mirror background Attract Mode demo bots onto the player HUD cards
+    if (state.phase === 'attract') {
+      p1BoostPct.textContent = '100%';
+      p1BoostBar.style.transform = 'scaleX(1)';
+      p1StatusBadge.textContent = 'READY';
+      rivalBoostPct.textContent = '100%';
+      rivalBoostBar.style.transform = 'scaleX(1)';
+      rivalStatusBadge.textContent = 'LOCKED IN';
+      return;
+    }
+
     const p1 = state.cycles[0];
     if (p1) {
       const pct = Math.max(0, Math.min(100, Math.round(p1.boostEnergy)));
@@ -693,7 +750,13 @@
       const pct = Math.max(0, Math.min(100, Math.round(r.boostEnergy)));
       rivalBoostPct.textContent = `${pct}%`;
       rivalBoostBar.style.transform = `scaleX(${pct / 100})`;
-      rivalStatusBadge.textContent = !r.alive ? 'DEREZZED' : r.boosting ? 'OVERDRIVE!' : 'HUNTING';
+      rivalStatusBadge.textContent = !r.alive
+        ? 'DEREZZED'
+        : r.panicking
+          ? 'PANICKING!'
+          : r.boosting
+            ? 'OVERDRIVE!'
+            : 'HUNTING';
     }
   }
 
@@ -718,8 +781,10 @@
   const bfsQueue = new Int32Array(COLS * ROWS);
   let bfsStamp = 1;
 
-  function measureReachableSpace(startGx, startGy, maxCount = 260) {
-    if (isCellBlocked(startGx, startGy)) return 0;
+  function analyzeChamber(startGx, startGy, targetBike = null, maxCount = 380) {
+    if (isCellBlocked(startGx, startGy)) {
+      return { count: 0, reachesTarget: false };
+    }
     bfsStamp = (bfsStamp + 1) % 250;
     if (bfsStamp === 0) {
       bfsVisited.fill(0);
@@ -732,14 +797,23 @@
     bfsVisited[startIdx] = bfsStamp;
     bfsQueue[tail++] = startIdx;
 
+    const hasTarget = Boolean(targetBike && targetBike.alive);
+    const tx = hasTarget ? targetBike.gx : -999;
+    const ty = hasTarget ? targetBike.gy : -999;
+
     let count = 0;
+    let reachesTarget = false;
+
     while (head < tail && count < maxCount) {
       const curr = bfsQueue[head++];
       count++;
       const cx = curr % COLS;
       const cy = (curr / COLS) | 0;
 
-      // Check 4 neighbors
+      if (!reachesTarget && hasTarget && Math.abs(cx - tx) + Math.abs(cy - ty) <= 2) {
+        reachesTarget = true;
+      }
+
       const neighbors = [
         [cx + 1, cy],
         [cx - 1, cy],
@@ -758,7 +832,7 @@
         }
       }
     }
-    return count;
+    return { count, reachesTarget };
   }
 
   function raycastClearance(gx, gy, dirKey, maxDist = 35) {
@@ -774,26 +848,133 @@
     return dist;
   }
 
+  function getAITierSettings() {
+    let tier = 1;
+    if (state.phase !== 'attract') {
+      if (state.mode === 'circuit') {
+        tier = state.circuitStage; // 0, 1, 2
+      } else if (state.mode === 'chaos') {
+        tier = Math.min(2, state.chaosWave - 1);
+      }
+    }
+
+    if (tier <= 0) {
+      // Stage 1: Approachable, stylish, commits 5 cells per turn, short-sighted flood-fill
+      return { visionCap: 55, turnLock: 5, noise: 34, boostChance: 0.08, huntWeight: 15 };
+    }
+    if (tier === 1) {
+      // Stage 2: Medium tactical vision, 3-cell turn commitment
+      return { visionCap: 120, turnLock: 3, noise: 16, boostChance: 0.18, huntWeight: 21 };
+    }
+    // Stage 3 / Chaos Wave 3+: Sharp syndicate awareness, 2-cell human reaction floor
+    return { visionCap: 210, turnLock: 2, noise: 7, boostChance: 0.28, huntWeight: 25 };
+  }
+
   function runAIDecision(cycle) {
     const currentDir = cycle.dir;
     const candidates = DIR_KEYS.filter((d) => d !== DIRS[currentDir].opposite);
-
     const targetPlayer = state.cycles.find((c) => c.id !== cycle.id && c.alive);
-    let bestDir = currentDir;
-    let bestScore = -Infinity;
+    const tier = getAITierSettings();
+
+    if (cycle.turnCooldownCells > 0) {
+      cycle.turnCooldownCells--;
+    }
+
+    // Evaluate candidate directions once for both Panic Spiral check and tactical choice
+    const options = [];
+    let maxRawSpace = 0;
+    let anyReachesTarget = false;
 
     for (const dirKey of candidates) {
       const { dx, dy } = DIRS[dirKey];
       const nx = cycle.gx + dx;
       const ny = cycle.gy + dy;
-
       if (isCellBlocked(nx, ny)) continue;
 
-      const space = measureReachableSpace(nx, ny, 260);
+      const chamber = analyzeChamber(nx, ny, targetPlayer, 380);
       const clearance = raycastClearance(cycle.gx, cycle.gy, dirKey, 36);
+      if (chamber.count > maxRawSpace) maxRawSpace = chamber.count;
+      if (chamber.reachesTarget) anyReachesTarget = true;
 
-      // Base survival score strongly rewards open reachable chambers
-      let score = space * 2.4 + clearance * 1.8;
+      options.push({
+        dirKey,
+        nx,
+        ny,
+        rawSpace: chamber.count,
+        perceivedSpace: Math.min(chamber.count, tier.visionCap),
+        clearance,
+      });
+    }
+
+    if (options.length === 0) return;
+
+    // --- #1: PANIC SPIRAL DETECTION WHEN BOXED IN ---
+    if (state.phase === 'playing') {
+      if (!cycle.panicking && !anyReachesTarget && maxRawSpace < 350) {
+        let playerSpace = 400;
+        if (targetPlayer) {
+          const pDir = DIRS[targetPlayer.dir];
+          const pFront = analyzeChamber(
+            targetPlayer.gx + pDir.dx,
+            targetPlayer.gy + pDir.dy,
+            null,
+            400
+          );
+          playerSpace = pFront.count;
+        }
+        // Only panic if THIS AI is sealed in a tight box or smaller room than the player!
+        if (maxRawSpace < 145 || maxRawSpace < playerSpace * 0.85) {
+          cycle.panicking = true;
+          cycle.boosting = true;
+          cycle.boostEnergy = 100;
+          if (!cycle.hasPanicked) {
+            cycle.hasPanicked = true;
+            spawnCallout(
+              cycle.gx * CELL + CELL / 2,
+              cycle.gy * CELL - 10,
+              pickRandom(PANIC_CALLOUTS),
+              cycle.color
+            );
+          }
+        }
+      } else if (cycle.panicking && anyReachesTarget && maxRawSpace > 220) {
+        // A Ribbon Slash prism reopened the cage!
+        cycle.panicking = false;
+      }
+    }
+
+    // Panicking AI charges wall-to-wall at high speed instead of lawnmowering every pixel
+    if (cycle.panicking) {
+      cycle.boosting = true;
+      cycle.boostEnergy = 100;
+      const straightOpt = options.find((o) => o.dirKey === currentDir);
+      if (straightOpt && straightOpt.clearance > 2) {
+        return; // Slam straight across the cage until right before the wall!
+      }
+      // Forced to ricochet at the wall — pick wildly among available turns
+      const turnOpts = options.filter((o) => o.dirKey !== currentDir);
+      const chosen = turnOpts.length > 0 ? pickRandom(turnOpts) : options[0];
+      if (chosen.dirKey !== currentDir) {
+        cycle.dir = chosen.dirKey;
+        audio.playTurn(DIRS[chosen.dirKey].index, false);
+      }
+      return;
+    }
+
+    // --- #2: HUMAN TURN COMMITMENT COOLDOWN ---
+    const straightOption = options.find((o) => o.dirKey === currentDir);
+    if (cycle.turnCooldownCells > 0 && straightOption && straightOption.clearance >= 2) {
+      return;
+    }
+
+    let bestDir = currentDir;
+    let bestScore = -Infinity;
+
+    for (const opt of options) {
+      const { dirKey, nx, ny, perceivedSpace, clearance } = opt;
+
+      // Base survival score capped by stage vision so early rivals fall for traps
+      let score = perceivedSpace * 2.2 + clearance * 1.6;
 
       // Avoid hugging lethal perimeter on 1-cell margin unless needed
       if (nx <= 2 || nx >= COLS - 3 || ny <= 2 || ny >= ROWS - 3) {
@@ -802,35 +983,33 @@
 
       // Personality-based tactical modifiers
       if (cycle.aiStyle === 'architect') {
-        // Dante loves long straight architectural lines until close to an obstacle
         if (dirKey === currentDir && clearance > 6) {
-          score += 36;
+          score += 34;
         }
       } else if (cycle.aiStyle === 'hunter' && targetPlayer) {
-        // Valerie aims slightly ahead of the player's nose to cut them off!
         const pDir = DIRS[targetPlayer.dir];
         const aimX = targetPlayer.gx + pDir.dx * 9;
         const aimY = targetPlayer.gy + pDir.dy * 9;
         const distBefore = Math.hypot(aimX - cycle.gx, aimY - cycle.gy);
         const distAfter = Math.hypot(aimX - nx, aimY - ny);
-        if (distAfter < distBefore && space > 110) {
-          score += 24;
+        if (distAfter < distBefore && perceivedSpace >= tier.visionCap * 0.65) {
+          score += tier.huntWeight;
         }
-        if (dirKey === currentDir && clearance > 5) {
+        if (dirKey === currentDir && clearance > 4) {
           score += 14;
         }
       }
 
-      // Subtle attraction toward spawned power-up prisms if chamber is safe
-      if (state.prisms.length > 0 && space > 120) {
+      // Subtle attraction toward spawned power-up prisms if chamber feels open
+      if (state.prisms.length > 0 && perceivedSpace >= tier.visionCap * 0.7) {
         const prism = state.prisms[0];
         const dNow = Math.hypot(prism.gx - cycle.gx, prism.gy - cycle.gy);
         const dNext = Math.hypot(prism.gx - nx, prism.gy - ny);
-        if (dNext < dNow) score += 16;
+        if (dNext < dNow) score += 14;
       }
 
-      // Slight random chic unpredictability
-      score += Math.random() * 6;
+      // Stage-scaled swagger/imperfection noise
+      score += Math.random() * tier.noise;
 
       if (score > bestScore) {
         bestScore = score;
@@ -840,15 +1019,30 @@
 
     if (bestDir !== currentDir) {
       cycle.dir = bestDir;
+      cycle.turnCooldownCells = tier.turnLock;
       audio.playTurn(DIRS[bestDir].index, false);
     }
 
-    // AI Tactical Overdrive Boost
-    if (cycle.boostEnergy > 35 && targetPlayer) {
+    // AI Tactical Overdrive Boost (committed burst instead of 1-frame flicker)
+    if (cycle.aiBoostTicks > 0) {
+      cycle.aiBoostTicks--;
+      const frontClear = raycastClearance(cycle.gx, cycle.gy, cycle.dir, 8);
+      if (frontClear <= 4 || cycle.boostEnergy < 18) {
+        cycle.aiBoostTicks = 0;
+        cycle.boosting = false;
+      } else {
+        cycle.boosting = true;
+      }
+    } else if (cycle.boostEnergy > 45 && targetPlayer) {
       const dist = Math.hypot(targetPlayer.gx - cycle.gx, targetPlayer.gy - cycle.gy);
       const frontClear = raycastClearance(cycle.gx, cycle.gy, cycle.dir, 20);
-      cycle.boosting = dist < 24 && frontClear > 10 && Math.random() < 0.35;
-    } else if (cycle.boostEnergy < 15) {
+      if (dist < 22 && frontClear > 11 && Math.random() < tier.boostChance) {
+        cycle.aiBoostTicks = 9;
+        cycle.boosting = true;
+      } else {
+        cycle.boosting = false;
+      }
+    } else {
       cycle.boosting = false;
     }
   }
@@ -1261,11 +1455,13 @@
   }
 
   function startPlayableRound() {
-    audio.init();
-    if (audio.enabled && audio.musicEnabled) {
-      audio.startMusic();
+    if (audio.enabled) {
+      audio.init();
+      if (audio.musicEnabled) {
+        audio.startMusic();
+      }
+      audio.setMuffled(false);
     }
-    audio.setMuffled(false);
 
     if (state.phase === 'matchEnd' || state.phase === 'attract') {
       state.p1Wins = 0;
@@ -1317,22 +1513,21 @@
       return;
     }
 
-    if (e.code === 'KeyP') {
-      if (state.phase === 'playing') {
+    if (e.code === 'KeyP' || e.key === 'p' || e.key === 'P') {
+      if (state.phase === 'playing' || state.phase === 'countdown') {
+        state.resumePhase = state.phase;
         state.phase = 'paused';
         audio.setMuffled(true);
         audio.setTurboState(false);
       } else if (state.phase === 'paused') {
-        state.phase = 'playing';
+        state.phase = state.resumePhase || 'playing';
         audio.setMuffled(false);
       }
       return;
     }
 
     if (e.code === 'KeyM') {
-      const isOn = audio.toggleAudio();
-      audioBtn.setAttribute('aria-pressed', String(isOn));
-      audioBtn.textContent = `SFX + Synth: ${isOn ? 'ON' : 'OFF'}`;
+      handleAudioToggle();
       return;
     }
 
@@ -1445,9 +1640,7 @@
   });
 
   audioBtn.addEventListener('click', () => {
-    const isOn = audio.toggleAudio();
-    audioBtn.setAttribute('aria-pressed', String(isOn));
-    audioBtn.textContent = `SFX + Synth: ${isOn ? 'ON' : 'OFF'}`;
+    handleAudioToggle();
   });
 
   crtBtn.addEventListener('click', () => {
@@ -1566,8 +1759,11 @@
     for (const cycle of state.cycles) {
       if (!cycle.alive) continue;
 
-      // Drain or trickle-recharge Overdrive
-      if (cycle.boosting && cycle.boostEnergy > 0) {
+      // Drain or trickle-recharge Overdrive (panicking bikes stay pinned at full throttle!)
+      if (cycle.panicking) {
+        cycle.boostEnergy = 100;
+        cycle.boosting = true;
+      } else if (cycle.boosting && cycle.boostEnergy > 0) {
         cycle.boostEnergy = Math.max(0, cycle.boostEnergy - dt * 38);
         if (cycle.boostEnergy <= 0) {
           cycle.boosting = false;
@@ -1587,8 +1783,13 @@
 
       for (const cycle of state.cycles) {
         if (!cycle.alive) continue;
-        let mult = waveSpeedScale * (cycle.boosting ? BOOST_MULTIPLIER : 1);
-        if (state.chronoTimer > 0 && cycle.id !== 0) {
+        const speedBoost = cycle.panicking
+          ? PANIC_MULTIPLIER
+          : cycle.boosting
+            ? BOOST_MULTIPLIER
+            : 1;
+        let mult = waveSpeedScale * speedBoost;
+        if (state.chronoTimer > 0 && cycle.id !== 0 && !cycle.panicking) {
           mult *= 0.48; // Chrono prism slows enemy cycles!
         }
         const stepInterval = BASE_STEP_SEC / mult;

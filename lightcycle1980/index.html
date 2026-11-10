@@ -18,7 +18,13 @@
     <div class="header-controls">
       <div class="mode-switcher" role="group" aria-label="Game Mode">
         <button type="button" class="mode-btn" data-mode="circuit" aria-pressed="true">1P Circuit</button>
-        <button type="button" class="mode-btn" data-mode="versus" aria-pressed="false">2P Duel</button>
+        <!--
+          2P LOCAL COUCH PVP ('versus' mode):
+          Hidden from UI by design, but full 2-player logic (WASD+Space vs Arrows+Shift/Enter)
+          remains active in game.js. Uncomment the button below (and the manual bullet in
+          #manual-dialog) to re-enable 2P Duel in the toolbar:
+          <button type="button" class="mode-btn" data-mode="versus" aria-pressed="false">2P Duel</button>
+        -->
         <button type="button" class="mode-btn" data-mode="chaos" aria-pressed="false">4-Bike Chaos</button>
       </div>
 
@@ -82,7 +88,6 @@
       </div>
 
       <div class="key-legend" id="p1-keys">
-        <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Steer</span>
         <span><kbd>SPACE</kbd> Overdrive</span>
         <span><kbd>P</kbd> Pause</span>
       </div>
@@ -194,8 +199,11 @@
     <div class="manual-section">
       <h3>Controls</h3>
       <ul>
-        <li><strong>1P Circuit / 4-Bike Chaos:</strong> Steer with <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>Arrow Keys</kbd>. Hold <kbd>SPACE</kbd> or <kbd>SHIFT</kbd> for <strong>Turbo Overdrive</strong>.</li>
-        <li><strong>2P Couch Duel:</strong> Player 1 steers with <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> + <kbd>SPACE</kbd> Boost. Player 2 steers with <kbd>Arrow Keys</kbd> + <kbd>SHIFT</kbd> or <kbd>ENTER</kbd> Boost.</li>
+        <li><strong>Steer &amp; Boost:</strong> Steer with <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>Arrow Keys</kbd>. Hold <kbd>SPACE</kbd> or <kbd>SHIFT</kbd> for <strong>Turbo Overdrive</strong>.</li>
+        <!--
+          Uncomment if restoring 'versus' (2P Duel) mode in .mode-switcher above:
+          <li><strong>2P Couch Duel:</strong> Player 1 steers with <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> + <kbd>SPACE</kbd> Boost. Player 2 steers with <kbd>Arrow Keys</kbd> + <kbd>SHIFT</kbd> or <kbd>ENTER</kbd> Boost.</li>
+        -->
         <li><strong>Quick Keys:</strong> <kbd>P</kbd> Pause • <kbd>M</kbd> Toggle Synth/SFX • <kbd>ENTER</kbd> Launch Next Round when overlay is open.</li>
       </ul>
     </div>

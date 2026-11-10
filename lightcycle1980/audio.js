@@ -64,7 +64,7 @@ class SynthGridAudio {
     compressor.release.setValueAtTime(0.18, this.ctx.currentTime);
 
     this.masterGain = this.ctx.createGain();
-    this.masterGain.gain.setValueAtTime(0.75, this.ctx.currentTime);
+    this.masterGain.gain.setValueAtTime(this.enabled ? 0.75 : 0, this.ctx.currentTime);
 
     this.musicFilter = this.ctx.createBiquadFilter();
     this.musicFilter.type = 'lowpass';
@@ -117,14 +117,31 @@ class SynthGridAudio {
     }
   }
 
-  toggleAudio() {
-    this.init();
-    this.enabled = !this.enabled;
+  setEnabled(isEnabled) {
+    this.enabled = Boolean(isEnabled);
+    if (!this.enabled) {
+      this.stopMusic();
+    }
     if (this.ctx && this.masterGain) {
       this.masterGain.gain.setTargetAtTime(this.enabled ? 0.75 : 0, this.ctx.currentTime, 0.03);
     }
-    if (this.enabled && this.musicEnabled && !this.isPlayingMusic) {
-      this.startMusic();
+  }
+
+  toggleAudio() {
+    this.enabled = !this.enabled;
+    if (this.enabled) {
+      this.init();
+      if (this.ctx && this.masterGain) {
+        this.masterGain.gain.setTargetAtTime(0.75, this.ctx.currentTime, 0.03);
+      }
+      if (this.musicEnabled && !this.isPlayingMusic) {
+        this.startMusic();
+      }
+    } else {
+      this.stopMusic();
+      if (this.ctx && this.masterGain) {
+        this.masterGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.03);
+      }
     }
     return this.enabled;
   }
